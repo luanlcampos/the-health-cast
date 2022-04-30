@@ -1,0 +1,57 @@
+#mainMessagesContainer {
+  background-color: #181717;
+}
+#mainMessages {
+  height: 80vh;
+  margin: 10vh 0 10vh;
+}
+
+#formSendMessage {
+  height: 10vh;
+  max-width: 728px;
+}
+
+#btnSendMessage {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+#btnSendMessage:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#inputSendMessage {
+  outline: none;
+  border: none;
+}
+
+#displayMessage {
+  max-width: 500px;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+}
+
+.sent {
+  flex-direction: row-reverse;
+  #textContent {
+    color: white;
+    background: #0b93f6;
+    align-self: flex-end;
+  }
+}
+.received {
+  #textContent {
+    background: #e5e5ea;
+    color: black;
+  }
+}
