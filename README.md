@@ -2,8 +2,12 @@
 
 Purpose: Experiment purpose only
 
+### Do npm i just in case and do npm run dev
+
 ### Go to /playground
+
 ### Click on link to create a "room"
+
 ### View Chat Room
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
