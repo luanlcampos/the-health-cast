@@ -1,20 +1,27 @@
-var admin = require("firebase-admin");
+import { initializeApp, getApp } from "firebase-admin/app";
+import { cert } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from 'firebase-admin/firestore';
 
-var serviceAccount = require("./adminSecrets.json");
+const serviceAccount = require("./adminSecrets.json");
 
-export const verifyIdToken = (idToken) => {
-
-    if (!admin.apps.length) {
-        const adminClient = admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount),
-            databaseURL: "https://authtest-5cf01-default-rtdb.firebaseio.com"
-        });
-    }
-
-    return admin.auth().verifyIdToken(idToken).catch((error) => {
-        console.warn(error);
-        throw new Error(error);
-    }
-    );
+// try to see if the app already exists, if not, create it
+// avoid creating the app twice by frontend and backend
+try {
+    getApp();
+} catch (error) {
+    console.info('App not initialized, initializing...');
+    initializeApp({
+        credential: cert(serviceAccount)
+    });
 }
+
+const adminAuth = getAuth();
+const adminDb = getFirestore(getApp());
+
+export { adminAuth, adminDb };
+
+
+
+
 
