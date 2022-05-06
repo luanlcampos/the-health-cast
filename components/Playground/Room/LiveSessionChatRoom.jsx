@@ -11,12 +11,17 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { auth, db } from "../firebase/clientApp";
-import styles from "../styles/LiveSessionChatRoom.module.scss";
+import { auth, db } from "../../../firebase/clientApp";
+import styles from "../../../styles/LiveSessionChatRoom.module.scss";
 
-export default function LiveSessionChatRoom() {
+export default function LiveSessionChatRoom({ room }) {
   const dummy = useRef();
-  const messagesRef = collection(db, "messages");
+  const messagesRef = collection(
+    db,
+    "playgroundRooms",
+    `${room}`,
+    "playgroudMessages"
+  );
 
   const givenQuery = query(messagesRef, orderBy("createdAt"), limit(25));
 
@@ -41,18 +46,13 @@ export default function LiveSessionChatRoom() {
   };
 
   return (
-    <div
-      id={styles.mainMessagesContainer}
-      className=""
-    >
+    <div id={styles.mainMessagesContainer} className="">
+      <h1>This is the room you reside in: {room}</h1>
       {/* Live Now */}
       {/* const docRef = doc(db, 'users', data.uid); */}
-      <div
-        id={styles.mainMessages}
-        className=""
-      >
+      <div id={styles.mainMessages} className="">
         {messages &&
-          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+          messages.map((msg) => <ChatMessage key={`${msg.id}`} message={msg} />)}
 
         <span ref={dummy}></span>
       </div>
@@ -86,7 +86,11 @@ function ChatMessage(props) {
   const { text, uid } = props.message;
   return (
     <>
-      <div className={`${styles.message} ${uid === auth.currentUser.uid ? styles.sent : styles.received}`}>
+      <div
+        className={`${styles.message} ${
+          uid === auth.currentUser.uid ? styles.sent : styles.received
+        }`}
+      >
         <p id={styles.textContent}>{text}</p>
       </div>
     </>

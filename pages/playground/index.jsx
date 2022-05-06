@@ -32,6 +32,9 @@ export default function Home() {
           Create New Live Session
         </a>
       </Link>
+      <Link href="/playground/new">
+        <a> Create New Live Session --- this link</a>
+      </Link>
     </>
   );
 }
