@@ -10,6 +10,10 @@ Purpose: Experiment purpose only
 
 ### View Chat Room
 
+## Want to chat with me instead of using discord?
+
+Go to this link and chat with me :) http://localhost:3000/playground/50bd204c-e660-4692-887e-4fb8f7371a60
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
