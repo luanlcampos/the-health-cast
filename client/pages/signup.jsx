@@ -6,6 +6,7 @@ import { sendEmailVerification } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useAuth } from "../firebase/auth";
+import { User } from "../model/user";
 
 const orgOptions = [
   { value: "org1", label: "Org1" },
@@ -44,7 +45,8 @@ export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState("");
 
   if (user) {
-    router.push("/");
+    // redirect to dashboard if user is logged in
+    // window.location.href = "/";
     return;
   }
 
@@ -62,17 +64,29 @@ export default function SignUp() {
       const res = await signup(email, password);
       // send user email verification
       await sendEmailVerification(auth.currentUser);
-      // create user in firestore
-      await setDoc(doc(db, "users", res.user.uid), {
+      // create a new instance of user
+      const createdUser = new User(
+        res.user.uid,
         firstName,
         lastName,
         email,
         isHcp,
-        hcpOrg,
-        interests: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+        hcpOrg
+      );
+      await createdUser.save();
+      // set user in firestore
+
+      // create user in firestore
+      // await setDoc(doc(db, "users", res.user.uid), {
+      //   firstName,
+      //   lastName,
+      //   email,
+      //   isHcp,
+      //   hcpOrg,
+      //   interests: [],
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // });
 
       setLoading(false);
       // redirect to login page
