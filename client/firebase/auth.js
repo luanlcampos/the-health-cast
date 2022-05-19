@@ -12,6 +12,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [userData, setUserData] = useState(null);
+    const [adminData, setAdminData] = useState(null);
     const [loading, setLoading] = useState(true);
     console.log('AuthProvider: user', user);
 
@@ -27,6 +28,21 @@ export const AuthProvider = ({ children }) => {
                         setUserData(result.data());
                     } else {
                         console.log('User does not exist on Firestore');
+                        // search on admin db  
+                        const adminDocRef = doc(db, 'admin', data.uid);
+                        const adminResult = await getDoc(adminDocRef);
+                        if (adminResult.exists()) {
+                            setAdminData(adminResult.data());
+                            console.log('AuthProvider: adminData', adminData);
+                        } else {
+                            console.log('User does not exist on admin db');
+
+                            // logout user
+                            auth.signOut();
+                            window.location.reload();
+                        }
+
+
                         setUserData(null);
                     }
                 }
@@ -58,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, userData, login, logout, signup }}>{loading ? null : children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, userData, adminData, login, logout, signup }}>{loading ? null : children}</AuthContext.Provider>
     )
 };
 

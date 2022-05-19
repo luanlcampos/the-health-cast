@@ -1,8 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '../styles/Home.module.scss';
-@import '../styles/Admin.module.scss';
+@import "../styles/Home.module.scss";
+@import "../styles/Admin.module.scss";
 
 html,
 body {
@@ -19,4 +19,17 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
 }

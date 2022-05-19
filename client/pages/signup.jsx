@@ -1,20 +1,27 @@
-import react, { useState } from "react";
+import react, { useEffect, useState } from "react";
 import Link from "next/link";
 import Select from "react-select";
-import { auth, db } from "../firebase/clientApp";
+import { auth } from "../firebase/clientApp";
 import { sendEmailVerification } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useAuth } from "../firebase/auth";
 import { User } from "../model/user";
+import list from "../data/listOfHealthCareProfessions";
 
 const orgOptions = [
-  { value: "org1", label: "Org1" },
-  { value: "org2", label: "Org2" },
-  { value: "org3", label: "Org3" },
+  {
+    value: {
+      orgId: "9YZYr2AsJWbZ1Qvv2u6l0DA6Hcl1",
+    },
+    label: "Public Health Ontario",
+  },
 ];
 
+// get the list of certified health care professions
+const professionOptions = list;
+
 export default function SignUp() {
+  useEffect(() => {}, []);
   const { user, signup } = useAuth();
   const router = useRouter();
   // first name state
@@ -36,10 +43,16 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // is hcp state
-  const [isHcp, setIsHcp] = useState(false);
+  const [requestedHcp, setRequestedHcp] = useState(false);
 
   // hcpOrg state
-  const [hcpOrg, setHcpOrg] = useState("");
+  const [hcpOrg, setHcpOrg] = useState(null);
+
+  // hcpProfession state
+  const [hcpProfession, setHcpProfession] = useState(null);
+
+  // hcpSpecialty state
+  const [hcpSpecialty, setHcpSpecialty] = useState(null);
 
   // error message state
   const [errorMessage, setErrorMessage] = useState("");
@@ -59,7 +72,7 @@ export default function SignUp() {
       if (password !== confirmPassword) {
         alert("Passwords do not match");
         setLoading(false);
-        return;
+        return "";
       }
       const res = await signup(email, password);
       // send user email verification
@@ -70,23 +83,15 @@ export default function SignUp() {
         firstName,
         lastName,
         email,
-        isHcp,
-        hcpOrg
+        requestedHcp,
+        hcpOrg,
+        hcpProfession,
+        hcpSpecialty,
+        false
       );
-      await createdUser.save();
-      // set user in firestore
 
-      // create user in firestore
-      // await setDoc(doc(db, "users", res.user.uid), {
-      //   firstName,
-      //   lastName,
-      //   email,
-      //   isHcp,
-      //   hcpOrg,
-      //   interests: [],
-      //   createdAt: new Date(),
-      //   updatedAt: new Date(),
-      // });
+      console.log("Created User:", createdUser);
+      await createdUser.save();
 
       setLoading(false);
       // redirect to login page
@@ -230,8 +235,8 @@ export default function SignUp() {
               type="checkbox"
               role="switch"
               id="flexSwitchCheckDefault"
-              value={isHcp}
-              onChange={(e) => setIsHcp(e.target.checked)}
+              value={requestedHcp}
+              onChange={(e) => setRequestedHcp(e.target.checked)}
             />
             <label
               className="form-check-label inline-block text-gray-800"
@@ -240,16 +245,45 @@ export default function SignUp() {
               HCP User
             </label>
           </div>
+          {/* More details should be added here later, such as
+                profession, specialty, etc. */}
+          {requestedHcp && (
+            <>
+              <div className="mb-4">
+                <Select
+                  options={orgOptions}
+                  onChange={(e) => setHcpOrg(e.value)}
+                  placeholder="Select your organization"
+                  required={requestedHcp}
+                />
+              </div>
 
-          {isHcp && (
-            <div className="mb-4">
-              <Select
-                options={orgOptions}
-                onChange={(e) => setHcpOrg(e.value)}
-                placeholder="Select your organization"
-                required={isHcp}
-              />
-            </div>
+              <div className="mb-4">
+                <Select
+                  options={professionOptions}
+                  onChange={(e) => setHcpProfession(e.value)}
+                  placeholder="Select your profession"
+                  required={requestedHcp}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="password"
+                >
+                  Specialty {"(optional)"}
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  id="hcpSpecialty"
+                  type="text"
+                  placeholder="Enter your specialty if applicable"
+                  value={hcpSpecialty}
+                  onChange={(e) => setHcpSpecialty(e.target.value)}
+                />
+              </div>
+            </>
           )}
           <div className="flex items-center w-full">
             <button
