@@ -2,7 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../firebase/auth";
 
-import { AiOutlineHome, AiOutlineCalendar } from "react-icons/ai";
+import {
+  AiOutlineHome,
+  AiOutlineCalendar,
+  AiOutlinePlusCircle,
+} from "react-icons/ai";
 import { RiRecordCircleLine } from "react-icons/ri";
 import { MdOutlineForum } from "react-icons/md";
 
@@ -72,6 +76,22 @@ export default function SideMenu() {
               </a>
             </Link>
           </li>
+          {userData && userData.isHcp && (
+            <li
+              className={`p-0 w-full py-2  hover:bg-[#d4d4d4]  ${
+                router.pathname == "/upcoming"
+                  ? "active bg-[#c4c4c4] border-r-[6px] border-r-my-green"
+                  : ""
+              }`}
+            >
+              <Link href="/upcoming">
+                <a className="flex flex-row items-center gap-x-3 text-3xl pl-2">
+                  <AiOutlinePlusCircle />
+                  Create
+                </a>
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </div>

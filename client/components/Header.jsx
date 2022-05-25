@@ -9,7 +9,7 @@ import { useAuth } from "../firebase/auth";
 import { Menu, Transition } from "@headlessui/react";
 
 function Header({ user }) {
-  const { login, logout, userData } = useAuth();
+  const { login, logout, userData, adminData } = useAuth();
   const handleLogOut = () => {
     logout();
   };
@@ -30,7 +30,7 @@ function Header({ user }) {
             </a>
           </div>
           <div className="flex flex-1 md:w-1/3 justify-end md:justify-start px-2">
-            {user && userData && (
+            {user && (
               <span className="relative w-full">
                 <input
                   type="search"
@@ -44,11 +44,12 @@ function Header({ user }) {
           <div className="flex flex-shrink md:w-1/3 justify-end md:flex-none">
             <div className="flex items-end">
               <div className="flex items-center pr-4">
-                {user && userData ? (
+                {(user && userData) || adminData ? (
                   <Menu as="div" className="relative inline-block text-left">
                     <Menu.Button className="px-2 py-2">
                       <span className="flex flex-row items-center gap-2">
-                        <AiOutlineUser /> Hello, {userData.firstName}{" "}
+                        <AiOutlineUser /> Hello,{" "}
+                        {userData ? userData.firstName : adminData.institution}{" "}
                       </span>
                     </Menu.Button>
                     <Menu.Items className="flex flex-col absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
