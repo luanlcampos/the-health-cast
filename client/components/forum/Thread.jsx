@@ -11,7 +11,7 @@ const Thread = () => {
           />
           <div className="text-center">User Name</div>
         </div>
-        <div className="w-1/2 border-r border-gray-400 p-4">
+        <div className="w-1/2 border-r border-gray-400 p-4 hover:cursor-pointer">
           <h2 className="text-2xl pb-2">Discussion Title</h2>
           <p className="text-sm">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
