@@ -3,7 +3,7 @@ import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "/firebase/clientApp";
 // class to represent a user
 class User {
-    constructor(id, firstName, lastName, email, requestedHcp, hcpOrg = '', hcpProfession = '', hcpSpecialy = '', isHcp = false, interests = []) {
+    constructor(id, firstName, lastName, email, requestedHcp, hcpOrg = '', hcpProfession = '', hcpSpecialy = '', isHcp = false, interests = [], following = []) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,6 +31,8 @@ class User {
          * */
         this.permission = 'None';
         this.interests = interests;
+        // Users following list. It is a list containing the users id
+        this.following = following;
         this.createdAt = new Date();
         this.updatedAt = new Date();
     }
@@ -48,8 +50,9 @@ class User {
                 isHcp: false,
                 hcpOrg: this.hcpOrg,
                 hcpProfession: this.hcpProfession,
-                hcpSpecialy: this.hcpSpecialy,
+                hcpSpecialty: this.hcpSpecialy,
                 interests: this.interests,
+                following: this.following,
                 createdAt: this.createdAt,
                 updatedAt: this.updatedAt,
             });
