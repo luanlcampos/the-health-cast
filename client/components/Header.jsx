@@ -6,13 +6,14 @@ import {
   AiOutlineLogout,
 } from "react-icons/ai";
 import { useAuth } from "../firebase/auth";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu } from "@headlessui/react";
 
-function Header({ user }) {
-  const { login, logout, userData, adminData } = useAuth();
+function Header() {
+  const { logout, userData, adminData, user, loading } = useAuth();
   const handleLogOut = () => {
     logout();
   };
+
   return (
     <header>
       <nav
@@ -21,7 +22,7 @@ function Header({ user }) {
       >
         <div className="flex flex-wrap items-center min-h-[calc(60px-8px)]">
           <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start">
-            <a href="#" className="flex items-center">
+            <a href="/" className="flex items-center">
               <img
                 src="/images/logo.png"
                 alt="logo"
