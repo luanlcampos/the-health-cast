@@ -37,6 +37,11 @@ function Admin() {
 
   const router = useRouter();
 
+  if ((userData && userData.isHcp === false) || adminData === null) {
+    router.push("/");
+    return;
+  }
+
   // requests array
   const [requests, setRequests] = useState([]);
 
