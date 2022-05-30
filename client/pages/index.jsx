@@ -1,8 +1,8 @@
 import Head from "next/head";
-import Header from "../components/Header";
+import Header from "../components/Layout/Header";
 import { useAuth } from "../firebase/auth";
-import UnsignedHome from "../components/UnsignedHome";
-import SignedHome from "../components/SignedHome";
+import UnsignedHome from "../components/Home/UnsignedHome";
+import SignedHome from "../components/Home/SignedHome";
 import { AiOutlineLoading } from "react-icons/ai";
 
 export default function Home() {

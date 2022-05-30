@@ -1,11 +1,11 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   AiOutlineUser,
   AiOutlineSearch,
   AiOutlineLogout,
 } from "react-icons/ai";
-import { useAuth } from "../firebase/auth";
+import { MdOutlineManageAccounts } from "react-icons/md";
+import { useAuth } from "../../firebase/auth";
 import { Menu } from "@headlessui/react";
 
 function Header() {
@@ -80,6 +80,21 @@ function Header() {
                           </a>
                         )}
                       </Menu.Item>
+                      {adminData !== null && (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              className={`px-2 py-2 flex flex-row items-center gap-2 hover:cursor-pointer ${
+                                active && "bg-my-green text-white text-bold"
+                              }`}
+                              href="/admin"
+                            >
+                              <MdOutlineManageAccounts />
+                              Admin Console
+                            </a>
+                          )}
+                        </Menu.Item>
+                      )}
                     </Menu.Items>
                   </Menu>
                 ) : (

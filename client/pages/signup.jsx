@@ -21,7 +21,6 @@ const orgOptions = [
 const professionOptions = list;
 
 export default function SignUp() {
-  useEffect(() => {}, []);
   const { user, signup } = useAuth();
   const router = useRouter();
   // first name state
