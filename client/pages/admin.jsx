@@ -1,14 +1,11 @@
-import Header from "../components/Layout/Header";
-import { useAuth } from "../firebase/auth";
+import Header from "@/components/Layout/Header";
+import { useAuth } from "@/firebase/auth";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import "../styles/Admin.module.scss";
-import Loading from "../components/Loading";
-import HcpTable from "../components/Admin/HcpTable";
-import Alerts from "../components/Admin/Alerts";
-import Requests from "../components/Admin/Requests";
-import OrgBio from "../components/Admin/OrgBio";
-import OrgConsole from "../components/Admin/OrgConsole";
+import Loading from "@/components/Loading";
+import HcpTable from "@/components/Admin/HcpTable";
+import OrgBio from "@/components/Admin/OrgBio";
+import OrgConsole from "@/components/Admin/OrgConsole";
 
 function Admin() {
   const { user, userData, adminData } = useAuth();

@@ -1,12 +1,13 @@
-import Head from "next/head";
 import Header from "../components/Layout/Header";
 import { useAuth } from "../firebase/auth";
 import UnsignedHome from "../components/Home/UnsignedHome";
 import SignedHome from "../components/Home/SignedHome";
 import { AiOutlineLoading } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const { user, userData, adminData, userIsLoading, logout } = useAuth();
+  const router = useRouter();
 
   if (user && !userData && !adminData) {
     return (
@@ -14,6 +15,12 @@ export default function Home() {
         <AiOutlineLoading className="loading-spinner text-3xl" />
       </div>
     );
+  }
+
+  if (user && (userData || adminData) && !user.emailVerified) {
+    console.log(user.emailVerified);
+    router.push("/login");
+    logout();
   }
 
   return (
