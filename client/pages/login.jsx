@@ -6,11 +6,14 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { auth } from "../firebase/clientApp";
 import { useAuth } from "../firebase/auth";
+import { sendEmailVerification } from "firebase/auth";
 import { useRouter } from "next/router";
+import { AiOutlineLoading } from "react-icons/ai";
+import Loading from "@/components/Loading";
 
 function Login() {
   // user and login function from useAuth hook
-  const { user, login } = useAuth();
+  const { user, login, logout } = useAuth();
   // email state
   const [email, setEmail] = useState("");
 
@@ -29,6 +32,12 @@ function Login() {
   // error message state
   const [errorMessage, setErrorMessage] = useState("");
 
+  // loading state
+  const [loading, setLoading] = useState(false);
+
+  // set currentUser state
+  const [currentUser, setCurrentUser] = useState(null);
+
   const router = useRouter();
 
   if (user) {
@@ -36,21 +45,48 @@ function Login() {
     return;
   }
 
+  const handleSendEmailVerification = async (e) => {
+    try {
+      setLoading(true);
+      const res = await sendEmailVerification(currentUser);
+      setCurrentUser(null);
+      setErrorMessage("");
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.warn(err);
+      setErrorMessage(err.message);
+    }
+  };
+
   // handle login with firebase
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     // call firebase auth to login
     try {
+      setLoading(true);
       await login(email, password);
+
+      // check if user has verified email
+      if (auth.currentUser.emailVerified === false) {
+        console.log(auth.currentUser.emailVerified);
+        setCurrentUser(auth.currentUser);
+        setErrorMessage("Please verify your email");
+        setLoading(false);
+        await logout();
+        return;
+      }
       //redirect to home page
+      setLoading(false);
       router.push("/");
     } catch (error) {
       console.warn(error);
+      setLoading(false);
       if (error.code === "auth/user-not-found") {
-        setErrorMessage("User not found");
+        setErrorMessage("Email and password do not match");
       } else if (error.code === "auth/wrong-password") {
-        setErrorMessage("Wrong password");
+        setErrorMessage("Email and password do not match");
       } else if (error.code === "auth/invalid-email") {
         setErrorMessage("Invalid email");
       } else if (error.code === "auth/user-disabled") {
@@ -153,6 +189,11 @@ function Login() {
           </div>
         </div>
       )}
+      {loading && (
+        <div className="loading absolute w-screen h-screen flex justify-center items-center bg-gray-600 bg-opacity-50">
+          <AiOutlineLoading className="text-white  text-4xl loading-spinner" />
+        </div>
+      )}
       <div className="flex flex-col items-center justify-center h-screen bg-slate-50">
         <div className="w-full max-w-md flex flex-col items-center justify-center gap-y-5">
           <img src="/logo.png" alt="logo" className="h-20" />
@@ -179,7 +220,23 @@ function Login() {
             </div>
             {errorMessage !== "" && (
               <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
-                <span className="font-medium">{errorMessage}</span>
+                <span className="font-medium">
+                  {errorMessage === "Please verify your email" ? (
+                    <div>
+                      <span>
+                        {errorMessage} {". "}
+                      </span>
+                      <span
+                        className="text-blue-500 font-bold hover:cursor-pointer"
+                        onClick={(e) => handleSendEmailVerification(e)}
+                      >
+                        {"Click here to resend the email"}
+                      </span>
+                    </div>
+                  ) : (
+                    errorMessage
+                  )}
+                </span>
               </div>
             )}
             <div className="mb-4">
@@ -227,7 +284,7 @@ function Login() {
             </div>
             <div className="flex items-center w-full">
               <button
-                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex justify-center items-center"
                 type="submit"
               >
                 Sign In

@@ -1,5 +1,5 @@
-import { useAuth } from "../firebase/auth";
-import SideMenu from "./SideMenu";
+import { useAuth } from "../../firebase/auth";
+import SideMenu from "../Layout/SideMenu";
 
 // mock data to simulate live sessions
 const mockData = [

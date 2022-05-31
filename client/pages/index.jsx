@@ -1,15 +1,31 @@
-import Head from "next/head";
-import Header from "../components/Header";
+import Header from "../components/Layout/Header";
 import { useAuth } from "../firebase/auth";
-import UnsignedHome from "../components/UnsignedHome";
-import SignedHome from "../components/SignedHome";
+import UnsignedHome from "../components/Home/UnsignedHome";
+import SignedHome from "../components/Home/SignedHome";
+import { AiOutlineLoading } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 export default function Home() {
-  const { user, logout } = useAuth();
+  const { user, userData, adminData, userIsLoading, logout } = useAuth();
+  const router = useRouter();
+
+  if (user && !userData && !adminData) {
+    return (
+      <div className="loading-page h-screen w-screen flex items-center justify-center">
+        <AiOutlineLoading className="loading-spinner text-3xl" />
+      </div>
+    );
+  }
+
+  if (user && (userData || adminData) && !user.emailVerified) {
+    console.log(user.emailVerified);
+    router.push("/login");
+    logout();
+  }
 
   return (
     <div className="min-h-screen ">
-      <Header user={user} />
+      <Header />
       {!user ? <UnsignedHome /> : <SignedHome />}
     </div>
   );
