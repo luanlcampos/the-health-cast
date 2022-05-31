@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import "../../styles/Admin.module.scss";
 import { db } from "../../firebase/clientApp";
+import emailjs from "@emailjs/browser";
 
 export default function Requests({ user }) {
   // requests array
@@ -53,6 +54,9 @@ export default function Requests({ user }) {
         permission: "All",
       });
 
+      // send email to the user
+      sendEmail(request, true);
+
       setReqLoading(false);
     } catch (error) {
       console.log(error);
@@ -78,13 +82,38 @@ export default function Requests({ user }) {
         isHcp: false,
       });
 
-      // trying to update the hcp list, but getting trouble
-      await getHcpList();
+      // send email to the user
+      sendEmail(request, false);
       setReqLoading(false);
     } catch (error) {
       console.log("Admin request Error", error);
     }
     setReqLoading(false);
+  };
+
+  const sendEmail = (request, isAccepted) => {
+    console.log(
+      `Admin requests: ${isAccepted ? "accepted" : "rejected"} request from ${
+        request.firstName
+      }`,
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+      process.env.NEXT_PUBLIC_EMAILJS_API_KEY,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+    );
+    const message = isAccepted
+      ? "Congratulations! Your request has been approved."
+      : "Unfortunately, your request has been rejected";
+    emailjs.send(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+      {
+        toEmail: request.email,
+        toName: request.firstName,
+        message: message,
+        fromName: "The Health Cast App Team",
+      },
+      process.env.NEXT_PUBLIC_EMAILJS_API_KEY
+    );
   };
 
   return requestsLoading ? (
