@@ -3,6 +3,9 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { onAuthStateChanged, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from './clientApp';
 import { getDoc, doc } from 'firebase/firestore';
+import { FBAuthUser } from "@/model/users/FBAuthUser";
+import { AdminData } from "@/model/users/AdminData";
+import { UserData } from "@/model/users/UserData";
 
 const AuthContext = createContext();
 
@@ -19,19 +22,21 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, (data) => {
             setIsLoading(true);
             if (data) {
-                setUser(data);
+                setUser(new FBAuthUser(data));
                 const fetchUser = async () => {
                     const docRef = doc(db, 'users', data.uid);
                     const result = await getDoc(docRef);
                     if (result.exists()) {
-                        setUserData(result.data());
+                        // setUserData(result.data());
+                        setUserData(new UserData(result.data()));
                     } else {
                         console.log('User does not exist on Firestore');
                         // search on admin db  
                         const adminDocRef = doc(db, 'admin', data.uid);
                         const adminResult = await getDoc(adminDocRef);
                         if (adminResult.exists()) {
-                            setAdminData(adminResult.data());
+                            setAdminData(new AdminData(adminResult.data()));
+                            // setAdminData(adminResult.data());
                             console.log('AuthProvider: adminData', adminData);
                         } else {
                             console.log('User does not exist on admin db');
@@ -71,8 +76,17 @@ export const AuthProvider = ({ children }) => {
         return;
     };
 
+    // remove user from auth
+    const removeUser = async () => {
+        const user = auth.currentUser;
+        if (user) {
+            await user.delete();
+            setUser(null);
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, userData, adminData, login, logout, signup }}>{isLoading ? null : children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, userData, adminData, login, logout, signup, removeUser }}>{isLoading ? null : children}</AuthContext.Provider>
     )
 };
 
