@@ -16,6 +16,10 @@ function Admin() {
     return <Loading />;
   }
 
+  if (!user) {
+    window.location.href = "/login";
+  }
+
   if (user && (userData || adminData)) {
     if ((userData && userData.isHcp === false) || adminData === null) {
       router.push("/");

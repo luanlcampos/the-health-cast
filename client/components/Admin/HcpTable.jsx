@@ -38,26 +38,36 @@ export default function HcpTable({ user }) {
   };
 
   const getHcpList = async () => {
-    setHcpDataList([]);
-    const hcpList = await (
-      await getDoc(doc(db, "admin", String(user.uid)))
-    ).get("hcpList");
-    console.log(hcpList);
-    for (let i = 0; i < hcpList.length; i++) {
-      const hcp = await getDoc(doc(db, "users", String(hcpList[i])));
-      // if user is not found, remove from hcpList
-      if (hcp && !hcp.exists()) {
-        // remove the id from the array
-        await updateDoc(doc(db, "admin", String(user.uid)), {
-          hcpList: arrayRemove(hcpList[i]),
-        });
+    try {
+      setHcpDataList([]);
+      const hcpList = await (
+        await getDoc(doc(db, "admin", String(user.uid)))
+      ).get("hcpList");
+      for (let i = 0; i < hcpList.length; i++) {
+        if (hcpList[i] !== null && hcpList[i].length > 0) {
+          const hcp = await getDoc(doc(db, "users", String(hcpList[i])));
+          // if user is not found, remove from hcpList
+          if (hcp && !hcp.exists()) {
+            // remove the id from the array
+            await updateDoc(doc(db, "admin", String(user.uid)), {
+              hcpList: arrayRemove(hcpList[i]),
+            });
+          }
+          // else add to hcpDataList
+          else {
+            const data = await hcp.data();
+            data.hcpId = hcpList[i];
+            setHcpDataList((prev) => [...prev, data]);
+          }
+        } else {
+          // remove the id from the array
+          await updateDoc(doc(db, "admin", String(user.uid)), {
+            hcpList: arrayRemove(hcpList[i]),
+          });
+        }
       }
-      // else add to hcpDataList
-      else {
-        const data = await hcp.data();
-        data.hcpId = hcpList[i];
-        setHcpDataList((prev) => [...prev, data]);
-      }
+    } catch (error) {
+      console.warn(error);
     }
   };
 
