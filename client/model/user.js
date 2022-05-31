@@ -1,19 +1,30 @@
 // /model/user.js
 import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "/firebase/clientApp";
-import { useAuth } from "@/firebase/auth";
-// class to represent a user
+// class to represent a user input
 
 class User {
+    /**
+     * User constructor
+     * @param {FirebaseId} id - get from firebase auth 
+     * @param {string} firstName 
+     * @param {string} lastName 
+     * @param {string} email 
+     * @param {boolean} requestedHcp 
+     * @param {Object} hcpOrg - contains orgId and orgName 
+     * @param {string} hcpProfession - from a list of certified professionals
+     * @param {string} hcpSpecialty optional
+     * @param {boolean} isHcp - false by default, set to true if the admin approves
+     * @param {Array} interests - list of health topics
+     * @param {Array<string>} following - list of following userIds
+     */
     constructor(id, firstName, lastName, email, requestedHcp, hcpOrg = '', hcpProfession = '', hcpSpecialty = '', isHcp = false, interests = [], following = []) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        // TODO: add more data to hcp users
-        this.isHcp = isHcp; // always false, just turned true by admin
-        this.requestedHcp = requestedHcp; // refers to the user requesting to be a hcp
-
+        this.isHcp = isHcp;
+        this.requestedHcp = requestedHcp;
         // checks if user select org in case they requested to be a hcp
         if (requestedHcp && !hcpOrg) {
             console.error('HCP user created without hcpOrg');
@@ -33,7 +44,6 @@ class User {
          * */
         this.permission = 'None';
         this.interests = interests;
-        // Users following list. It is a list containing the users id
         this.following = following;
         this.createdAt = new Date();
         this.updatedAt = new Date();
@@ -69,7 +79,7 @@ class User {
                     lastName: this.lastName,
                     email: this.email
                 }
-                await updateDoc(doc(db, "admin", String(this.hcpOrg)), {
+                await updateDoc(doc(db, "admin", String(this.hcpOrg.orgId)), {
                     requests: arrayUnion(newRequest),
                 });
             }
@@ -78,8 +88,6 @@ class User {
             throw new Error(error);
         }
     }
-
-    // TODO: add functions to update user data
 }
 
 module.exports.User = User;

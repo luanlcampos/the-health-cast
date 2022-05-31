@@ -13,6 +13,7 @@ const orgOptions = [
   {
     value: {
       orgId: "9YZYr2AsJWbZ1Qvv2u6l0DA6Hcl1",
+      orgName: "Public Health Ontario",
     },
     label: "Public Health Ontario",
   },
@@ -60,7 +61,7 @@ export default function SignUp() {
   if (user) {
     // redirect to dashboard if user is logged in
     // window.location.href = "/";
-    return;
+    // return;
   }
 
   // handle signup with firebase createUserWithEmailAndPassword
