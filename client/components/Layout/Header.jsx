@@ -10,8 +10,9 @@ import { Menu } from "@headlessui/react";
 
 function Header() {
   const { logout, userData, adminData, user, loading } = useAuth();
-  const handleLogOut = () => {
-    logout();
+  const handleLogOut = async () => {
+    await logout();
+    window.location.reload();
   };
 
   return (
