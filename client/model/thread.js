@@ -4,11 +4,12 @@ import { db } from "/firebase/clientApp";
 
 // class to represent a thread
 class Thread {
-  constructor(id, user, title, desc, replies, users) {
+  constructor(id, userId, title, desc, content, replies, users) {
     this.id = id;
-    this.author = user;
+    this.authorId = userId;
     this.title = title;
     this.desc = desc;
+    this.content = content;
     this.replies = replies;
     this.users = users;
     this.createdAt = new Date();
@@ -21,9 +22,10 @@ class Thread {
       // create a new thread document in the thread collection
       console.log("saving a thread", this);
       await setDoc(doc(db, "threads", this.id), {
-        author: this.author,
+        authorId: this.authorId,
         title: this.title,
         desc: this.desc,
+        content: this.content,
         replies: this.replies,
         users: this.users,
         createdAt: this.createdAt,
