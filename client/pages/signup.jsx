@@ -7,11 +7,13 @@ import { useRouter } from "next/router";
 import { useAuth } from "../firebase/auth";
 import { User } from "../model/user";
 import list from "../data/listOfHealthCareProfessions";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const orgOptions = [
   {
     value: {
       orgId: "9YZYr2AsJWbZ1Qvv2u6l0DA6Hcl1",
+      orgName: "Public Health Ontario",
     },
     label: "Public Health Ontario",
   },
@@ -21,7 +23,6 @@ const orgOptions = [
 const professionOptions = list;
 
 export default function SignUp() {
-  useEffect(() => {}, []);
   const { user, signup } = useAuth();
   const router = useRouter();
   // first name state
@@ -60,7 +61,7 @@ export default function SignUp() {
   if (user) {
     // redirect to dashboard if user is logged in
     // window.location.href = "/";
-    return;
+    // return;
   }
 
   // handle signup with firebase createUserWithEmailAndPassword
@@ -75,8 +76,6 @@ export default function SignUp() {
         return "";
       }
       const res = await signup(email, password);
-      // send user email verification
-      await sendEmailVerification(auth.currentUser);
       // create a new instance of user
       const createdUser = new User(
         res.user.uid,
@@ -89,9 +88,10 @@ export default function SignUp() {
         hcpSpecialty,
         false
       );
-
       console.log("Created User:", createdUser);
       await createdUser.save();
+      // send user email verification
+      await sendEmailVerification(auth.currentUser);
 
       setLoading(false);
       // redirect to login page
@@ -290,7 +290,11 @@ export default function SignUp() {
               className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              Sign Up
+              {!loading ? (
+                "Sign Up"
+              ) : (
+                <AiOutlineLoading className="loading-spinner" />
+              )}
             </button>
           </div>
         </form>

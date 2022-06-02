@@ -33,3 +33,16 @@ a {
 .loading-spinner {
   animation: spin 1s linear infinite;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-enter {
+  animation: fadeIn 0.5s;
+}

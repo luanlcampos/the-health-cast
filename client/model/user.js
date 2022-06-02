@@ -1,25 +1,38 @@
 // /model/user.js
 import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "/firebase/clientApp";
-// class to represent a user
+// class to represent a user input
+
 class User {
-    constructor(id, firstName, lastName, email, requestedHcp, hcpOrg = '', hcpProfession = '', hcpSpecialy = '', isHcp = false, interests = []) {
+    /**
+     * User constructor
+     * @param {FirebaseId} id - get from firebase auth 
+     * @param {string} firstName 
+     * @param {string} lastName 
+     * @param {string} email 
+     * @param {boolean} requestedHcp 
+     * @param {Object} hcpOrg - contains orgId and orgName 
+     * @param {string} hcpProfession - from a list of certified professionals
+     * @param {string} hcpSpecialty optional
+     * @param {boolean} isHcp - false by default, set to true if the admin approves
+     * @param {Array} interests - list of health topics
+     * @param {Array<string>} following - list of following userIds
+     */
+    constructor(id, firstName, lastName, email, requestedHcp, hcpOrg = '', hcpProfession = '', hcpSpecialty = '', isHcp = false, interests = [], following = []) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        // TODO: add more data to hcp users
-        this.isHcp = isHcp; // always false, just turned true by admin
-        this.requestedHcp = requestedHcp; // refers to the user requesting to be a hcp
-
+        this.isHcp = isHcp;
+        this.requestedHcp = requestedHcp;
         // checks if user select org in case they requested to be a hcp
         if (requestedHcp && !hcpOrg) {
             console.error('HCP user created without hcpOrg');
             throw new Error('HCP must have an organization');
         }
-        this.hcpOrg = hcpOrg.orgId;
+        this.hcpOrg = hcpOrg;
         this.hcpProfession = hcpProfession;
-        this.hcpSpecialy = hcpSpecialy;
+        this.hcpSpecialty = hcpSpecialty;
         /**
          * set hcp permissions
          * All: can start lives and manage threads
@@ -31,6 +44,7 @@ class User {
          * */
         this.permission = 'None';
         this.interests = interests;
+        this.following = following;
         this.createdAt = new Date();
         this.updatedAt = new Date();
     }
@@ -40,7 +54,7 @@ class User {
         try {
             // create a new user document in the users collection
             console.log('saving user', this);
-            await setDoc(doc(db, "users", this.id), {
+            const res = await setDoc(doc(db, "users", this.id), {
                 firstName: this.firstName,
                 lastName: this.lastName,
                 email: this.email,
@@ -48,11 +62,14 @@ class User {
                 isHcp: false,
                 hcpOrg: this.hcpOrg,
                 hcpProfession: this.hcpProfession,
-                hcpSpecialy: this.hcpSpecialy,
+                hcpSpecialty: this.hcpSpecialty,
                 interests: this.interests,
+                following: this.following,
                 createdAt: this.createdAt,
                 updatedAt: this.updatedAt,
             });
+
+            console.log(res);
 
             // send request to be hcp to the admin
             if (this.requestedHcp) {
@@ -62,17 +79,15 @@ class User {
                     lastName: this.lastName,
                     email: this.email
                 }
-                await updateDoc(doc(db, "admin", String(this.hcpOrg)), {
+                await updateDoc(doc(db, "admin", String(this.hcpOrg.orgId)), {
                     requests: arrayUnion(newRequest),
                 });
             }
         } catch (error) {
             console.error(error);
-            throw error;
+            throw new Error(error);
         }
     }
-
-    // TODO: add functions to update user data
 }
 
 module.exports.User = User;
