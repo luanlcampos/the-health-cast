@@ -6,7 +6,7 @@ import { Timestamp } from "firebase/firestore";
 import {db} from '../../firebase/clientApp';
 import { collection, doc, setDoc, addDoc,  getDocs, query, orderBy } from "firebase/firestore";
 
-import Message from "./Message";
+import ChatMessage from "./ChatMessage";
 
 const Picker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
@@ -67,7 +67,6 @@ export default function ChatWrapper({currentUser, selectedProfile}){
             const recipientListRef = collection(recipientFriendlistRef, "list");
             addDoc(recipientListRef, payload);
             chatMessages.push(payload);
-            console.log(chatMessages);
             setMessage("");
         }
     }
@@ -93,12 +92,13 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                 </div>
                 <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper"  ref={chatBox}>
                     {
-                        chatMessages.map(({text,timestamp, senderEmail})=>(
-                            <Message message = {text} time={timestamp} sender = {senderEmail}/>
+                        chatMessages.map(({text,timestamp, senderEmail})=>
+                        (
+                            <ChatMessage message = {text} time={timestamp} senderEmail = {senderEmail} currentUserEmail = {currentUser.email}/>
                         ))
                     }
-                    <div className="flex justify-end">
-                        {/* <div
+                    {/* <div className="flex justify-end">
+                        <div
                             className="single-message rounded-tl-lg rounded-bl-lg text-gray-200 rounded-br-lg user mb-4 px-4 py-2">Hey!
                             Thought I'd reach out to say how are you? 😊
                         </div>
@@ -106,8 +106,8 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                                    width="8" height="13"><path opacity=".13"
                                                                d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path><path
                             fill="currentColor"
-                            d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z"></path></svg></span> */}
-                    </div>
+                            d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z"></path></svg></span>
+                    </div> */}
 
                 </div>
                 <div className="main-footer text-gray-400">
