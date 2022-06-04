@@ -16,36 +16,20 @@ export default function ChatWrapper({currentUser, selectedProfile}){
     const [chatMessages, setChatMessages] = useState([]);
 
     useEffect(()=>{
-        const getMessages = async () => {      
-            console.log("hi");
-            const subColRef = collection(db, "chats", currentUser.email, "messages");
-            const q = query(subColRef, orderBy("timestamp", "desc")); 
-            const qSnap = getDocs(q);
-            console.log(qSnap);
-            qSnap.then(q=>{
-                 setChatMessages(q.docs.map(d=>({id:d.id, ...d.data()})));
-             })
+        if(selectedProfile.email!=null){
+            const getMessages = async () => {      
+                console.log(selectedProfile);
+                const subColRef = collection(db, "chats", selectedProfile.email, "messages");
+                const q = query(subColRef, orderBy("timestamp", "desc")); 
+                const qSnap = getDocs(q);
+                qSnap.then(q=>{
+                     setChatMessages(q.docs.map(d=>({id:d.id, ...d.data()})));
+                 })
+    
+            };
+              getMessages();
+        }
 
-        };
-        // const getMessages = async () => {
-        //     const data = await db
-        //       .collection("chats")
-        //       .doc(emailID)
-        //       .collection("messages")
-        //       .orderBy("timeStamp", "asc")
-        //       .onSnapshot((snapshot) => {
-        //         let messages = snapshot.docs.map((doc) => doc.data());
-      
-        //         let newMessage = messages.filter(
-        //           (message) =>
-        //             message.senderEmail === (currentUser.email || emailID) ||
-        //             message.receiverEmail === (currentUser.email || emailID)
-        //         );
-      
-        //         setChatMessages(newMessage);
-        //       });
-        //   };
-          getMessages();
     }, [selectedProfile])
 
     const sendMessage = (e) =>{
@@ -81,8 +65,8 @@ export default function ChatWrapper({currentUser, selectedProfile}){
 
     return (
         <>
-            <main id="messageBody" className="w-full bg-whatsapp relative overflow-y-auto">
-                <div className="main-header z-40 sticky top-0 right-0 left-0 text-gray-400">
+            <main id="messageWrapper" className="w-full bg-whatsapp flex-col">
+                <div id="messageheader" className="main-header z-40 text-gray-400">
                     <div className="flex items-center px-4 py-3">
                         <div className="flex-1">
                             <div className="flex">
@@ -98,7 +82,7 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                         </div>
                     </div>
                 </div>
-                <div className="bg-slate-900 block px-4 py-3 chat-wrapper">
+                <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper">
                     {
                         chatMessages.map(({text,timestamp, senderEmail})=>(
                             <Message message = {text} time={timestamp} sender = {senderEmail}/>
@@ -117,7 +101,7 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                     </div>
 
                 </div>
-                <div className="main-footer sticky bottom-0 right-0 left-0 text-gray-400">
+                <div className="main-footer text-gray-400">
                             {/* buttons */}
                     {openEmojiBox && (
                     <Picker

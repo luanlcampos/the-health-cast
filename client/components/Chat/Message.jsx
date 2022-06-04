@@ -1,6 +1,5 @@
 export default function Message({message, time, sender}){
     const newDate = time.toDate().toLocaleTimeString('en-US')
-    console.log(time.toDate().toDateString())
     return (
         <>
             <div className="flex">

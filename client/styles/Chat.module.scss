@@ -134,6 +134,13 @@ aside {
     background-repeat: repeat;
 }
 
-.chat-wrapper{
-    height: 100%;
+#messageBody{
+    height:100%;
+}
+#messageHeader{
+    position:sticky
+}
+#messageBody{
+    height: calc(100% - 30%); 
+    overflow: scroll;
 }
