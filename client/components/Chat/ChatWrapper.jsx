@@ -1,4 +1,4 @@
-import React, { useState, userEffect, useContext, useEffect } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import { FiSend } from 'react-icons/fi';
 import {GrEmoji} from 'react-icons/gr';
 import dynamic from "next/dynamic";
@@ -14,23 +14,31 @@ export default function ChatWrapper({currentUser, selectedProfile}){
     const [openEmojiBox, setOpenEmojiBox] = useState(false);
     const [message, setMessage] = useState("");
     const [chatMessages, setChatMessages] = useState([]);
+    const chatBox = useRef(null);
 
     useEffect(()=>{
         if(selectedProfile.email!=null){
-            const getMessages = async () => {      
-                console.log(selectedProfile);
+            const getMessages = async () => { 
                 const subColRef = collection(db, "chats", selectedProfile.email, "messages");
-                const q = query(subColRef, orderBy("timestamp", "desc")); 
+                const q = query(subColRef, orderBy("timestamp", "asc")); 
                 const qSnap = getDocs(q);
                 qSnap.then(q=>{
                      setChatMessages(q.docs.map(d=>({id:d.id, ...d.data()})));
                  })
     
             };
-              getMessages();
+            getMessages();
         }
 
     }, [selectedProfile])
+
+    useEffect(() => {
+        console.log("new messages");
+        chatBox.current.addEventListener("DOMNodeInserted", (event) => {
+          const { currentTarget: target } = event;
+          target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+        });
+      }, [chatMessages]);
 
     const sendMessage = (e) =>{
         e.preventDefault();
@@ -58,7 +66,8 @@ export default function ChatWrapper({currentUser, selectedProfile}){
             const recipientFriendlistRef = doc(db, "friendlist", selectedProfile.email)
             const recipientListRef = collection(recipientFriendlistRef, "list");
             addDoc(recipientListRef, payload);
-
+            chatMessages.push(payload);
+            console.log(chatMessages);
             setMessage("");
         }
     }
@@ -82,7 +91,7 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                         </div>
                     </div>
                 </div>
-                <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper">
+                <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper"  ref={chatBox}>
                     {
                         chatMessages.map(({text,timestamp, senderEmail})=>(
                             <Message message = {text} time={timestamp} sender = {senderEmail}/>
