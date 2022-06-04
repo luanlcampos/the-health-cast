@@ -24,8 +24,6 @@ export default function DashboardPage() {
     return <Loading />;
   } else if (userData.isHcp === false) {
     window.location.href = "/login";
-  } else if (userData.isHcp === true) {
-    console.log("Securely Can access the page");
   }
 
   return (
