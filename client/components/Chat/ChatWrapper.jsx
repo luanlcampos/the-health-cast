@@ -2,9 +2,8 @@ import React, { useState, useRef, useContext, useEffect } from 'react';
 import { FiSend } from 'react-icons/fi';
 import {GrEmoji} from 'react-icons/gr';
 import dynamic from "next/dynamic";
-import { Timestamp } from "firebase/firestore";
 import {db} from '../../firebase/clientApp';
-import { collection, doc, setDoc, addDoc,  getDocs, query, orderBy } from "firebase/firestore";
+import { collection, doc, Timestamp, setDoc,getDoc, addDoc, onSnapshot,  getDocs, query, orderBy } from "firebase/firestore";
 
 import ChatMessage from "./ChatMessage";
 
@@ -15,30 +14,65 @@ export default function ChatWrapper({currentUser, selectedProfile}){
     const [message, setMessage] = useState("");
     const [chatMessages, setChatMessages] = useState([]);
     const chatBox = useRef(null);
+    const [isPush, setIsPush] = useState(false);
 
     let count = 0;
     useEffect(()=>{
         if(selectedProfile.email!=null){
+
+            const q = query(collection(db, "chats"));
+            
+
             const getMessages = async () => { 
                 const subColRef = collection(db, "chats", selectedProfile.email, "messages");
                 const q = query(subColRef, orderBy("timestamp", "asc")); 
-                const qSnap = getDocs(q);
-                qSnap.then(q=>{
-                     setChatMessages(q.docs.map(d=>({id:d.id, ...d.data()})));
-                 })
-    
+                onSnapshot(q, (snapshot)=>{
+                    let messages = []
+                    snapshot.docs.forEach(doc=>{
+                        messages.push(doc.data());
+                    })
+                    setChatMessages(messages);
+                })
+                // const qSnap = getDocs(q);
+                // qSnap.then(q=>{
+                //      setChatMessages(q.docs.map(d=>({id:d.id, ...d.data()})));
+                //  })
             };
             getMessages();
         }
         // collection(db, "chats") loading multiple times
-    }, [selectedProfile, collection(db, "chats")])
+        console.log(count++)
+    }, [selectedProfile])
 
     useEffect(() => {
-        console.log("new messages");
+        
+        console.log("new messages firebase");
         chatBox.current.addEventListener("DOMNodeInserted", (event) => {
           const { currentTarget: target } = event;
           target.scroll({ top: target.scrollHeight, behavior: "smooth" });
         });
+        // if(selectedProfile.email!=null){
+        //     const subColRef = collection(db, "chats", currentUser.email, "messages");
+        //     const q = query(subColRef, orderBy("timestamp", "asc")); 
+        //     onSnapshot(q, (snapshot) => {
+        //         console.log("snapshot changes");
+        //         snapshot.docChanges().forEach((change) => {
+        //         if (change.type === "added") {
+        //             console.log("New city added: ", change.doc.data());
+        //             console.log(chatMessages.length + " before");
+        //             chatMessages.push(change.doc.data());
+        //             console.log(chatMessages.length + "after");
+        //         }
+        //         if (change.type === "modified") {
+        //             console.log("Modified city: ", change.doc.data());
+        //         }
+        //         if (change.type === "removed") {
+        //             console.log("Removed city: ", change.doc.data());
+        //         }
+        //         });
+        //     });
+        // }
+
       }, [chatMessages]);
 
     const sendMessage = (e) =>{
