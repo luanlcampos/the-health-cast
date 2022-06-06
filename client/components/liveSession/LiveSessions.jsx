@@ -7,10 +7,9 @@ const LiveSessions = () => {
   // Using parallel arrays
   const [LiveSessions, setLiveSessions] = useState(null);
   const [hcpUserSetData, setHcpUserSetData] = useState([]);
-  const [onlyOnce, setOnlyOnce] = useState(0);
+
   useEffect(() => {
     setIsLoading(true);
-    setOnlyOnce((prevState) => prevState + 1);
     const loadLiveSessions = async () => {
       try {
         // LiveSession collection reference
@@ -21,7 +20,7 @@ const LiveSessions = () => {
             ...LiveSession.data(),
           };
         });
-        console.log("happening once", onlyOnce);
+
         setLiveSessions(data);
 
         data.forEach((givenItem) => {
@@ -30,25 +29,19 @@ const LiveSessions = () => {
               const docRef = doc(db, "users", `${givenID}`);
               const docSnap = await getDoc(docRef);
 
-              if (docSnap.exists()) {
-                docSnap.data().isHcp &&
-                  console.log("Document data:", docSnap.data());
+              if (docSnap.exists() && docSnap.data().isHcp) {
                 return setHcpUserSetData((prevState) => [
                   ...prevState,
                   { ...docSnap.data() },
                 ]);
               } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
                 throw new Error("No such document");
               }
             } catch (err) {
               console.log(err);
             }
           };
-          loadHCPInfo(givenItem.createdByHcpId).then((res) =>
-            console.log("HELLO WORLD")
-          );
+          loadHCPInfo(givenItem.createdByHcpId);
         });
 
         setIsLoading(false);
@@ -115,7 +108,6 @@ const LiveSessions = () => {
     </div>
   );
 };
-
 
 export default LiveSessions;
 
