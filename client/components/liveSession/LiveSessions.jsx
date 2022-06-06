@@ -1,74 +1,190 @@
-
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/clientApp";
 
-const LiveSession = () => {
-  const [LiveSessions, setLiveSessions] = useState();
+const LiveSessions = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [hcpUserData, setHcpUserData] = useState({});
-
+  // Using parallel arrays
+  const [LiveSessions, setLiveSessions] = useState(null);
+  const [hcpUserSetData, setHcpUserSetData] = useState([]);
+  const [onlyOnce, setOnlyOnce] = useState(0);
   useEffect(() => {
     setIsLoading(true);
+    setOnlyOnce((prevState) => prevState + 1);
     const loadLiveSessions = async () => {
       try {
         // LiveSession collection reference
         const LiveSessionRef = collection(db, "liveSessions");
         const LiveSessionSnap = await getDocs(LiveSessionRef);
-        const data = LiveSessionSnap.docs.map((LiveSession) => ({
-          ...LiveSession.data(),
-        }));
-
+        const data = LiveSessionSnap.docs.map((LiveSession) => {
+          return {
+            ...LiveSession.data(),
+          };
+        });
+        console.log("happening once", onlyOnce);
         setLiveSessions(data);
+
+        data.forEach((givenItem) => {
+          const loadHCPInfo = async (givenID) => {
+            try {
+              const docRef = doc(db, "users", `${givenID}`);
+              const docSnap = await getDoc(docRef);
+
+              if (docSnap.exists()) {
+                docSnap.data().isHcp &&
+                  console.log("Document data:", docSnap.data());
+                return setHcpUserSetData((prevState) => [
+                  ...prevState,
+                  { ...docSnap.data() },
+                ]);
+              } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+                throw new Error("No such document");
+              }
+            } catch (err) {
+              console.log(err);
+            }
+          };
+          loadHCPInfo(givenItem.createdByHcpId).then((res) =>
+            console.log("HELLO WORLD")
+          );
+        });
+
         setIsLoading(false);
       } catch (err) {
         console.log(err);
       }
     };
-
     loadLiveSessions();
   }, []);
 
   return (
-    <div className="bg-white mb-8 rounded-xl drop-shadow-lg border-2 border-gray-100">
-      {!isLoading && LiveSessions && (
-        <div className="flex rounded-xl p-2">
-          <div className="min-w-[150px]">
-            <img
-              src="https://via.placeholder.com/125"
-              width="150px"
-              height="150px"
-              className="p-4"
-            />
-            <div className="text-center">User Name</div>
-          </div>
-          <div className="w-1/2 border-r border-gray-400 p-4 hover:cursor-pointer">
-            <h2 className="text-2xl pb-2">Discussion Title</h2>
-            <p className="text-sm">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-          </div>
-          <div className="p-4">
-            <div className="grow flex pb-4">
-              <div className="mr-7">
-                <h4 className="text-gray-400">Replies</h4>
-                <div className="text-center">23</div>
-              </div>
-              <div>
-                <h4 className="text-gray-400">Users</h4>
-                <div className="text-center">+10</div>
-              </div>
+    <div className="outline ">
+      {!isLoading &&
+        LiveSessions.length !== 0 &&
+        hcpUserSetData.length !== 0 &&
+        LiveSessions.length == hcpUserSetData.length && (
+          <div className="outline ">
+            <div className="card-list flex flex-row flex-wrap justify-between w-full ">
+              {LiveSessions.map((givenLiveSession, index) => (
+                <div className="card-item" key={index}>
+                  <div className="card-item-thumbnail">
+                    <img
+                      src="https://via.placeholder.com/315x180"
+                      alt="thumbnail"
+                    />
+                  </div>
+                  <div className="card-item-content">
+                    <h3>{givenLiveSession.title}</h3>
+                    <p>{givenLiveSession.description}</p>
+                    <p>
+                      Hosted By:
+                      {`${hcpUserSetData[index].firstName} ${hcpUserSetData[index].lastName}`}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <h4 className="text-gray-400">Activity</h4>
-            <div>Yesterday, 10:40</div>
+            {/* Recommended Lives */}
+            <div className="main-content-header flex flex-col gap-x-10">
+              <h1 className="text-3xl font-bold pb-5">Recommended HCP&#39;s</h1>
+            </div>
+            <div className="card-list flex flex-row flex-wrap justify-between w-full ">
+              {LiveSessions.map((givenLiveSession, index) => (
+                <div className="card-item" key={index}>
+                  <div className="card-item-thumbnail">
+                    <img
+                      src="https://via.placeholder.com/315x180"
+                      alt="thumbnail"
+                    />
+                  </div>
+                  <div className="card-item-content">
+                    <h3>{givenLiveSession.title}</h3>
+                    <p>{givenLiveSession.description}</p>
+                    <p>
+                      Hosted By:
+                      {`${hcpUserSetData[index].firstName} ${hcpUserSetData[index].lastName}`}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };
 
-export default LiveSession;
+
+export default LiveSessions;
+
+/**
+ * What is expected to come
+ * [
+    {
+        "mediaId": 1005,
+        "reports": [],
+        "startTime": "",
+        "updatedAt": {
+            "seconds": 1654368509,
+            "nanoseconds": 764000000
+        },
+        "endTime": "",
+        "interests": [
+            "Abdominal Aortic Aneurysm",
+            "Abdominal Pregnancy",
+            "Accident Prevention",
+            "ABO Blood Groups"
+        ],
+        "createdByHcpId": "kaDktup32QT2XovYMxEVHpEaIgG3",
+        "isRecording": false,
+        "description": "hello",
+        "title": "test",
+        "isARecording": false,
+        "isOngoing": false,
+        "liveSessionDuration": 0,
+        "createdAt": {
+            "seconds": 1654368509,
+            "nanoseconds": 764000000
+        },
+        "sessionScheduleDate": {
+            "seconds": 1654368508,
+            "nanoseconds": 695000000
+        }
+    },
+    {
+        "endTime": "",
+        "sessionScheduleDate": {
+            "seconds": 1654368779,
+            "nanoseconds": 933000000
+        },
+        "updatedAt": {
+            "seconds": 1654368780,
+            "nanoseconds": 808000000
+        },
+        "isRecording": false,
+        "title": "poppy",
+        "createdAt": {
+            "seconds": 1654368780,
+            "nanoseconds": 808000000
+        },
+        "createdByHcpId": "kaDktup32QT2XovYMxEVHpEaIgG3",
+        "reports": [],
+        "startTime": "",
+        "mediaId": 1005,
+        "isOngoing": false,
+        "liveSessionDuration": 0,
+        "description": "tell me",
+        "isARecording": false,
+        "interests": [
+            "AAA",
+            "Acquired Immunodeficiency Syndrome",
+            "Acid Reflux",
+            "Adenovirus Infections"
+        ]
+    }
+
+]
+
+ */
