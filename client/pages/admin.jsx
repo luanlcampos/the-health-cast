@@ -12,7 +12,7 @@ function Admin() {
 
   const router = useRouter();
 
-  if (user && !adminData) {
+  if (user && !adminData && !userData) {
     return <Loading />;
   }
 
