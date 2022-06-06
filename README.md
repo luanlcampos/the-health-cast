@@ -19,4 +19,3 @@ cd client
 npm install
 npm start or npm run dev if you want to run the app in development mode.
 ```
-Test
