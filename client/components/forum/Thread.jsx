@@ -1,10 +1,30 @@
-import { useRouter } from "next/router";
-
 const Thread = ({ thread }) => {
-  const router = useRouter();
-  const { threadID } = router.query;
+  return (
+    <div className="w-full">
+      {/* Title */}
+      <div className="px-10 py-5">
+        <h2 className="text-2xl">{thread.title}</h2>
+        <div className="border-b border-black mb-5"></div>
 
-  return <div>{threadID}</div>;
+        {/* Content */}
+        <div className="flex">
+          <div>
+            <img
+              src="https://via.placeholder.com/125"
+              width="150px"
+              height="150px"
+              className="p-4 rounded-full"
+              alt="profile"
+            />
+          </div>
+          <div className="grow p-5">
+            <div className="text-xl">{thread.authorId}</div>
+            <div>{thread.content}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Thread;
