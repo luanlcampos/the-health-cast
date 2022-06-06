@@ -1,5 +1,6 @@
 import { useAuth } from "../../firebase/auth";
 import SideMenu from "../Layout/SideMenu";
+import ChatContainer from "../Chat/ChatContainer"
 
 // mock data to simulate live sessions
 const mockData = [
@@ -74,6 +75,8 @@ export default function SignedHome() {
           ))}
         </div>
       </div>
+      {/* ChatContainer Btn */}
+      <ChatContainer/>
     </div>
   );
 }

@@ -17,6 +17,13 @@ const orgOptions = [
     },
     label: "Public Health Ontario",
   },
+  {
+    value: {
+      orgId: "wCJ8h7jdDiX7OZHpxveGp0jdewP2",
+      orgName: "Doctors Without Borders",
+    },
+    label: "Doctors Without Borders",
+  },
 ];
 
 // get the list of certified health care professions
