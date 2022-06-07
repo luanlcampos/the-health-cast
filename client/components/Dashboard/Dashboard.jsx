@@ -77,7 +77,7 @@ export default function Dashboard() {
               <div className="px-3 py-5 pb-px outline outline-yellow-500 ">
                 <h1 className="text-3xl font-bold pb-5 ">Dashboard</h1>
               </div>
-              <Box className="flex-1 overflow-y-auto"  sx={{ width: "100%" }}>
+              <Box className="flex-1 overflow-y-auto" sx={{ width: "100%" }}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs
                     value={value}

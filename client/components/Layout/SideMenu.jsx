@@ -83,7 +83,7 @@ export default function SideMenu() {
                   : ""
               }`}
             >
-              <Link href="/upcoming">
+              <Link href="/dashboard">
                 <a className="flex flex-row items-center gap-x-3 text-3xl pl-2">
                   <AiOutlinePlusCircle />
                   Create

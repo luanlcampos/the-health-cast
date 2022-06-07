@@ -19,7 +19,7 @@ const ThreadPreview = ({ thread }) => {
           <Link
             href={{
               pathname: `/thread/${thread.id}`,
-              query: { currentThread: JSON.stringify(thread) },
+              query: { threadId: thread.id },
             }}
             as={`/thread/${thread.id}`}
           >

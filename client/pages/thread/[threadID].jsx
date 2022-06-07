@@ -10,7 +10,7 @@ const ThreadById = () => {
   const { user } = useAuth();
   const { currentThread } = router.query;
 
-  const thread = JSON.parse(currentThread);
+  const thread = currentThread;
 
   return (
     <div>
