@@ -7,7 +7,7 @@ const Thread = ({ thread }) => {
         <div className="border-b border-black mb-5"></div>
 
         {/* Content */}
-        <div className="flex">
+        <div className="flex bg-gray-400 rounded-xl shadow-lg">
           <div>
             <img
               src="https://via.placeholder.com/125"

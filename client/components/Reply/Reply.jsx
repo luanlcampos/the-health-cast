@@ -6,7 +6,7 @@ const Reply = () => {
 
   return (
     <div className="px-10 py-5">
-      <div className="flex">
+      <div className="flex bg-gray-300 rounded-xl shadow-lg">
         <div>
           <img
             src="https://via.placeholder.com/125"
