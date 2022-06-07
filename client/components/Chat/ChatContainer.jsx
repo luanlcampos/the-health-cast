@@ -17,7 +17,6 @@ export default function ChatContainer() {
 
     const handleSetUserProfile = ({profile})=> {
         setUserProfile(profile);
-        console.log(profile);
     }
 
 
