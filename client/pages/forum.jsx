@@ -1,15 +1,42 @@
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useAuth } from "../firebase/auth";
-import Thread from "../components/forum/Thread";
-import Header from "../components/Header";
-import SideMenu from "../components/SideMenu";
+import { collection, getDocs } from "firebase/firestore";
+import { useAuth } from "@/firebase/auth";
+import { db } from "@/firebase/clientApp";
+import ThreadPreview from "@/components/forum/ThreadPreview";
+import Header from "@/components/Layout/Header";
+import SideMenu from "@/components/Layout/SideMenu";
+import Loading from "@/components/Loading";
 
 const Forum = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const [threads, setThreads] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const loadThreads = async () => {
+      try {
+        // thread collection reference
+        const threadRef = collection(db, "threads");
+        const threadSnap = await getDocs(threadRef);
+        const data = threadSnap.docs.map((thread) => ({
+          ...thread.data(),
+          id: thread.id,
+        }));
+
+        setThreads(data);
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    loadThreads();
+  }, []);
 
   if (!user) {
-    console.log("You have to log in first to create a thread");
     router.push("/login");
     return;
   }
@@ -28,8 +55,13 @@ const Forum = () => {
             <div className="border-b border-black mb-5"></div>
 
             <div className="pb-10">
-              <Thread />
-              <Thread />
+              {isLoading && !threads ? (
+                <Loading />
+              ) : (
+                threads.map((thread) => {
+                  return <ThreadPreview thread={thread} key={thread.id} />;
+                })
+              )}
             </div>
 
             <div className="flex pb-10">
@@ -44,9 +76,8 @@ const Forum = () => {
             <h2 className="text-2xl font">Recommended HCP's</h2>
             <div className="border-b border-black mb-5"></div>
 
-            <div>
-              <Thread />
-            </div>
+            {/* TODO: Recommended threads will be popluated here */}
+            <div></div>
           </div>
         </div>
       </div>

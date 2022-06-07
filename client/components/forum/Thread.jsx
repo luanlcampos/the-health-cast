@@ -1,70 +1,28 @@
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/clientApp";
-
-const Thread = () => {
-  const [threads, setThreads] = useState();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const loadThreads = async () => {
-      try {
-        // thread collection reference
-        const threadRef = collection(db, "threads");
-        const threadSnap = await getDocs(threadRef);
-        const data = threadSnap.docs.map((thread) => ({
-          ...thread.data(),
-        }));
-
-        setThreads(data);
-        setIsLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    loadThreads();
-  }, []);
-
+const Thread = ({ thread }) => {
   return (
-    <div className="bg-white mb-8 rounded-xl drop-shadow-lg border-2 border-gray-100">
-      {!isLoading && threads && (
-        <div className="flex rounded-xl p-2">
-          <div className="min-w-[150px]">
+    <div className="w-full">
+      {/* Title */}
+      <div className="px-10 py-5">
+        <h2 className="text-2xl">{thread.title}</h2>
+        <div className="border-b border-black mb-5"></div>
+
+        {/* Content */}
+        <div className="flex bg-gray-400 rounded-xl shadow-lg">
+          <div>
             <img
               src="https://via.placeholder.com/125"
               width="150px"
               height="150px"
-              className="p-4"
+              className="p-4 rounded-full"
+              alt="profile"
             />
-            <div className="text-center">User Name</div>
           </div>
-          <div className="w-1/2 border-r border-gray-400 p-4 hover:cursor-pointer">
-            <h2 className="text-2xl pb-2">Discussion Title</h2>
-            <p className="text-sm">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-          </div>
-          <div className="p-4">
-            <div className="grow flex pb-4">
-              <div className="mr-7">
-                <h4 className="text-gray-400">Replies</h4>
-                <div className="text-center">23</div>
-              </div>
-              <div>
-                <h4 className="text-gray-400">Users</h4>
-                <div className="text-center">+10</div>
-              </div>
-            </div>
-            <h4 className="text-gray-400">Activity</h4>
-            <div>Yesterday, 10:40</div>
+          <div className="grow p-5">
+            <div className="text-xl">{thread.authorId}</div>
+            <div>{thread.content}</div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
