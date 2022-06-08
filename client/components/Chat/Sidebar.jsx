@@ -1,7 +1,7 @@
 import UserProfile from "./UserProfile";
 import {db} from '../../firebase/clientApp';
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit, onSnapshot } from "firebase/firestore";
 import {
     AiOutlineSearch
   } from "react-icons/ai";
@@ -15,18 +15,35 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
         const getAllUsers = async () => {          
             await getDocs(collection(db, "users")).then(querySnapshot=>{
               allUsers =  querySnapshot.docs.map((d)=>{
-                return d.data();
+                const newUser = d.data();
+                const payload = {
+                  recipientEmail:'',
+                  senderEmail:'',
+                  text:''
+                }
+                const userEmail = d.data().email;
+                const subColRef = collection(db, "chats", userEmail, "messages");
+                const q = query(subColRef, orderBy("timestamp", "desc"), limit(1));
+                onSnapshot(q, (snapshot)=>{
+                  if(snapshot.docs.length > 0){
+                    newUser.lastMessage = snapshot.docs[0].data();
+                  }
+                  else{
+                    newUser.lastMessage = payload
+                  }
+                })
+                
+                return newUser;
               });  
 
               const filtered = allUsers.filter((d)=>d.email!==currentUserEmail);
               setAllUsers(filtered);
               handleSetAllUsers(filtered);
               return null;});
-
         };
         getAllUsers();
       }, []);
-
+      console.log(allUsers);
       const searchedUser = allUsers.filter((user) => {
         if (searchInput) {
           if (
@@ -36,6 +53,7 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
           }
         }
       });
+
     
       const searchItem = searchedUser.map((subscriber) => {
         return (
@@ -47,7 +65,7 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
         );
       });
 
-
+      console.log(allUsers);
     return(
         <>
             <aside className="overflow-y-auto border-r border-gray-800 relative block bg-slate-900">
@@ -87,7 +105,7 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
                                 key = {subscriber.id}
                                 profile = {subscriber}
                                 handleSetUserProfile={handleSetUserProfile}
-                                />                            
+                                />  
                         ))
                     }
                 </div>

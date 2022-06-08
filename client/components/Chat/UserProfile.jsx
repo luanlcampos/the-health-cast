@@ -1,7 +1,8 @@
-import React from "react";
+import React,{memo} from "react";
 
 
-export default function UserProfile({profile, handleSetUserProfile, photoURL}){
+function UserProfile({profile, handleSetUserProfile, photoURL}){
+    console.log("Profile",profile)
     return(
             <div className="message text-gray-300 px-4 py-3 cursor-pointer" 
                 onClick={()=> {
@@ -14,9 +15,7 @@ export default function UserProfile({profile, handleSetUserProfile, photoURL}){
                     </div>
                     <div className="w-5/6">
                         <div className="text-xl text-white">{profile.firstName}</div>
-                        <div className="text-sm truncate">Hello World! It's been a pleasure to meet you!
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta, ullam.
-                        </div>
+                        <div className="text-sm truncate">{profile?.lastMessage?.text}</div>
                     </div>
                     <span className="absolute right-0 top-0 text-xs mt-1">13:00</span>
                 </div>
@@ -24,3 +23,4 @@ export default function UserProfile({profile, handleSetUserProfile, photoURL}){
 
     )
 }
+export default memo(UserProfile)
