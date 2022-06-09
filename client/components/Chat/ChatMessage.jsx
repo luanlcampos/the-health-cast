@@ -1,4 +1,4 @@
-export default function Message({message, time, senderEmail, currentUserEmail}){
+export default function ChatMessage({message, time, senderEmail, currentUserEmail}){
     const newDate = time.toDate().toLocaleTimeString('en-US')
     let messageHTML = "";
 

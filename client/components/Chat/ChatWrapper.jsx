@@ -22,7 +22,6 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
 
 
     useEffect(() => {
-        console.log(selectedProfile.email);
         if (selectedProfile.email != null) {
             const getMessages = async () => {
                 const subColRef = collection(db, "chats", selectedProfile.email, "messages");
@@ -62,7 +61,7 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
             // sender
             const senderDocRef = doc(db, "chats", currentUser.email);
             const senderMessageRef = collection(senderDocRef, "messages");
-            addDoc(senderMessageRef, payload);
+            addDoc(senderMessageRef, {payload});
 
             const senderFriendlistRef = doc(db, "friendlist", currentUser.email)
             const senderListRef = collection(senderFriendlistRef, "list");

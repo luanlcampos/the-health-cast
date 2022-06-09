@@ -5,6 +5,7 @@ import { collection, getDocs, query, orderBy, limit, onSnapshot } from "firebase
 import {
     AiOutlineSearch
   } from "react-icons/ai";
+import { UserData } from "@/model/users/UserData";
 
 export default function Sidebar({currentUserFName, currentUserEmail, handleSetAllUsers, handleSetUserProfile}){
     const [allUsers, setAllUsers] = useState([]);    
@@ -15,25 +16,24 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
         const getAllUsers = async () => {          
             await getDocs(collection(db, "users")).then(querySnapshot=>{
               allUsers =  querySnapshot.docs.map((d)=>{
-                const newUser = d.data();
+                const userData = new UserData(d.data());
                 const payload = {
                   recipientEmail:'',
                   senderEmail:'',
                   text:''
                 }
-                const userEmail = d.data().email;
-                const subColRef = collection(db, "chats", userEmail, "messages");
+                const subColRef = collection(db, "chats", userData.email, "messages");
                 const q = query(subColRef, orderBy("timestamp", "desc"), limit(1));
                 onSnapshot(q, (snapshot)=>{
                   if(snapshot.docs.length > 0){
-                    newUser.lastMessage = snapshot.docs[0].data();
+                    userData.lastMessage = snapshot.docs[0].data();
                   }
                   else{
-                    newUser.lastMessage = payload
+                    userData.lastMessage = payload
                   }
                 })
                 
-                return newUser;
+                return userData;
               });  
 
               const filtered = allUsers.filter((d)=>d.email!==currentUserEmail);
