@@ -17,7 +17,6 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
     const [message, setMessage] = useState("");
     const [chatMessages, setChatMessages] = useState([]);
     const chatBox = useRef(null);
-    const [lastSeen, setLastSeen] = useState("");
 
 
 
@@ -81,12 +80,13 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
     }
 
     return (
+
         <>
             <main id="messageWrapper" className="w-full bg-whatsapp flex-col">
                 <div id="messageheader" className="main-header z-40 text-gray-400">
                     <div className="flex items-center px-4 py-3">
                         <div className="flex-1">
-                            <InfoSender firstName={currentUser.firstName || ''} chatMessages={chatMessages} currentUser={currentUser} />
+                            <InfoSender firstName={selectedProfile.firstName || ''} chatMessages={chatMessages} currentUser={currentUser} />
                         </div>
                     </div>
                 </div>
