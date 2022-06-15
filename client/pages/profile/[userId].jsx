@@ -15,6 +15,8 @@ import { db } from "@/firebase/clientApp";
 import { RiUserFollowLine, RiUserUnfollowLine } from "react-icons/ri";
 import { AiOutlineLoading } from "react-icons/ai";
 
+import ReportModal from "@/components/reportModal";
+
 const Profile = ({ userProfileData, userId, isAdmin }) => {
   const { user, userData, adminData } = useAuth();
 
@@ -88,6 +90,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
     }
   };
 
+  console.log({userProfileData});
   return (
     <SignedLayout>
       {userProfileData ? (
@@ -140,6 +143,22 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                   </button>
                 </div>
               )}
+            
+            {/* This is user to be reported from (userId) */}
+            <div className="follow-button"> 
+                <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
+            </div>
+              
+              <span className="pr-4">
+                The following data should be send when submitting a report:
+              </span>
+              <span className="pr-4">
+                User to be reported: {userId}
+              </span>
+              <span>
+                HCP Org: {userProfileData.hcpOrg.orgId} 
+              </span>
+            {/* <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal> */}
             </div>
           </div>
           {!isAdmin && (
@@ -189,6 +208,7 @@ export async function getServerSideProps(context) {
     if (!isAdmin && userProfileData) {
       userProfileData.createdAt = JSON.stringify(userProfileData.createdAt);
       userProfileData.updatedAt = JSON.stringify(userProfileData.updatedAt);
+      userProfileData.firstMonthlyReportDate = JSON.stringify(userProfileData.firstMonthlyReportDate);
     }
   } catch (error) {
     console.warn(error);
