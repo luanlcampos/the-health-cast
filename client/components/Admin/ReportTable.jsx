@@ -42,7 +42,7 @@ export default function ReportTable({ user }) {
         setReportList([]);
         const reportsRef = collection(db, "reports");
         // console.log(`admin id: ${user.uid}\nreportsRef ${JSON.stringify(reportsRef)}`);
-        const q = await query(reportsRef, where("reportedAccountOrg", "==", `9YZYr2AsJWbZ1Qvv2u6l0DA6Hcl1`));
+        const q = await query(reportsRef, where("reportedAccountOrg", "==", String(user.uid))); //`9YZYr2AsJWbZ1Qvv2u6l0DA6Hcl1`
         // console.log(`queries: ${JSON.stringify(q)}`);
         const reportsSnap = await getDocs(q);
         const reportList = reportsSnap.docs.map((report) => ({ //array of reports for given admin (user.uid)
