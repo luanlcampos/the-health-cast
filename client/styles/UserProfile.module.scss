@@ -1,0 +1,60 @@
+.user-profile {
+  @apply h-full flex flex-col gap-y-5;
+
+  .user-header {
+    @apply flex gap-x-4;
+    @apply border-b-2 pb-2;
+    @apply px-5;
+    .user-avatar {
+    }
+
+    .user-info {
+      @apply flex flex-col gap-y-3;
+      .user-name {
+        @apply text-3xl;
+      }
+
+      .user-bio {
+        @apply text-gray-600;
+      }
+
+      .follow-button {
+        @apply flex flex-row gap-x-3 items-center justify-center;
+        @apply bg-my-blue text-white;
+        @apply px-4 py-1 rounded;
+        @apply h-[30px] w-auto max-w-[150px];
+        @apply hover:cursor-pointer;
+
+        .btn {
+          @apply px-4;
+        }
+      }
+    }
+  }
+
+  .user-interests {
+    .user-interests-header span {
+      @apply text-3xl;
+      @apply px-5;
+    }
+
+    .user-interests-list {
+      @apply flex flex-row gap-y-5;
+      @apply p-5;
+
+      .interest-card {
+        @apply flex flex-col gap-y-2 justify-center;
+        @apply px-5;
+        @apply rounded-md;
+        @apply bg-gray-200;
+        @apply text-center;
+        @apply text-gray-600;
+        @apply font-semibold;
+        @apply mr-2;
+        @apply mb-2;
+        @apply max-w-[150px];
+        @apply h-[200px];
+      }
+    }
+  }
+}
