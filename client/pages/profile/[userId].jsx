@@ -21,6 +21,8 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import EditBioModal from "@/components/Profile/EditBioModal";
 
+import ReportModal from "@/components/reportModal";
+
 // shuffle function to shuffle a list
 function shuffle(array) {
   var currentIndex = array.length,
@@ -85,7 +87,9 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
   const [userInterestsChanged, setUserInterestsChanged] = useState(false);
 
   useEffect(() => {
+    console.info(userData, userId);
     if (userData && userData.following.includes(userId)) {
+      console.log("user is following");
       setIsFollowing(true);
     }
   }, [userData]);
@@ -388,6 +392,26 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                     </button>
                   </div>
                 )}
+                
+                {/* This is user to be reported from (userId) */}
+                {user.uid != userId && 
+                  <div className="follow-button">
+                    <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
+                </div>}
+                
+                {/* <span className="pr-4">
+                  The following data should be send when submitting a report:
+                </span>
+                <span className="pr-4">
+                  User to be reported: {userId}
+                </span>
+                <span>
+                  HCP Org: {userProfileData.hcpOrg.orgId} 
+                </span>
+                <span>
+                  Currently authenticated user: {user.uid} 
+                </span> */}
+
                 {isProfileOwner && (
                   <div className="edit-profile-button ">
                     <button
@@ -489,6 +513,7 @@ export async function getServerSideProps(context) {
     if (!isAdmin && userProfileData) {
       userProfileData.createdAt = JSON.stringify(userProfileData.createdAt);
       userProfileData.updatedAt = JSON.stringify(userProfileData.updatedAt);
+      userProfileData.firstMonthlyReportDate = JSON.stringify(userProfileData.firstMonthlyReportDate);
     }
     if (userProfileData && userProfileData.firstMonthlyReportDate) {
       userProfileData.firstMonthlyReportDate = JSON.stringify(
