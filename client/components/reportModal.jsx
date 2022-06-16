@@ -108,6 +108,7 @@ export default function ReportModal(props, getServerSideProps) {
           console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
           await updateDoc(doc(db, "users", String(user.uid)), {
             totalNumberReports: 0 + 1,
+            firstMonthlyReportDate: new Date(),
           });
         } else {
           console.log(`totalNumberReports added (reportingUserProfileData.totalNumberReports + 1): ${reportingUserProfileData.totalNumberReports + 1}`);
@@ -120,7 +121,7 @@ export default function ReportModal(props, getServerSideProps) {
         console.log("createReport:", " cannot submit report due to report submission limit");
       }
 
-      // handleClose(); // may need to include a response modal here ...
+      handleClose(); // may need to include a response modal here ...
       setLoading(false);
     } catch (err){
       console.warn(err);

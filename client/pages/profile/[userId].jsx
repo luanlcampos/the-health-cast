@@ -14,11 +14,13 @@ import {
 import { db } from "@/firebase/clientApp";
 import { RiUserFollowLine, RiUserUnfollowLine } from "react-icons/ri";
 import { AiOutlineLoading } from "react-icons/ai";
+// import { useRouter } from "next/router";
 
 import ReportModal from "@/components/reportModal";
 
 const Profile = ({ userProfileData, userId, isAdmin }) => {
   const { user, userData, adminData } = useAuth();
+  // const router = useRouter();
 
   //profileOwner state
   const [isProfileOwner, setIsProfileOwner] = useState(null);
@@ -149,7 +151,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                 <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
             </div>
               
-              <span className="pr-4">
+              {/* <span className="pr-4">
                 The following data should be send when submitting a report:
               </span>
               <span className="pr-4">
@@ -157,7 +159,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
               </span>
               <span>
                 HCP Org: {userProfileData.hcpOrg.orgId} 
-              </span>
+              </span> */}
             {/* <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal> */}
             </div>
           </div>

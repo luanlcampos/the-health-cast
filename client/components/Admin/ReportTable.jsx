@@ -18,6 +18,7 @@ const options = [
 export default function ReportTable({ user }) {
   // reportList state
   const [reportList, setReportList] = useState(Array());
+  const [reportedAcctList, setReportedAcctList] = useState(Array());
 
   // enableEdit state
   const [enableEdit, setEnableEdit] = useState(null);
@@ -42,21 +43,62 @@ export default function ReportTable({ user }) {
         setReportList([]);
         const reportsRef = collection(db, "reports");
         // console.log(`admin id: ${user.uid}\nreportsRef ${JSON.stringify(reportsRef)}`);
-        const q = await query(reportsRef, where("reportedAccountOrg", "==", String(user.uid))); //`9YZYr2AsJWbZ1Qvv2u6l0DA6Hcl1`
+        const q = await query(reportsRef, where("reportedAccountOrg", "==", String(user.uid)));
+
+        // const usersRef = collection(db,"users");
         // console.log(`queries: ${JSON.stringify(q)}`);
         const reportsSnap = await getDocs(q);
+        
+        let i = 0;
         const reportList = reportsSnap.docs.map((report) => ({ //array of reports for given admin (user.uid)
             ...report.data(),
             id: report.id,
+            // permission: reportedAcctList.permission,
           }));
+        
+        const reportedAccts = [];
+        for (let i = 0; i < reportList.length; i++){
+            const acc = await getDoc(doc(db, "users", String(reportList[i].reportedAccountId)));
+            reportedAccts.push(acc.data());
+        }
+        console.log(`after forloop: ${JSON.stringify(reportedAccts)}`);
+        i = 0;
+        reportList.forEach(rep=>{
+            rep.permission = reportedAccts[i].permission;
+            rep.firstName = reportedAccts[i].firstName;
+            rep.lastName = reportedAccts[i++].lastName;
+        })
+
+        console.log(`after all operations, displaying reports of org inside reportList.map:`)
         reportList.map((report)=>{
             console.log(report);
         });
+
         setReportList(reportList);
     } catch (error) {
       console.warn(error);
     }
   };
+
+  const getReportedAcct = async () => {
+    try{
+        console.log(`in getReportedAcct`);
+        setReportedAcctList([]);
+
+        const reportedAccts = [];
+        for (let i = 0; i < reportList.length; i++){
+            const acc = await getDoc(doc(db, "users", String(reportList[i].reportedAccountId)));
+            reportedAccts.push(acc.data());
+        }
+        console.log(`reportedAccts length: ${reportedAccts.length} && permission: ${JSON.stringify(reportedAccts[0].permission)}`);
+
+
+        setReportedAcctList(reportedAccts);
+    }
+    catch(err){
+        console.warn(err);
+    }
+  }
 
   const removeHcpFromList = async (e, report) => {
     e.preventDefault();
@@ -129,7 +171,7 @@ export default function ReportTable({ user }) {
 
             <div className="right-side flex flex-row items-center gap-x-5">
               <div className="reload-list h-full">
-                <button className="reload-btn " onClick={getReportList}>
+                <button className="reload-btn " onClick={() => {getReportList(); getReportedAcct();}}>
                   <AiOutlineReload className="reload-icon text-xl" />
                   Reload
                 </button>
@@ -155,12 +197,12 @@ export default function ReportTable({ user }) {
             <tbody>
               {reportList.length === 0
                 ? null
-                : reportList.map((report, index) => (/*hcp, index*/
+                : reportList.map((report, index, reportedAcctList) => (/*hcp, index*/
                     <tr key={index} className="fade-enter">
                       <td>
                         <span>
-                          {/* {hcp.firstName} {hcp.lastName} */}
-                          {report.reportedAccountId}
+                          {report.firstName} {report.lastName}
+                          {/* {report.reportedAccountId} */}
                         </span>
                       </td>
                       <td>
@@ -179,8 +221,8 @@ export default function ReportTable({ user }) {
                           options={options}
                           isDisabled={enableEdit !== report.reportedAccountId ? true : false}
                           value={{
-                            value: options[2],//hcp.permission,
-                            label: options[2].label,
+                            value: report.permission,//reportedAcctList[index].permission,//options[2],//hcp.permission,
+                            label: report.permission,//reportedAcctList[index].permission, //options[2].label,
                           }}
                           onChange={(e) => handlePermissionChange(e, report)}
                         />
