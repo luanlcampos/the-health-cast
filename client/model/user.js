@@ -57,8 +57,12 @@ class User {
     this.permission = "None";
     this.interests = interests;
     this.following = following;
+    this.follower = [];
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    // default user bio
+    this.biography = "Hello World! 😄";
+    // weekly user report data
     this.firstMonthlyReportDate = new Date(0, 0);
     this.totalNumberReports = 0;
   }
@@ -79,8 +83,10 @@ class User {
         hcpSpecialty: this.hcpSpecialty,
         interests: this.interests,
         following: this.following,
+        follower: this.follower,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
+        biography: this.biography,
         firstMonthlyReportDate: this.firstMonthlyReportDate,
         totalNumberReports: this.totalNumberReports,
       });

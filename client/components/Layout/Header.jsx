@@ -61,7 +61,7 @@ function Header() {
                             className={`px-2 py-2 flex flex-row items-center gap-2 ${
                               active && "bg-my-green text-white text-bold"
                             }`}
-                            href="/profile"
+                            href={`/profile/${user.uid}`}
                           >
                             <AiOutlineUser />
                             Profile

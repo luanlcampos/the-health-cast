@@ -222,7 +222,8 @@ export default function ReportTable({ user }) {
                           isDisabled={enableEdit !== report.reportedAccountId ? true : false}
                           value={{
                             value: report.permission,//reportedAcctList[index].permission,//options[2],//hcp.permission,
-                            label: report.permission,//reportedAcctList[index].permission, //options[2].label,
+                            label: report.permission[0].toUpperCase() + report.permission.slice(1),//reportedAcctList[index].permission, //options[2].label,
+                          // hcp.permission[0].toUpperCase() + hcp.permission.slice(1),
                           }}
                           onChange={(e) => handlePermissionChange(e, report)}
                         />
