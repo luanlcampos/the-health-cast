@@ -490,6 +490,11 @@ export async function getServerSideProps(context) {
       userProfileData.createdAt = JSON.stringify(userProfileData.createdAt);
       userProfileData.updatedAt = JSON.stringify(userProfileData.updatedAt);
     }
+    if (userProfileData && userProfileData.firstMonthlyReportDate) {
+      userProfileData.firstMonthlyReportDate = JSON.stringify(
+        userProfileData.firstMonthlyReportDate
+      );
+    }
   } catch (error) {
     console.warn(error);
     userProfileData = null;
