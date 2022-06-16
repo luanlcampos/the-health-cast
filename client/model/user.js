@@ -45,7 +45,7 @@ class User {
         this.permission = 'None';
         this.interests = interests;
         this.following = following;
-        this.follower = [];
+        this.followers = [];
         this.createdAt = new Date();
         this.updatedAt = new Date();
         // default user bio
@@ -68,7 +68,7 @@ class User {
                 hcpSpecialty: this.hcpSpecialty,
                 interests: this.interests,
                 following: this.following,
-                follower: this.follower,
+                followers: this.followers,
                 createdAt: this.createdAt,
                 updatedAt: this.updatedAt,
                 biography: this.biography,

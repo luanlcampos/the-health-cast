@@ -41,7 +41,7 @@ export default function EditBioModal({
       sx={{
         width: "100vw",
         height: "100vh",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "rgba(75, 85, 99, 0.5)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

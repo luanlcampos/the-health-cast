@@ -85,9 +85,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
   const [userInterestsChanged, setUserInterestsChanged] = useState(false);
 
   useEffect(() => {
-    console.info(userData, userId);
     if (userData && userData.following.includes(userId)) {
-      console.log("user is following");
       setIsFollowing(true);
     }
   }, [userData]);
@@ -112,9 +110,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
   }, [userId]);
 
   useEffect(() => {
-    console.log("ue: userInterests", userInterests);
     setUserInterests(userProfileData.interests);
-    console.log("ue: userInterests", userInterests);
   }, [userInterests]);
 
   useEffect(() => {
@@ -152,25 +148,24 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
       setIsFollowingLoading(true);
       if ((!isProfileOwner && userData) || adminData) {
         const col = userData ? "users" : "admin";
+        const followersCol = isAdmin ? "admin" : "users";
         if (!isFollowing) {
-          console.log("following", user.uid, userData?.following);
           await updateDoc(doc(db, String(col), String(user.uid)), {
             following: arrayUnion(userId),
           });
 
           // add current user to the user's followers list
-          await updateDoc(doc(db, String(col), String(userId)), {
+          await updateDoc(doc(db, String(followersCol), String(userId)), {
             followers: arrayUnion(user.uid),
           });
           setIsFollowing(true);
         } else {
-          console.log("unfollowing", user.uid, userData?.following);
           await updateDoc(doc(db, String(col), String(user.uid)), {
             following: arrayRemove(userId),
           });
 
           // remove current user from the user's followers list
-          await updateDoc(doc(db, String(col), String(userId)), {
+          await updateDoc(doc(db, String(followersCol), String(userId)), {
             followers: arrayRemove(user.uid),
           });
           setIsFollowing(false);
@@ -218,7 +213,6 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
         userProfileData.interests.push(interest);
 
         // remove interest from interestsList
-        console.log("interestsList br", interestsList);
         const isAdded = interestsList.findIndex((item) => {
           return item.value === interest;
         });
@@ -291,7 +285,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
       )}
       {interestModalOpen && (
         <div
-          className="modal edit-interests-modal"
+          className="modal edit-interests-modal fade-enter"
           onClick={(e) => handleCloseInterestsModal(e)}
         >
           <div className="modal-container edit-interests-modal-container">
@@ -409,7 +403,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
             {!isAdmin && (
               <div className="user-interests">
                 <div className="user-interests-header">
-                  <h2 className="pr-4">Interests</h2>
+                  <h2 className="pr-4 text-2xl">Interests</h2>
                   {isProfileOwner && (
                     <>
                       <button
@@ -458,7 +452,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
             )}
             <div className="user-activities">
               <div className="user-activities-header">
-                <h2 className="pr-4 text-3xl ">Recent Activities</h2>
+                <h2 className="pr-4 text-3xl">Recent Activities</h2>
               </div>
             </div>
           </div>
