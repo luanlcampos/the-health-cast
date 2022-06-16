@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import EditBioModal from "@/components/Profile/EditBioModal";
 
-import ReportModal from "@/components/Profile/reportModal";
+import ReportModal from "@/components/Profile/ReportModal";
 
 // shuffle function to shuffle a list
 function shuffle(array) {
