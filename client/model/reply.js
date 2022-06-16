@@ -4,7 +4,14 @@ import { db } from "/firebase/clientApp";
 
 // class to represent a thread
 class Reply {
-  constructor(id, userId, title, desc, content, replies, users) {
+  /**
+   * Thread constructor
+   * @param {FirebaseId} id - thread id
+   * @param {string} authorId - User id
+   * @param {string} content
+   * @param {Date} createdAt
+   */
+  constructor(id, userId, content) {
     this.threadID = id;
     this.authorID = userId;
     this.content = content;

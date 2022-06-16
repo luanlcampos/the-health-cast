@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, getDoc } from "firebase/firestore";
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
 import ThreadPreview from "@/components/forum/ThreadPreview";
@@ -16,15 +16,34 @@ const Forum = () => {
 
   useEffect(() => {
     setIsLoading(true);
+
+    const loadUser = async (uid) => {
+      try {
+        const userRef = doc(db, "users", uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          return userSnap.data();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     const loadThreads = async () => {
       try {
         // thread collection reference
         const threadRef = collection(db, "threads");
         const threadSnap = await getDocs(threadRef);
-        const data = threadSnap.docs.map((thread) => ({
-          ...thread.data(),
-          id: thread.id,
-        }));
+        const data = threadSnap.docs.map((thread) => {
+          const user = loadUser(thread.data().authorId);
+
+          return {
+            ...thread.data(),
+            id: thread.id,
+            user: user,
+          };
+        });
 
         setThreads(data);
         setIsLoading(false);

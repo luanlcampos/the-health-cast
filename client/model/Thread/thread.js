@@ -4,14 +4,26 @@ import { db } from "/firebase/clientApp";
 
 // class to represent a thread
 class Thread {
-  constructor(id, userId, title, desc, content, replies, users) {
+  constructor(id, userId, title, description, content, replies, interests) {
+    /**
+     * Thread constructor
+     * @param {FirebaseId} id - thread id
+     * @param {string} authorId - User id
+     * @param {string} title
+     * @param {string} desc
+     * @param {string} content
+     * @param {Array} replies
+     * @param {Array} interests
+     * @param {Date} createdAt
+     * @param {Date} activityDate
+     */
     this.id = id;
     this.authorId = userId;
     this.title = title;
-    this.desc = desc;
+    this.description = description;
     this.content = content;
     this.replies = replies;
-    this.users = users;
+    this.interests = interests;
     this.createdAt = new Date();
     this.activityDate = new Date();
   }
@@ -24,10 +36,10 @@ class Thread {
       await setDoc(doc(db, "threads", this.id), {
         authorId: this.authorId,
         title: this.title,
-        desc: this.desc,
-        content: this.content,
-        replies: this.replies,
-        users: this.users,
+        description: this.description,
+        content: this.description,
+        replies: this.replies || [],
+        interests: this.interests,
         createdAt: this.createdAt,
         activityDate: this.activityDate,
       });

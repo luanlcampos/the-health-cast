@@ -1,4 +1,4 @@
-const Thread = ({ thread }) => {
+const Thread = ({ thread, user }) => {
   return (
     <div className="w-full">
       {/* Title */}
@@ -18,7 +18,7 @@ const Thread = ({ thread }) => {
             />
           </div>
           <div className="grow p-5">
-            <div className="text-xl">{thread.authorId}</div>
+            <div className="text-xl">{user}</div>
             <div>{thread.content}</div>
           </div>
         </div>

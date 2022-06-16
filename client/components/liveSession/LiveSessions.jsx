@@ -82,7 +82,7 @@ const LiveSessions = () => {
                     <p>{givenLiveSession.description}</p>
                     <p>
                       Hosted By:
-                      {`${hcpUserSetData[index].firstName} ${hcpUserSetData[index].lastName}`}
+                      {/*`${hcpUserSetData[index].firstName} ${hcpUserSetData[index].lastName}`*/}
                     </p>
                   </div>
                 </div>
@@ -110,7 +110,7 @@ const LiveSessions = () => {
                     <p>{givenLiveSession.description}</p>
                     <p>
                       Hosted By:
-                      {`${hcpUserSetData[index].firstName} ${hcpUserSetData[index].lastName}`}
+                      {/*`${hcpUserSetData[index].firstName} ${hcpUserSetData[index].lastName}`*/}
                     </p>
                   </div>
                 </div>
