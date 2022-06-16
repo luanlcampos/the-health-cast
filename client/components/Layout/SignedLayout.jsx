@@ -11,7 +11,9 @@ export default function SignedLayout({ children }) {
         <div className="side-menu w-2/12 min-w-[200px]">
           <SideMenu />
         </div>
-        <div className="main-content w-full px-10 py-5">{children}</div>
+        <div className="main-content w-[calc(100%-200px)] px-10 py-5">
+          {children}
+        </div>
       </div>
     </>
   );

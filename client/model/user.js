@@ -45,8 +45,11 @@ class User {
         this.permission = 'None';
         this.interests = interests;
         this.following = following;
+        this.follower = [];
         this.createdAt = new Date();
         this.updatedAt = new Date();
+        // default user bio
+        this.biography = 'Hello World! 😄';
     }
 
     // save the user to the database
@@ -65,8 +68,10 @@ class User {
                 hcpSpecialty: this.hcpSpecialty,
                 interests: this.interests,
                 following: this.following,
+                follower: this.follower,
                 createdAt: this.createdAt,
                 updatedAt: this.updatedAt,
+                biography: this.biography,
             });
 
             console.log(res);
