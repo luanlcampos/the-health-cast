@@ -18,7 +18,6 @@ const options = [
 export default function ReportTable({ user }) {
   // reportList state
   const [reportList, setReportList] = useState(Array());
-  const [reportedAcctList, setReportedAcctList] = useState(Array());
 
   // enableEdit state
   const [enableEdit, setEnableEdit] = useState(null);
@@ -53,7 +52,6 @@ export default function ReportTable({ user }) {
         const reportList = reportsSnap.docs.map((report) => ({ //array of reports for given admin (user.uid)
             ...report.data(),
             id: report.id,
-            // permission: reportedAcctList.permission,
           }));
         
         const reportedAccts = [];
@@ -79,26 +77,6 @@ export default function ReportTable({ user }) {
       console.warn(error);
     }
   };
-
-  const getReportedAcct = async () => {
-    try{
-        console.log(`in getReportedAcct`);
-        setReportedAcctList([]);
-
-        const reportedAccts = [];
-        for (let i = 0; i < reportList.length; i++){
-            const acc = await getDoc(doc(db, "users", String(reportList[i].reportedAccountId)));
-            reportedAccts.push(acc.data());
-        }
-        console.log(`reportedAccts length: ${reportedAccts.length} && permission: ${JSON.stringify(reportedAccts[0].permission)}`);
-
-
-        setReportedAcctList(reportedAccts);
-    }
-    catch(err){
-        console.warn(err);
-    }
-  }
 
   const removeHcpFromList = async (e, report) => {
     e.preventDefault();
@@ -171,7 +149,7 @@ export default function ReportTable({ user }) {
 
             <div className="right-side flex flex-row items-center gap-x-5">
               <div className="reload-list h-full">
-                <button className="reload-btn " onClick={() => {getReportList(); getReportedAcct();}}>
+                <button className="reload-btn " onClick={getReportList}>
                   <AiOutlineReload className="reload-icon text-xl" />
                   Reload
                 </button>
@@ -197,7 +175,7 @@ export default function ReportTable({ user }) {
             <tbody>
               {reportList.length === 0
                 ? null
-                : reportList.map((report, index, reportedAcctList) => (/*hcp, index*/
+                : reportList.map((report, index) => (/*hcp, index*/
                     <tr key={index} className="fade-enter">
                       <td>
                         <span>
@@ -221,9 +199,8 @@ export default function ReportTable({ user }) {
                           options={options}
                           isDisabled={enableEdit !== report.reportedAccountId ? true : false}
                           value={{
-                            value: report.permission,//reportedAcctList[index].permission,//options[2],//hcp.permission,
-                            label: report.permission[0].toUpperCase() + report.permission.slice(1),//reportedAcctList[index].permission, //options[2].label,
-                          // hcp.permission[0].toUpperCase() + hcp.permission.slice(1),
+                            value: report.permission,// options[2],
+                            label: report.permission[0].toUpperCase() + report.permission.slice(1),
                           }}
                           onChange={(e) => handlePermissionChange(e, report)}
                         />

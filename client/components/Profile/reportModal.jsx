@@ -175,10 +175,7 @@ export default function ReportModal(props, getServerSideProps) {
             />
             </Typography>
             <Button color="warning" variant="contained" href="#contained-buttons" type="submit" 
-              onClick={handleSubmit
-              //   () => {
-              // alert('clicked');}
-              }
+              onClick={handleSubmit}
             >
               Submit Report
             </Button>

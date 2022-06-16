@@ -398,19 +398,6 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                   <div className="follow-button">
                     <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
                 </div>}
-                
-                {/* <span className="pr-4">
-                  The following data should be send when submitting a report:
-                </span>
-                <span className="pr-4">
-                  User to be reported: {userId}
-                </span>
-                <span>
-                  HCP Org: {userProfileData.hcpOrg.orgId} 
-                </span>
-                <span>
-                  Currently authenticated user: {user.uid} 
-                </span> */}
 
                 {isProfileOwner && (
                   <div className="edit-profile-button ">
