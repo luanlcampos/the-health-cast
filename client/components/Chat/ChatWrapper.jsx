@@ -19,6 +19,11 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
     const chatBox = useRef(null);
 
 
+    const handleClick = (event) =>{
+        document.querySelector('.emoji-picker-react').style.display = 'none';
+    }
+    
+    const emojiPicker = useRef(handleClick);
 
     useEffect(() => {
         if (selectedProfile.email != null) {
@@ -90,7 +95,7 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
                         </div>
                     </div>
                 </div>
-                <div id="messageBody" className="bg-slate-900 block px-4 py-3 chat-wrapper" ref={chatBox}>
+                <div id="messageBody" className="bg-slate-900 block px-4 py-3 chat-wrapper" ref={chatBox} onClick ={handleClick}>
                     {
                         chatMessages.map(({ text, timestamp, senderEmail }) =>
                         (
@@ -104,6 +109,7 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
                     {/* buttons */}
                     {openEmojiBox && (
                         <Picker
+                            ref = {emojiPicker}
                             onEmojiClick={(event, emojiObject) =>
                                 setMessage(message + emojiObject.emoji)
                             }

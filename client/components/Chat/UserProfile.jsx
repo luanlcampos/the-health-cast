@@ -1,7 +1,13 @@
 import React,{memo} from "react";
+import { Avatar } from "@mui/material";
 
 
 function UserProfile({profile, lastMessage, handleSetSelectedUser, photoURL}){
+    const getUserInitials = () => {
+          return (
+            profile.firstName.charAt(0) + profile.lastName.charAt(0)
+          ).toUpperCase();
+      };
     return(
             <div className="message text-gray-300 px-4 py-3 cursor-pointer" 
                 onClick={()=> {
@@ -9,8 +15,11 @@ function UserProfile({profile, lastMessage, handleSetSelectedUser, photoURL}){
                     }}>
                 <div className="flex items-center relative">
                     <div className="w-1/6">
-                        <img className="w-11 h-11 rounded-full"
-                             src={photoURL}/>
+                        <Avatar
+                        sx={{ width: "27px", height: "27px", bgcolor: "#9FC131" }}
+                        >
+                        {getUserInitials()}
+                        </Avatar>
                     </div>
                     <div className="w-5/6">
                         <div className="text-xl text-white">{profile.firstName}</div>

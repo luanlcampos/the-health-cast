@@ -21,6 +21,7 @@ function Sidebar({currentUserFName, currentUserEmail, handleSetAllUsers, handleS
     
     const handleItemClick = (id) => {
       selectedItem == id ? setSelectedItem(null) : setSelectedItem(id);}
+      
     
     useEffect(() => {
         const getAllUsers = async () => {          
@@ -108,21 +109,8 @@ function Sidebar({currentUserFName, currentUserEmail, handleSetAllUsers, handleS
                               </div>
                           </form>
                       </div>
-                      <div className='dropdown'>
-                        <div className='dropdown-header' onClick={toggleDropdown}>
-                          {selectedItem ? items.find(item => item.id == selectedItem).label : "Select your destination"}
-                          <i className={`fa fa-chevron-right icon ${isOpen && "open"}`}></i>
-                        </div>
-                        <div className={`dropdown-body ${isOpen && 'open'}`}>
-                          {items.map(item => (
-                            <div className="dropdown-item" onClick={e => handleItemClick(e.target.id)} id={item.id}>
-                              <span className={`dropdown-item-dot ${item.id == selectedItem && 'selected'}`}>• </span>
-                              {item.label}
-                            </div>
-                          ))}
-                        </div>
                     </div>
-                  </div>
+                  
                   <div className="aside-messages">
                       {
                           searchItem.length > 0 ? searchItem : allUsers.map((subscriber) => (
