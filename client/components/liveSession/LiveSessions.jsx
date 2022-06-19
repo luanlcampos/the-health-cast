@@ -22,6 +22,10 @@ const LiveSessions = () => {
           };
         });
 
+        data.forEach((data)=>{
+          console.log(`current live sessions on fb:`, data);
+        })
+        
         setLiveSessions(data);
         setIsLoading(false);
 
