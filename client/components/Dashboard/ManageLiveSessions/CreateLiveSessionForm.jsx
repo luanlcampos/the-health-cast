@@ -8,7 +8,9 @@ import Button from "@mui/material/Button";
 import { Controller, useForm } from "react-hook-form";
 import { LiveSession } from "../../../model/LiveSessions/LiveSession";
 import mediaIDList from "../../../data/mediaIDList";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
+
 import AddInterestTagsFormInput from "../HelperComponents/AddInterestTagsFormInput";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
@@ -99,7 +101,7 @@ const CreateLiveSessionForm = () => {
 
     givenData = {
       ...givenData,
-      id: uuidv4(),
+      id: nanoid(), //uuidv4(),
       interests: interestTags,
       mediaId: mediaIDList.liveSession,
       createdByHcpId: user.uid,
