@@ -372,33 +372,34 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                 <div className="user-bio">
                   <span className="pr-4 whitespace-pre-line">{userBio}</span>
                 </div>
-                {!isProfileOwner && (
-                  <div className="follow-button">
-                    <button
-                      className="btn btn-primary"
-                      onClick={(e) => handleFollowBtn(e)}
-                    >
-                      {isFollowingLoading ? (
-                        <AiOutlineLoading className="loading-spinner" />
-                      ) : !isFollowing ? (
-                        <div className="flex items-center gap-x-3 ">
-                          <RiUserFollowLine /> <p>Follow</p>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-x-3 ">
-                          <RiUserUnfollowLine /> <p>Unfollow</p>
-                        </div>
-                      )}
-                    </button>
-                  </div>
-                )}
-                
-                {/* This is user to be reported from (userId) */}
-                {user.uid != userId && 
-                  <div className="follow-button">
-                    <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
-                </div>}
-
+                <div className="inline-flex">
+                  {!isProfileOwner && (
+                    <div className="follow-button">
+                      <button
+                        className="btn btn-primary"
+                        onClick={(e) => handleFollowBtn(e)}
+                      >
+                        {isFollowingLoading ? (
+                          <AiOutlineLoading className="loading-spinner" />
+                        ) : !isFollowing ? (
+                          <div className="flex items-center gap-x-3 ">
+                            <RiUserFollowLine /> <p>Follow</p>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-x-3 ">
+                            <RiUserUnfollowLine /> <p>Unfollow</p>
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* This is user to be reported from (userId) */}
+                  {user.uid != userId && 
+                    <div className="follow-button ml-5">
+                      <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
+                  </div>}
+                </div>
                 {isProfileOwner && (
                   <div className="edit-profile-button ">
                     <button

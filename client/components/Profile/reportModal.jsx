@@ -14,8 +14,10 @@ import { Report } from "@/model/forms/ReportData";
 
 import { db } from '@/firebase/clientApp';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
-import {UserData} from '@/model/users/UserData';
-import { getServerSideProps } from '@/pages/profile/[userId]';
+import { AiOutlineFrown } from "react-icons/ai";
+
+// import {UserData} from '@/model/users/UserData';
+// import { getServerSideProps } from '@/pages/profile/[userId]';
 
 const style = {
   position: 'absolute',
@@ -40,7 +42,7 @@ const defaultValues = {
   reportingAccount: "",
 };
 
-export default function ReportModal(props, getServerSideProps) {
+export default function ReportModal(props) {
   const [open, setOpen] = React.useState(false);
   const [formValues, setFormValues] = React.useState(defaultValues);
   const { user } = useAuth();
@@ -134,7 +136,11 @@ export default function ReportModal(props, getServerSideProps) {
   return (
     <div>
       {/* <Button sx={{ color: 'white'  }} onClick={handleOpen}>Report</Button> */}
-      <button className="btn btn-primary" onClick={handleOpen}>Report</button>
+      <button className="btn btn-primary" onClick={handleOpen}>
+        <div className="flex items-center gap-x-3 ">
+          <AiOutlineFrown /><p>Report</p>
+        </div>
+      </button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -147,10 +153,10 @@ export default function ReportModal(props, getServerSideProps) {
             {/* You are reporting {props.reportedUserId} belonging to {props.reportedUserData.isHcp? props.reportedUserData.hcpOrg.orgId : 'just a regular user'} */}
             You are reporting {props.reportedUserData.firstName} {props.reportedUserData.lastName} {props.reportedUserData.isHcp? 'from ' + props.reportedUserData.hcpOrg.orgName : ''}
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }} component="div">
             Please select a reason to issue a report:
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }} component="div">
 
             {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
             <RadioGroup
