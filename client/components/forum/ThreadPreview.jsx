@@ -17,8 +17,8 @@ const ThreadPreview = ({ thread }) => {
     const loadCreatorData = async () => {
       try {
         const result = await getDoc(doc(db, "users", String(thread.authorId)));
-        const data = {...result.data()};
-        console.log(`data in ThreadPreview: ${JSON.stringify(data)}`)
+        const data = {...result.data(), threadId: thread.id,};
+        // console.log(`data in ThreadPreview: ${JSON.stringify(data)}`)
         setCreatorData(data);
         setIsLoading(false);
       } catch (err) {
@@ -28,7 +28,7 @@ const ThreadPreview = ({ thread }) => {
 
     loadCreatorData();
   }, []);
-  console.log(`in ThreadPreview 2: ${JSON.stringify(creatorData)}`);
+  // console.log(`in ThreadPreview 2: ${JSON.stringify(creatorData)}`);
 
   return (
     <div className="bg-white mb-8 rounded-xl drop-shadow-lg border-2 border-gray-100">
