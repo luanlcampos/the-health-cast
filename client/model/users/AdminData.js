@@ -9,23 +9,16 @@ export class AdminData {
      * @param {string} institution - institution name
      * @param {string} orgId - organization id
      * @param {Array} requests - array of requests to be hcp
+     * @param {Array} following - array of following users
+     * @param {Array} followers - array of followers users
     */
-    // constructor(id, alerts = [], hcpList = [], institution, orgId, requests = []) {
-    //     this.id = id;
-    //     this.alerts = [];
-    //     // array of hcp ids that are approved in the org
-    //     this.hcpList = [];
-    //     this.institution = '';
-    //     this.orgId = '';
-    //     // an array of requests to be hcp
-    //     this.requests = [];
-    // }
-
     constructor(adminData) {
         this.alerts = adminData.alerts;
         this.hcpList = adminData.hcpList;
         this.institution = adminData.institution;
         this.orgId = adminData.orgId;
         this.requests = adminData.requests;
+        this.following = adminData.following;
+        this.followers = adminData.followers;
     }
 }

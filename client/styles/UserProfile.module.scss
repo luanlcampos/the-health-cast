@@ -33,9 +33,15 @@
   }
 
   .user-interests {
-    .user-interests-header span {
-      @apply text-3xl;
-      @apply px-5;
+    .user-interests-header {
+      @apply flex flex-row gap-x-1  h-fit;
+      h2 {
+        @apply text-3xl;
+        @apply px-5;
+      }
+      .btn {
+        @apply px-4 rounded-md border min-h-full;
+      }
     }
 
     .user-interests-list {
@@ -50,11 +56,35 @@
         @apply text-center;
         @apply text-gray-600;
         @apply font-semibold;
-        @apply mr-2;
-        @apply mb-2;
-        @apply max-w-[150px];
-        @apply h-[200px];
+        @apply cursor-pointer;
+        @apply hover:bg-gray-300;
+      }
+    }
+
+    .edit-interests-modal-footer {
+      @apply flex items-center gap-x-2;
+      .refresh-btn {
+        @apply px-5 py-2 bg-my-green rounded-md text-white text-xl;
+      }
+      .finish-btn {
+        @apply px-5 py-2 bg-my-blue rounded-md text-white text-sm;
       }
     }
   }
+}
+
+.interest-card {
+  @apply flex flex-col justify-center;
+  @apply px-5;
+  @apply rounded-md;
+  @apply bg-gray-200;
+  @apply text-center;
+  @apply text-gray-600;
+  @apply font-semibold;
+  @apply mr-2;
+  @apply mb-2;
+  @apply max-w-[150px];
+  @apply h-[200px];
+  @apply hover:cursor-pointer;
+  @apply break-words;
 }
