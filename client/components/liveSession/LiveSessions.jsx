@@ -18,6 +18,7 @@ const LiveSessions = () => {
         const data = LiveSessionSnap.docs.map((LiveSession) => {
           return {
             ...LiveSession.data(),
+            id: LiveSession.id,
           };
         });
 
