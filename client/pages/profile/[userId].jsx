@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import EditBioModal from "@/components/Profile/EditBioModal";
 
-import ReportModal from "@/components/Profile/ReportModal";
+import ReportModal from "@/components/Profile/reportModal";
 
 // shuffle function to shuffle a list
 function shuffle(array) {
@@ -406,12 +406,16 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                       </button>
                     </div>
                   )}
-                  
+
                   {/* This is user to be reported from (userId) */}
-                  {user.uid != userId && 
+                  {user.uid != userId && (
                     <div className="follow-button ml-5">
-                      <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
-                  </div>}
+                      <ReportModal
+                        reportedUserData={userProfileData}
+                        reportedUserId={userId}
+                      ></ReportModal>
+                    </div>
+                  )}
                 </div>
                 {isProfileOwner && (
                   <div className="edit-profile-button ">
@@ -518,7 +522,6 @@ export async function getServerSideProps(context) {
     if (!isAdmin && userProfileData) {
       userProfileData.createdAt = JSON.stringify(userProfileData.createdAt);
       userProfileData.updatedAt = JSON.stringify(userProfileData.updatedAt);
-      userProfileData.firstMonthlyReportDate = JSON.stringify(userProfileData.firstMonthlyReportDate);
     }
     if (userProfileData && userProfileData.firstMonthlyReportDate) {
       userProfileData.firstMonthlyReportDate = JSON.stringify(
