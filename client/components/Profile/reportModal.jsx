@@ -15,6 +15,7 @@ import { Report } from "@/model/forms/ReportData";
 import { db } from '@/firebase/clientApp';
 import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { AiOutlineFrown } from "react-icons/ai";
+import Swal from "sweetalert2";
 
 // import {UserData} from '@/model/users/UserData';
 // import { getServerSideProps } from '@/pages/profile/[userId]';
@@ -31,6 +32,7 @@ const style = {
   pt: 4,
   px: 3,
   pb: 3,
+  zIndex: '1 !important',
 };
 
 const defaultValues = {
@@ -64,66 +66,83 @@ export default function ReportModal(props) {
     try {
       event.preventDefault();
       setLoading(true);
-      formValues.reportedAccount = props.reportedUserId;
-      formValues.reportedAccountOrg = props.reportedUserData.isHcp? props.reportedUserData.hcpOrg.orgId: "";
-      formValues.reportingAccount = user.uid;
 
-      // send reportedSrc data (if threads, live sessions, recordings ...)
-      console.log(formValues);
+      const res = await Swal.fire({
+        title: "Are you sure you want to submit this report?",
+        // text: `Do you want to remove ${interest} from your interests?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, confirm my report!",
+        customClass: {
+          container: 'report-confirmation'
+        },
+      });
 
-      // submit report data to firebase
-        // query user's number of reports and last report submission date (>5 reports and not over 1 week, failed to submit)
-      const reportingUserProfileData = await getDoc(doc(db, "users", String(user.uid)));
-      reportingUserProfileData = reportingUserProfileData.data();
-      console.log("firstMonthlyReportDate", reportingUserProfileData.firstMonthlyReportDate, " | totalNumberReports", reportingUserProfileData.totalNumberReports);
-      
-      const canSubmitReport = async (date, numOfReportsSubmittedThisWeek) => {
-        let currDate = new Date() / 1000;
-        let periodSinceLastReport = currDate - date.seconds;  
+      if (res.isConfirmed) {
+        formValues.reportedAccount = props.reportedUserId;
+        formValues.reportedAccountOrg = props.reportedUserData.isHcp? props.reportedUserData.hcpOrg.orgId: "";
+        formValues.reportingAccount = user.uid;
+
+        // send reportedSrc data (if threads, live sessions, recordings ...)
+        console.log(formValues);
+
+        // submit report data to firebase
+          // query user's number of reports and last report submission date (>5 reports and not over 1 week, failed to submit)
+        const reportingUserProfileData = await getDoc(doc(db, "users", String(user.uid)));
+        reportingUserProfileData = reportingUserProfileData.data();
+        console.log("firstMonthlyReportDate", reportingUserProfileData.firstMonthlyReportDate, " | totalNumberReports", reportingUserProfileData.totalNumberReports);
         
-        console.log(`canSubmitReport: `, date, ` | `, numOfReportsSubmittedThisWeek);
-        console.log(`canSubmitReport: `, currDate, ` | periodSinceLastReport: `, periodSinceLastReport, ` | 604800 secs in 1 week `);
-        if (numOfReportsSubmittedThisWeek < 5){
-          return true;
-        } else if (periodSinceLastReport > (7 * 24 * 60 * 60)){ //604800 secs in 1 week
-          return true;
-        }
-        return false;
-      };
+        const canSubmitReport = async (date, numOfReportsSubmittedThisWeek) => {
+          let currDate = new Date() / 1000;
+          let periodSinceLastReport = currDate - date.seconds;  
+          
+          console.log(`canSubmitReport: `, date, ` | `, numOfReportsSubmittedThisWeek);
+          console.log(`canSubmitReport: `, currDate, ` | periodSinceLastReport: `, periodSinceLastReport, ` | 604800 secs in 1 week `);
+          if (numOfReportsSubmittedThisWeek < 5){
+            return true;
+          } else if (periodSinceLastReport > (7 * 24 * 60 * 60)){ //604800 secs in 1 week
+            return true;
+          }
+          return false;
+        };
 
-      const subRep = await canSubmitReport(reportingUserProfileData.firstMonthlyReportDate, reportingUserProfileData.totalNumberReports);
-      console.log(`val of subRep: ${subRep}`);
-      if (subRep){
-        const createReport = new Report(
-          formValues.reportingAccount,
-          formValues.reportedAccount,
-          formValues.reportedAccountOrg,
-          formValues.reportedSrc,
-          formValues.reportReason,
-          formValues.reportDetails
-        );
-        console.log("createReport:", createReport);
-        await createReport.save();  // to add a report to the collection "reports"
-        
+        const subRep = await canSubmitReport(reportingUserProfileData.firstMonthlyReportDate, reportingUserProfileData.totalNumberReports);
+        console.log(`val of subRep: ${subRep}`);
+        if (subRep){
+          const createReport = new Report(
+            formValues.reportingAccount,
+            formValues.reportedAccount,
+            formValues.reportedAccountOrg,
+            formValues.reportedSrc,
+            formValues.reportReason,
+            formValues.reportDetails
+          );
+          console.log("createReport:", createReport);
+          await createReport.save();  // to add a report to the collection "reports"
+          
 
-        if (reportingUserProfileData.totalNumberReports > 5) {
-          console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
-          await updateDoc(doc(db, "users", String(user.uid)), {
-            totalNumberReports: 0 + 1,
-            firstMonthlyReportDate: new Date(),
-          });
+          if (reportingUserProfileData.totalNumberReports > 5) {
+            console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
+            await updateDoc(doc(db, "users", String(user.uid)), {
+              totalNumberReports: 0 + 1,
+              firstMonthlyReportDate: new Date(),
+            });
+          } else {
+            console.log(`totalNumberReports added (reportingUserProfileData.totalNumberReports + 1): ${reportingUserProfileData.totalNumberReports + 1}`);
+            await updateDoc(doc(db, "users", String(user.uid)), {
+              totalNumberReports: reportingUserProfileData.totalNumberReports + 1,
+            });
+          }
+
         } else {
-          console.log(`totalNumberReports added (reportingUserProfileData.totalNumberReports + 1): ${reportingUserProfileData.totalNumberReports + 1}`);
-          await updateDoc(doc(db, "users", String(user.uid)), {
-            totalNumberReports: reportingUserProfileData.totalNumberReports + 1,
-          });
+          console.log("createReport:", " cannot submit report due to report submission limit");
         }
 
-      } else {
-        console.log("createReport:", " cannot submit report due to report submission limit");
+        handleClose(); // may need to include a response modal here ...
       }
-
-      handleClose(); // may need to include a response modal here ...
+      handleClose();
       setLoading(false);
     } catch (err){
       console.warn(err);
