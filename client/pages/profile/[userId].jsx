@@ -21,6 +21,8 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import EditBioModal from "@/components/Profile/EditBioModal";
 
+import ReportModal from "@/components/Profile/ReportModal";
+
 // shuffle function to shuffle a list
 function shuffle(array) {
   var currentIndex = array.length,
@@ -85,7 +87,9 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
   const [userInterestsChanged, setUserInterestsChanged] = useState(false);
 
   useEffect(() => {
+    console.info(userData, userId);
     if (userData && userData.following.includes(userId)) {
+      console.log("user is following");
       setIsFollowing(true);
     }
   }, [userData]);
@@ -381,26 +385,34 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                 <div className="user-bio">
                   <span className="pr-4 whitespace-pre-line">{userBio}</span>
                 </div>
-                {!isProfileOwner && (
-                  <div className="follow-button">
-                    <button
-                      className="btn btn-primary"
-                      onClick={(e) => handleFollowBtn(e)}
-                    >
-                      {isFollowingLoading ? (
-                        <AiOutlineLoading className="loading-spinner" />
-                      ) : !isFollowing ? (
-                        <div className="flex items-center gap-x-3 ">
-                          <RiUserFollowLine /> <p>Follow</p>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-x-3 ">
-                          <RiUserUnfollowLine /> <p>Unfollow</p>
-                        </div>
-                      )}
-                    </button>
-                  </div>
-                )}
+                <div className="inline-flex">
+                  {!isProfileOwner && (
+                    <div className="follow-button">
+                      <button
+                        className="btn btn-primary"
+                        onClick={(e) => handleFollowBtn(e)}
+                      >
+                        {isFollowingLoading ? (
+                          <AiOutlineLoading className="loading-spinner" />
+                        ) : !isFollowing ? (
+                          <div className="flex items-center gap-x-3 ">
+                            <RiUserFollowLine /> <p>Follow</p>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-x-3 ">
+                            <RiUserUnfollowLine /> <p>Unfollow</p>
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* This is user to be reported from (userId) */}
+                  {user.uid != userId && 
+                    <div className="follow-button ml-5">
+                      <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
+                  </div>}
+                </div>
                 {isProfileOwner && (
                   <div className="edit-profile-button ">
                     <button
@@ -506,6 +518,7 @@ export async function getServerSideProps(context) {
     if (!isAdmin && userProfileData) {
       userProfileData.createdAt = JSON.stringify(userProfileData.createdAt);
       userProfileData.updatedAt = JSON.stringify(userProfileData.updatedAt);
+      userProfileData.firstMonthlyReportDate = JSON.stringify(userProfileData.firstMonthlyReportDate);
     }
     if (userProfileData && userProfileData.firstMonthlyReportDate) {
       userProfileData.firstMonthlyReportDate = JSON.stringify(
