@@ -44,7 +44,7 @@ const defaultValues = {
   reportingAccount: "",
 };
 
-export default function ReportModal(props) {
+export default function ReportModal({/*props*/reportedUserData, reportedUserId, reportingThread}) {
   const [open, setOpen] = React.useState(false);
   const [formValues, setFormValues] = React.useState(defaultValues);
   const { user } = useAuth();
@@ -67,6 +67,16 @@ export default function ReportModal(props) {
       event.preventDefault();
       setLoading(true);
 
+      //check if live sess, thread, or user
+      if (reportingThread && reportedUserData.threadId){
+        formValues.reportedSrc = `/thread/${reportedUserData.threadId}`;
+      } /*else if (){ //must be either a live sess
+
+      }*/
+      else {  // or user report
+        formValues.reportedSrc = `/profile/${reportedUserId}`;
+      }
+
       const res = await Swal.fire({
         title: "Are you sure you want to submit this report?",
         // text: `Do you want to remove ${interest} from your interests?`,
@@ -81,8 +91,8 @@ export default function ReportModal(props) {
       });
 
       if (res.isConfirmed) {
-        formValues.reportedAccount = props.reportedUserId;
-        formValues.reportedAccountOrg = props.reportedUserData.isHcp? props.reportedUserData.hcpOrg.orgId: "";
+        formValues.reportedAccount = reportedUserId;
+        formValues.reportedAccountOrg = reportedUserData.isHcp? reportedUserData.hcpOrg.orgId: "";
         formValues.reportingAccount = user.uid;
 
         // send reportedSrc data (if threads, live sessions, recordings ...)
@@ -151,7 +161,7 @@ export default function ReportModal(props) {
   };
 
   //logging
-  console.log(props)
+  // console.log(props)
   return (
     <div>
       {/* <Button sx={{ color: 'white'  }} onClick={handleOpen}>Report</Button> */}
@@ -170,7 +180,10 @@ export default function ReportModal(props) {
         <FormControl>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {/* You are reporting {props.reportedUserId} belonging to {props.reportedUserData.isHcp? props.reportedUserData.hcpOrg.orgId : 'just a regular user'} */}
-            You are reporting {props.reportedUserData.firstName} {props.reportedUserData.lastName} {props.reportedUserData.isHcp? 'from ' + props.reportedUserData.hcpOrg.orgName : ''}
+            You are reporting 
+            {reportedUserData.firstName} 
+            {reportedUserData.lastName} 
+            {reportedUserData.isHcp? 'from ' + reportedUserData.hcpOrg.orgName : ''}
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }} component="div">
             Please select a reason to issue a report:
