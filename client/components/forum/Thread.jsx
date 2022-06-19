@@ -10,7 +10,7 @@ const Thread = ({ thread, user }) => {
         <div className="flex bg-gray-400 rounded-xl shadow-lg">
           <div>
             <img
-              src="https://via.placeholder.com/125"
+              src="https://via.placeholder.com/150"
               width="150px"
               height="150px"
               className="p-4 rounded-full"

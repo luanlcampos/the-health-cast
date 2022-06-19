@@ -2,18 +2,18 @@
 import { setDoc, doc } from "firebase/firestore";
 import { db } from "/firebase/clientApp";
 
-// class to represent a thread
+// class to represent a Reply
 class Reply {
   /**
    * Thread constructor
-   * @param {FirebaseId} id - thread id
+   * @param {FirebaseId} id - Reply id
    * @param {string} authorId - User id
    * @param {string} content
    * @param {Date} createdAt
    */
   constructor(id, userId, content) {
-    this.threadID = id;
-    this.authorID = userId;
+    this.replyId = id;
+    this.authorId = userId;
     this.content = content;
     this.createdAt = new Date();
   }
@@ -23,7 +23,7 @@ class Reply {
     try {
       // create a new thread document in the thread collection
       console.log("saving a reply", this);
-      await setDoc(doc(db, "replies", this.id), {
+      await setDoc(doc(db, "replies", this.replyId), {
         authorId: this.authorId,
         content: this.content,
         createdAt: this.createdAt,
