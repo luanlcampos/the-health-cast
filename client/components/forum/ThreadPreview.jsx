@@ -1,20 +1,35 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import ReportModal from "@/components/Profile/ReportModal";
+import { db } from "@/firebase/clientApp";
+import { getDoc, doc } from "firebase/firestore";
 
 const ThreadPreview = ({ thread }) => {
   const [user, setUser] = useState();
   const date = new Date(Date(thread.createdBy)).toDateString();
 
   useEffect(() => {
-    const getUser = async () => {
-      const data = await thread.user.then(
-        (data) => data.firstName + " " + data.lastName
-      );
-      setUser(data);
-    };
+    getUserProfileData().then((data) => {
+      const name = data.firstName + " " + data.lastName;
 
-    getUser();
+      setUser(name);
+    });
   }, []);
+
+  const getUserProfileData = async (/*authorID*/) => {
+    const result = await getDoc(doc(db, "users", String(thread.authorId)));
+    let userProfileData = result.data();
+    console.log(`result: ${JSON.stringify(userProfileData)}`);
+
+    return userProfileData;
+    // return {
+    //   props: {
+    //     userProfileData,
+    //   },
+    // };
+  };
+  // getUserProfileData(thread.authorId);
+  console.log(`userProfileData in ThreadPreview: ${getUserProfileData()}`);
 
   return (
     <div className="bg-white mb-8 rounded-xl drop-shadow-lg border-2 border-gray-100">
@@ -43,7 +58,14 @@ const ThreadPreview = ({ thread }) => {
               {thread.title}
             </h2>
           </Link>
-          <p className="text-sm">{thread.description}</p>
+          <p className="text-sm">{thread.desc}</p>
+          <div className="follow-button ml-5">
+            <ReportModal
+              reportingThread={true}
+              reportedUserData={getUserProfileData}
+              reportedUserId={thread.authorId}
+            ></ReportModal>
+          </div>
         </div>
         <div className="p-4">
           <div className="grow flex pb-4">

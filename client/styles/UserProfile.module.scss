@@ -58,6 +58,11 @@
         @apply font-semibold;
         @apply cursor-pointer;
         @apply hover:bg-gray-300;
+        @apply w-[150px] relative;
+
+        .delete-interest {
+          @apply absolute top-0 right-0 pr-2 pt-2 text-gray-500 hover:text-gray-800 hover:scale-110;
+        }
       }
     }
 
