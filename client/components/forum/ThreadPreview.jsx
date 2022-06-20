@@ -5,6 +5,7 @@ import { db } from "@/firebase/clientApp";
 import { getDoc, doc, getDocs } from "firebase/firestore";
 import { useAuth } from "@/firebase/auth";
 import { useEffect, useState } from "react";
+import Loading from "../Loading";
 
 const ThreadPreview = ({ thread }) => {
   const date = new Date(Date(thread.createdBy)).toDateString();
@@ -40,7 +41,13 @@ const ThreadPreview = ({ thread }) => {
             height="150px"
             className="p-4"
           />
-          <div className="text-center">{thread.authorId}</div>
+          <div className="text-center">
+            {creatorData.firstName ? (
+              creatorData.firstName + " " + creatorData.lastName
+            ) : (
+              <div>Loading...</div>
+            )}
+          </div>
         </div>
         <div className="w-1/2 border-r border-gray-400 p-4">
           <Link

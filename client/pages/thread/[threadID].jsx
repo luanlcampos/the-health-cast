@@ -10,6 +10,7 @@ import SideMenu from "@/components/Layout/SideMenu";
 import Header from "@/components/Layout/Header";
 import Thread from "@/components/Forum/Thread";
 import Reply from "@/components/Reply/Reply";
+import Loading from "@/components/Loading";
 import { Reply as ReplyModel } from "@/model/Reply/reply";
 
 const ThreadById = () => {
@@ -57,6 +58,7 @@ const ThreadById = () => {
 
   if (currentThread) {
     useEffect(() => {
+      setIsLoading(true);
       setThread(JSON.parse(currentThread));
       setThrAuthor(JSON.parse(author));
       setIsLoading(false);
@@ -73,11 +75,11 @@ const ThreadById = () => {
         .catch((err) => console.log(err));
 
       setIsLoading(false);
-    }, []);
+    }, [reply]);
   }
 
-  const saveReply = async () => {
-    await reply.save();
+  const saveReply = async (rep) => {
+    await rep.save();
   };
 
   const addReply = async (data) => {
@@ -93,10 +95,12 @@ const ThreadById = () => {
     const { content } = data;
 
     const rep = new ReplyModel(uuidv4(), user.uid, content);
-    setReply(rep);
 
-    saveReply()
-      .then(() => addReply(rep))
+    saveReply(rep)
+      .then(() => {
+        setReply(rep);
+        addReply(rep);
+      })
       .then(() => setIsLoading(false))
       .catch(() => setIsLoading(false));
   };
@@ -154,21 +158,7 @@ const ThreadById = () => {
                 ))}
             </div>
           ) : (
-            <div className="w-full h-full">
-              <div className="w-full bg-gray-100 h-full p-24">
-                <h1 className="text-5xl font-bold mb-10">
-                  Sorry... <br /> We cannot find what you are looking for...
-                </h1>
-                <p className="text-2xl">
-                  Go back to{" "}
-                  <Link href="/">
-                    <a className="text-my-green hover:underline hover:underline-offset-2">
-                      Home
-                    </a>
-                  </Link>
-                </p>
-              </div>
-            </div>
+            <Loading />
           )}
         </div>
       </div>
