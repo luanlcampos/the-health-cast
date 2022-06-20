@@ -306,11 +306,10 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
               {interestsList.map((item, index) => {
                 return (
                   <div
-                    className={`interest-card ${
-                      interestsAddedList.includes(item)
+                    className={`interest-card ${interestsAddedList.includes(item)
                         ? "interest-card-added"
                         : ""
-                    }`}
+                      }`}
                     key={`interest-${index}`}
                     onClick={(e) => handleInterestAdd(e, item.value)}
                   >
@@ -355,8 +354,8 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                   <span className="pr-4">
                     {!isAdmin
                       ? userProfileData.firstName +
-                        " " +
-                        userProfileData.lastName
+                      " " +
+                      userProfileData.lastName
                       : userProfileData.institution}
                   </span>
                   {userProfileData?.isHcp ? (
@@ -393,12 +392,16 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                       </button>
                     </div>
                   )}
-                  
+
                   {/* This is user to be reported from (userId) */}
-                  {user.uid != userId && 
+                  {user.uid != userId && (
                     <div className="follow-button ml-5">
-                      <ReportModal reportedUserData={userProfileData} reportedUserId={userId}></ReportModal>
-                  </div>}
+                      <ReportModal
+                        reportedUserData={userProfileData}
+                        reportedUserId={userId}
+                      ></ReportModal>
+                    </div>
+                  )}
                 </div>
                 {isProfileOwner && (
                   <div className="edit-profile-button ">
@@ -501,7 +504,7 @@ export async function getServerSideProps(context) {
     if (!isAdmin && userProfileData) {
       userProfileData.createdAt = JSON.stringify(userProfileData.createdAt);
       userProfileData.updatedAt = JSON.stringify(userProfileData.updatedAt);
-      userProfileData.firstMonthlyReportDate = JSON.stringify(userProfileData.firstMonthlyReportDate);
+      // userProfileData.firstMonthlyReportDate = JSON.stringify(userProfileData.firstMonthlyReportDate);
     }
     if (userProfileData && userProfileData.firstMonthlyReportDate) {
       userProfileData.firstMonthlyReportDate = JSON.stringify(

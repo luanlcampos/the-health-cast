@@ -1,4 +1,4 @@
-const Thread = ({ thread }) => {
+const Thread = ({ thread, user }) => {
   return (
     <div className="w-full">
       {/* Title */}
@@ -10,7 +10,7 @@ const Thread = ({ thread }) => {
         <div className="flex bg-gray-400 rounded-xl shadow-lg">
           <div>
             <img
-              src="https://via.placeholder.com/125"
+              src="https://via.placeholder.com/150"
               width="150px"
               height="150px"
               className="p-4 rounded-full"
@@ -18,7 +18,7 @@ const Thread = ({ thread }) => {
             />
           </div>
           <div className="grow p-5">
-            <div className="text-xl">{thread.authorId}</div>
+            <div className="text-xl">{user}</div>
             <div>{thread.content}</div>
           </div>
         </div>

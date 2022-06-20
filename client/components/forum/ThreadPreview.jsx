@@ -1,27 +1,35 @@
 import Link from "next/link";
-import ReportModal from "@/components/Profile/ReportModal";
-import { db } from '@/firebase/clientApp';
-import { getDoc, doc } from 'firebase/firestore';
 
-const userProfileData = null;
+import ReportModal from "@/components/Profile/ReportModal";
+import { db } from "@/firebase/clientApp";
+import { getDoc, doc, getDocs } from "firebase/firestore";
+import { useAuth } from "@/firebase/auth";
+import { useEffect, useState } from "react";
+import Loading from "../Loading";
 
 const ThreadPreview = ({ thread }) => {
   const date = new Date(Date(thread.createdBy)).toDateString();
+  const { user } = useAuth();
+  const [creatorData, setCreatorData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getUserProfileData = async (/*authorID*/) =>{
-    const result = await getDoc(doc(db, "users", String(thread.authorId)));
-    let userProfileData = result.data();
-    console.log(`result: ${JSON.stringify(userProfileData)}`);
+  useEffect(() => {
+    setIsLoading(true);
+    const loadCreatorData = async () => {
+      try {
+        const result = await getDoc(doc(db, "users", String(thread.authorId)));
+        const data = { ...result.data(), threadId: thread.id };
+        // console.log(`data in ThreadPreview: ${JSON.stringify(data)}`)
+        setCreatorData(data);
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-    return userProfileData;
-    // return {
-    //   props: {
-    //     userProfileData,
-    //   },
-    // };
-  }
-  // getUserProfileData(thread.authorId);
-  console.log(`userProfileData in ThreadPreview: ${getUserProfileData()}`);
+    loadCreatorData();
+  }, []);
+  // console.log(`in ThreadPreview 2: ${JSON.stringify(creatorData)}`);
 
   return (
     <div className="bg-white mb-8 rounded-xl drop-shadow-lg border-2 border-gray-100">
@@ -33,7 +41,13 @@ const ThreadPreview = ({ thread }) => {
             height="150px"
             className="p-4"
           />
-          <div className="text-center">{thread.authorId}</div>
+          <div className="text-center">
+            {creatorData.firstName ? (
+              creatorData.firstName + " " + creatorData.lastName
+            ) : (
+              <div>Loading...</div>
+            )}
+          </div>
         </div>
         <div className="w-1/2 border-r border-gray-400 p-4">
           <Link
@@ -48,9 +62,15 @@ const ThreadPreview = ({ thread }) => {
             </h2>
           </Link>
           <p className="text-sm">{thread.desc}</p>
-          <div className="follow-button ml-5">
-            <ReportModal reportingThread={true} reportedUserData={getUserProfileData} reportedUserId={thread.authorId}></ReportModal>
-          </div>
+          {user.uid != thread.authorId && (
+            <div className="follow-button ml-5">
+              <ReportModal
+                reportingThread={true}
+                reportedUserData={creatorData /*getUserProfileData*/}
+                reportedUserId={thread.authorId}
+              ></ReportModal>
+            </div>
+          )}
         </div>
         <div className="p-4">
           <div className="grow flex pb-4">

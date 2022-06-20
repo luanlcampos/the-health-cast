@@ -8,6 +8,7 @@ import Test from "./ManageLiveSessions/test";
 // ------
 import SideMenu from "../Layout/SideMenu";
 import ManageLiveSessionsIndex from "./ManageLiveSessions/ManageLiveSessions";
+import CreateThread from "./ManageForums/CreateThread";
 
 /**
  * Wrapper for a "Tab" -> Pass in the main component that you want to render.
@@ -96,7 +97,7 @@ export default function Dashboard() {
                   <Test></Test>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                  Item Three
+                  <CreateThread />
                 </TabPanel>
               </Box>
             </div>

@@ -45,55 +45,24 @@
     }
 
     .user-interests-list {
-      @apply flex flex-shrink w-full;
+      @apply flex flex-row gap-y-5;
       @apply p-5;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-padding: 0 24px;
 
       .interest-card {
-        scroll-snap-align: start;
-        flex-shrink: 0;
-        @apply w-[150px] relative;
-
-        .delete-interest {
-          @apply absolute top-0 right-0 pr-2 pt-2 text-gray-500 hover:text-gray-800 hover:scale-110;
-        }
-      }
-    }
-  }
-}
-
-.edit-interests-modal {
-  @apply flex items-center justify-center;
-  z-index: 100;
-
-  .edit-interests-modal-container {
-    @apply p-5;
-    @apply max-w-[600px] w-1/2 overflow-y-auto;
-    @apply h-[600px];
-
-    .edit-interests-modal-header {
-      h2 {
-        @apply text-2xl font-bold;
-        @apply p-1;
-      }
-    }
-    .edit-interests-modal-body {
-      @apply w-full h-fit py-3;
-      @apply grid grid-rows-2 grid-cols-3;
-      @apply justify-around gap-2;
-
-      .interest-card-added {
-        @apply flex flex-col gap-y-1;
-        @apply bg-gray-200;
+        @apply flex flex-col gap-y-2 justify-center;
+        @apply px-5;
         @apply rounded-md;
-        @apply p-2;
+        @apply bg-gray-200;
         @apply text-center;
         @apply text-gray-600;
         @apply font-semibold;
         @apply cursor-pointer;
         @apply hover:bg-gray-300;
+        @apply w-[150px] relative;
+
+        .delete-interest {
+          @apply absolute top-0 right-0 pr-2 pt-2 text-gray-500 hover:text-gray-800 hover:scale-110;
+        }
       }
     }
 

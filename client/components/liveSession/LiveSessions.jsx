@@ -84,14 +84,14 @@ export default LiveSessions;
         "updatedAt": {
             "seconds": 1654368509,
             "nanoseconds": 764000000
-        },
+            
         "endTime": "",
         "interests": [
             "Abdominal Aortic Aneurysm",
             "Abdominal Pregnancy",
             "Accident Prevention",
             "ABO Blood Groups"
-        ],
+            
         "createdByHcpId": "kaDktup32QT2XovYMxEVHpEaIgG3",
         "isRecording": false,
         "description": "hello",
@@ -102,7 +102,7 @@ export default LiveSessions;
         "createdAt": {
             "seconds": 1654368509,
             "nanoseconds": 764000000
-        },
+            
         "sessionScheduleDate": {
             "seconds": 1654368508,
             "nanoseconds": 695000000
@@ -113,17 +113,17 @@ export default LiveSessions;
         "sessionScheduleDate": {
             "seconds": 1654368779,
             "nanoseconds": 933000000
-        },
+            
         "updatedAt": {
           "seconds": 1654368780,
             "nanoseconds": 808000000
-        },
+            
         "isRecording": false,
         "title": "poppy",
         "createdAt": {
             "seconds": 1654368780,
             "nanoseconds": 808000000
-        },
+            
         "createdByHcpId": "kaDktup32QT2XovYMxEVHpEaIgG3",
         "reports": [],
         "startTime": "",

@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 const userProfileData = null;
 
 const LiveSessionPreview = ({ liveSession }) => {
-  console.log(liveSession);
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
   const [isLoading, setIsLoading] = useState(true);
   const [createdByHcp, setCreatedByHcp] = useState(null);
@@ -17,15 +16,12 @@ const LiveSessionPreview = ({ liveSession }) => {
       doc(db, "users", String(liveSession.createdByHcpId))
     );
     let userProfileData = result.data();
-    console.log(`result: ${JSON.stringify(userProfileData)}`);
-    isLoading = true;
+    setIsLoading(false);
     return userProfileData;
   };
-  // getUserProfileData(liveSession.authorId);
-  useEffect(() =>{
-    
-  })
-  console.log(`userProfileData in LiveSessionPreview: ${await getUserProfileData()}`);
+  useEffect(() => {
+    getUserProfileData().then((data) => setCreatedByHcp(data));
+  }, []);
 
   return (
     <div className="card-item shadow-lg rounded-xl grow mx-10">
@@ -39,13 +35,13 @@ const LiveSessionPreview = ({ liveSession }) => {
       <div className="card-item-content p-5">
         <h3>{liveSession.title}</h3>
         <p>{liveSession.description}</p>
-        <p>
-          {isLoading  ? (
-            <Loading />
-          ) : (
-            <> Hosted By: Hello World</>
-          )}
-        </p>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <p>
+            Hosted By: {createdByHcp.firstName} {createdByHcp.lastName}
+          </p>
+        )}
       </div>
     </div>
   );

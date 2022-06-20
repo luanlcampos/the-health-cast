@@ -64,7 +64,6 @@ class LiveSessionData {
   async save() {
     try {
       // create a new live session document in the live sessions collection
-      console.log("saving live session", this);
       const res = await setDoc(doc(db, "liveSessions", this.id), {
         mediaId: this.mediaId,
         createdByHcpId: this.createdByHcpId,

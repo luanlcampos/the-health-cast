@@ -18,7 +18,6 @@ const ViewScheduledUpcommingSessions = () => {
         }));
 
         setLiveSessions(data);
-        console.log(data);
         setIsLoading(false);
       } catch (err) {
         console.log(err);
