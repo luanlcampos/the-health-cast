@@ -66,7 +66,17 @@ export default function ReportModal({/*props*/reportedUserData, reportedUserId, 
     try {
       event.preventDefault();
       setLoading(true);
+      
+      //check if live sess, thread, or user
+      if (reportingThread && reportedUserData.threadId){
+        formValues.reportedSrc = `/thread/${reportedUserData.threadId}`;
+      } /*else if (){ //must be either a live sess
 
+      }*/
+      else {  // or user report
+        formValues.reportedSrc = `/profile/${reportedUserId}`;
+      }
+      
       const res = await Swal.fire({
         title: "Are you sure you want to submit this report?",
         // text: `Do you want to remove ${interest} from your interests?`,
