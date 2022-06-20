@@ -2,33 +2,6 @@ import { useAuth } from "../../firebase/auth";
 import SideMenu from "../Layout/SideMenu";
 import LiveSessions from "@/components//liveSession/LiveSessions";
 import ChatContainer from "../Chat/ChatContainer"
-// mock data to simulate live sessions
-const mockData = [
-  {
-    sessionTitle: "Session 1",
-    hostName: "Dr. John Doe",
-    topic: "Cardiology",
-    thumbnail: "https://via.placeholder.com/315x180",
-  },
-  {
-    sessionTitle: "Session 2",
-    hostName: "Dr. John Doe",
-    topic: "Cardiology",
-    thumbnail: "https://via.placeholder.com/315x180",
-  },
-  {
-    sessionTitle: "Session 3",
-    hostName: "Dr. John Doe",
-    topic: "Cardiology",
-    thumbnail: "https://via.placeholder.com/315x180",
-  },
-  {
-    sessionTitle: "Session 4",
-    hostName: "Dr. John Doe",
-    topic: "Cardiology",
-    thumbnail: "https://via.placeholder.com/315x180",
-  },
-];
 
 export default function SignedHome() {
   const { user, userData } = useAuth();

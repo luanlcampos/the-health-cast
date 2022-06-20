@@ -141,13 +141,13 @@ aside {
   background-repeat: repeat;
 }
 
-#messageBody {
-  height: 100%;
+#messageBody{
+    height:100%;
 }
-#messageHeader {
-  position: sticky;
+#messageHeader{
+    position:sticky
 }
-#messageBody {
-  height: calc(100% - 30%);
-  overflow: scroll;
+#messageBody{
+    height: calc(100% - 30%); 
+    overflow: scroll;
 }
