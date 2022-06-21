@@ -22,7 +22,13 @@ const ThreadById = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [reply, setReply] = useState();
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState,
+    formState: { isSubmitSuccessful },
+  } = useForm();
 
   const loadThread = async () => {
     try {
@@ -62,7 +68,11 @@ const ThreadById = () => {
       setThread(JSON.parse(currentThread));
       setThrAuthor(JSON.parse(author));
       setIsLoading(false);
-    }, []);
+
+      if (isSubmitSuccessful) {
+        reset({ content: "" });
+      }
+    }, [reply, formState, reset]);
   } else {
     useEffect(() => {
       setIsLoading(true);
@@ -75,7 +85,11 @@ const ThreadById = () => {
         .catch((err) => console.log(err));
 
       setIsLoading(false);
-    }, [reply]);
+
+      if (formState.isSubmitSuccessful) {
+        reset({ content: "" });
+      }
+    }, [reply, formState, reset]);
   }
 
   const saveReply = async (rep) => {
