@@ -4,6 +4,7 @@ import Loading from "@/components/Loading";
 import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/firebase/auth";
 
 const userProfileData = null;
 
@@ -11,11 +12,20 @@ const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
   const [isLoading, setIsLoading] = useState(true);
   const [createdByHcp, setCreatedByHcp] = useState(null);
+
+  const [reportedHCP, setReportedHCP] = useState({});
+  const { user } = useAuth();
+
   const getUserProfileData = async () => {
     const result = await getDoc(
       doc(db, "users", String(liveSession.createdByHcpId))
     );
     let userProfileData = result.data();
+
+    // report modal modifications
+    const dataWithLsId = { ...userProfileData, liveSessId: liveSession.id };
+    setReportedHCP(dataWithLsId);
+
     setIsLoading(false);
     return userProfileData;
   };
@@ -41,6 +51,15 @@ const LiveSessionPreview = ({ liveSession }) => {
           <p>
             Hosted By: {createdByHcp.firstName} {createdByHcp.lastName}
           </p>
+        )}
+        {user.uid != liveSession.createdByHcpId && (
+          <div className="follow-button ml-5">
+            <ReportModal
+              reportingLive={true}
+              reportedUserData={reportedHCP}
+              reportedUserId={liveSession.createdByHcpId}
+            ></ReportModal>
+          </div>
         )}
       </div>
     </div>

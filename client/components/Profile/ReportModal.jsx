@@ -48,6 +48,7 @@ export default function ReportModal({
   /*props*/ reportedUserData,
   reportedUserId,
   reportingThread,
+  reportingLive,
 }) {
   const [open, setOpen] = React.useState(false);
   const [formValues, setFormValues] = React.useState(defaultValues);
@@ -74,9 +75,10 @@ export default function ReportModal({
       //check if live sess, thread, or user
       if (reportingThread && reportedUserData.threadId) {
         formValues.reportedSrc = `/thread/${reportedUserData.threadId}`;
-      } /*else if (){ //must be either a live sess
-
-      }*/ else {
+      } else if (reportingLive && reportedUserData.liveSessId) {
+        //must be either a live sess
+        formValues.reportedSrc = `/livesession/${reportedUserData.liveSessId}`;
+      } else {
         // or user report
         formValues.reportedSrc = `/profile/${reportedUserId}`;
       }
