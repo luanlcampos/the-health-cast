@@ -19,11 +19,13 @@ export default function DashboardPage() {
 
   // redirect user back to the login page
   if (!user) {
-    window.location.href = "/login";
+    router.push("/login");
+    return;
   } else if (!userData) {
     return <Loading />;
   } else if (userData.isHcp === false) {
-    window.location.href = "/login";
+    router.push("/");
+    return;
   }
 
   return (
