@@ -195,6 +195,13 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
   const handleInterestReload = (e) => {
     e.stopPropagation();
     setInterestListPage(interestListPage + 1);
+    // add the fade out animation to the
+    // setTimeout for the time of the animation class edit-interests-modal-body
+    // document
+    //   .querySelector(".edit-interests-modal-body")
+    //   .classList.remove("fade-out");
+
+    // setTimeout(() => {
     if (interestListPage * itemsPerPage + 6 >= interestsFullList.length) {
       setInterestListPage(0);
     }
@@ -202,6 +209,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
     setInterestsList(
       interestsFullList.slice(nextIndex, nextIndex + itemsPerPage)
     );
+    // }, "500");
   };
 
   const handleInterestAdd = async (e, interest) => {
@@ -274,6 +282,11 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
     setUserInterests(newUserInterests);
   };
 
+  const handleScroll = (e) => {
+    e.preventDefault();
+    console.log(e.target.scrollLeft);
+  };
+
   return (
     <>
       {openEditBioModal && (
@@ -289,7 +302,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
       )}
       {interestModalOpen && (
         <div
-          className="modal edit-interests-modal fade-enter"
+          className="modal edit-interests-modal"
           onClick={(e) => handleCloseInterestsModal(e)}
         >
           <div className="modal-container edit-interests-modal-container">
@@ -306,11 +319,12 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
               {interestsList.map((item, index) => {
                 return (
                   <div
-                    className={`interest-card ${interestsAddedList.includes(item)
+                    className={`interest-card fade-enter ${
+                      interestsAddedList.includes(item)
                         ? "interest-card-added"
                         : ""
-                      }`}
-                    key={`interest-${index}`}
+                    }`}
+                    key={`interest-${item.value}`}
                     onClick={(e) => handleInterestAdd(e, item.value)}
                   >
                     <span className="text-ellipsis break-words">
@@ -437,7 +451,11 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                     </>
                   )}
                 </div>
-                <div className="user-interests-list">
+                <div
+                  className="user-interests-list"
+                  // onMouseDown={} onMouseUp={} onMouseMove={}
+                  onScroll={handleScroll}
+                >
                   {userInterests.length > 0 ? (
                     userInterests.map((interest, index) => (
                       <div key={index} className="interest-card pr-4">

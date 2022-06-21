@@ -46,7 +46,20 @@ a {
 }
 
 .fade-enter {
-  animation: fadeIn 0.5s;
+  animation: fadeIn 0.5s ease-out 1;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.5s;
 }
 
 .modal {
