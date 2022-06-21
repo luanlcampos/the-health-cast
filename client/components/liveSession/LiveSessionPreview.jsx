@@ -12,10 +12,10 @@ const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
   const [isLoading, setIsLoading] = useState(true);
   const [createdByHcp, setCreatedByHcp] = useState(null);
-  
+
   const [reportedHCP, setReportedHCP] = useState({});
   const { user } = useAuth();
-  
+
   const getUserProfileData = async () => {
     const result = await getDoc(
       doc(db, "users", String(liveSession.createdByHcpId))
@@ -32,9 +32,6 @@ const LiveSessionPreview = ({ liveSession }) => {
   useEffect(() => {
     getUserProfileData().then((data) => setCreatedByHcp(data));
   }, []);
-
-  console.log(`livesession id: ${liveSession.id}`);
-  console.log(`livesession id: ${JSON.stringify(reportedHCP)}`);
 
   return (
     <div className="card-item shadow-lg rounded-xl grow mx-10">
@@ -63,7 +60,7 @@ const LiveSessionPreview = ({ liveSession }) => {
               reportedUserId={liveSession.createdByHcpId}
             ></ReportModal>
           </div>
-        )}        
+        )}
       </div>
     </div>
   );
