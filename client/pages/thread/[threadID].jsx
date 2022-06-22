@@ -8,7 +8,7 @@ import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
 import SideMenu from "@/components/Layout/SideMenu";
 import Header from "@/components/Layout/Header";
-import Thread from "@/components/Forum/Thread";
+import Thread from "@/components/forum/Thread";
 import Reply from "@/components/Reply/Reply";
 import Loading from "@/components/Loading";
 import { Reply as ReplyModel } from "@/model/Reply/reply";

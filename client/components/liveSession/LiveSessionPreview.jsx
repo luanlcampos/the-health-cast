@@ -6,8 +6,6 @@ import { getDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/firebase/auth";
 
-const userProfileData = null;
-
 const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
   const [isLoading, setIsLoading] = useState(true);

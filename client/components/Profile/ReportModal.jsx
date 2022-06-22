@@ -76,10 +76,8 @@ export default function ReportModal({
       if (reportingThread && reportedUserData.threadId) {
         formValues.reportedSrc = `/thread/${reportedUserData.threadId}`;
       } else if (reportingLive && reportedUserData.liveSessId) {
-        //must be either a live sess
         formValues.reportedSrc = `/livesession/${reportedUserData.liveSessId}`;
       } else {
-        // or user report
         formValues.reportedSrc = `/profile/${reportedUserId}`;
       }
 
