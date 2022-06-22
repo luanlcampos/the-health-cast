@@ -38,7 +38,7 @@ function Admin() {
           <OrgConsole user={user} />
         </div>
         {/* <HcpTable user={user} /> */}
-        <AdminTabs user={user}/>
+        <AdminTabs user={user} />
       </div>
     </>
   );
