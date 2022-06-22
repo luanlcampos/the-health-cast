@@ -306,11 +306,12 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
               {interestsList.map((item, index) => {
                 return (
                   <div
-                    className={`interest-card ${interestsAddedList.includes(item)
+                    className={`interest-card  fade-enter ${
+                      interestsAddedList.includes(item)
                         ? "interest-card-added"
                         : ""
-                      }`}
-                    key={`interest-${index}`}
+                    }`}
+                    key={`interest-${item.value}`}
                     onClick={(e) => handleInterestAdd(e, item.value)}
                   >
                     <span className="text-ellipsis break-words">
@@ -354,8 +355,8 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                   <span className="pr-4">
                     {!isAdmin
                       ? userProfileData.firstName +
-                      " " +
-                      userProfileData.lastName
+                        " " +
+                        userProfileData.lastName
                       : userProfileData.institution}
                   </span>
                   {userProfileData?.isHcp ? (
@@ -440,7 +441,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                 <div className="user-interests-list">
                   {userInterests.length > 0 ? (
                     userInterests.map((interest, index) => (
-                      <div key={index} className="interest-card pr-4">
+                      <div key={interest.value} className="interest-card pr-4">
                         {isProfileOwner && (
                           <div className="delete-interest">
                             <button

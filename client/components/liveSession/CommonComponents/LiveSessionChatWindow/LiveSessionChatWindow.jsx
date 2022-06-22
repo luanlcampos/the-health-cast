@@ -63,7 +63,7 @@ const LiveSessionChatWindow = ({ liveSessionRoomID }) => {
       <form
         onSubmit={sendMessage}
         id={styles.formSendMessage}
-        className="fixed bottom-0 bg-gray-900  flex text-2xl"
+        className="fixed bottom-0 bg-gray-900  flex text-2xl w-fit"
       >
         <input
           value={formValue}

@@ -43,7 +43,17 @@ const LiveSessionPreview = ({ liveSession }) => {
         />
       </div>
       <div className="card-item-content p-5">
-        <h3>{liveSession.title}</h3>
+        <Link
+          href={{
+            pathname: `/livesession/${liveSession.id}`,
+            query: { liveSessionId: liveSession.id },
+          }}
+          as={`/livesession/${liveSession.id}`}
+        >
+          <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
+            {liveSession.title}
+          </h2>
+        </Link>
         <p>{liveSession.description}</p>
         {isLoading ? (
           <Loading />
