@@ -46,7 +46,37 @@ a {
 }
 
 .fade-enter {
+  animation: fadeIn 0.5s ease-out 1;
+}
+.fade-enter {
   animation: fadeIn 0.5s;
+  animation: fadeIn 0.5s ease-out 1;
+}
+
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.5s;
+}
+
+.modal {
+  @apply absolute w-full h-full flex justify-center items-center bg-gray-600 bg-opacity-50;
+
+  .modal-container {
+    @apply bg-white border shadow-md rounded-md;
+  }
+}
+
+.report-confirmation {
+  z-index: 1400 !important;
 }
 
 // remove the default 'x' on the search bar
