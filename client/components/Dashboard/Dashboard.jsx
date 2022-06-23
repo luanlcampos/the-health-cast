@@ -60,38 +60,40 @@ export default function Dashboard() {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(
-      <>
-        <div className=" flex flex-col main-content w-full px-10 py-5">
-          <div className=" overflow-y-auto main-content-header flex-1 flex flex-col gap-x-10">
-            <div className="px-3 py-5 pb-px  ">
-              <h1 className="text-3xl font-bold pb-5 ">Dashboard</h1>
-            </div>
-            <Box className="flex-1 overflow-y-auto" sx={{ width: "100%" }}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-                >
-                  <Tab label="Live Session" {...a11yProps(0)} />
-                  <Tab label="Recording" {...a11yProps(1)} />
-                  <Tab label="Forum" {...a11yProps(2)} />
-                </Tabs>
-              </Box>
-              <TabPanel value={value} index={0}>
-                <ManageLiveSessionsIndex></ManageLiveSessionsIndex>
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <Test></Test>
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                <CreateThread />
-              </TabPanel>
-            </Box>
-          </div>
-        </div>
-      </>
-    );
+    setValue(newValue);
   };
+
+  return (
+    <>
+      <div className=" flex flex-col main-content w-full px-10 py-5">
+        <div className=" overflow-y-auto main-content-header flex-1 flex flex-col gap-x-10">
+          <div className="px-3 py-5 pb-px  ">
+            <h1 className="text-3xl font-bold pb-5 ">Dashboard</h1>
+          </div>
+          <Box className="flex-1 overflow-y-auto" sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="Live Session" {...a11yProps(0)} />
+                <Tab label="Recording" {...a11yProps(1)} />
+                <Tab label="Forum" {...a11yProps(2)} />
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              <ManageLiveSessionsIndex></ManageLiveSessionsIndex>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <Test></Test>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <CreateThread />
+            </TabPanel>
+          </Box>
+        </div>
+      </div>
+    </>
+  );
 }
