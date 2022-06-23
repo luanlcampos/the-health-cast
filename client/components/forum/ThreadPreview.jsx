@@ -19,11 +19,11 @@ const ThreadPreview = ({ thread }) => {
       try {
         const result = await getDoc(doc(db, "users", String(thread.authorId)));
         const data = { ...result.data(), threadId: thread.id };
-        // console.log(`data in ThreadPreview: ${JSON.stringify(data)}`)
+    
         setCreatorData(data);
         setIsLoading(false);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
 

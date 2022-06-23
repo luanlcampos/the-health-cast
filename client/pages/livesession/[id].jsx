@@ -18,6 +18,7 @@ import Audience from "@/components/liveSession/CommonComponents/Audience/Audienc
 import HCPAndLiveSessionMetaData from "@/components/liveSession/CommonComponents/HCPAndLiveSessionMetaData/HCPAndLiveSessionMetaData";
 import LiveSessionChatWindow from "@/components/liveSession/CommonComponents/LiveSessionChatWindow/LiveSessionChatWindow";
 import HCPControls from "@/components/liveSession/HCPControls/HCPControls";
+import SignedLayout from "@/components/Layout/SignedLayout";
 
 //import "@/styles/LiveSession.module.scss";
 
@@ -28,8 +29,6 @@ const livesession = ({ currentLiveSession }) => {
   // obtaining Live session ID
   const router = useRouter();
   const givenLiveSessionID = router.query.id;
-  console.log("The query: ", router.query);
-  console.log("The current live session: ", currentLiveSession);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,74 +39,59 @@ const livesession = ({ currentLiveSession }) => {
   }
 
   return (
-    <div>
-      <div>
-        {/* Header */}
-        <Header user={user} />
-        <div className="flex main-container h-[calc(100vh-70px)]">
-          {/* SideMenu */}
-          <div className="side-menu w-2/12 min-w-[200px]">
-            <SideMenu />
-          </div>
-          {!isLoading ? (
-            <div className="w-full my-8">
-              <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
-                <div className="w-3/4">
-                  <h1>{givenLiveSessionID}</h1>
-                  <LiveSessionStage
-                    liveSessionRoomID={givenLiveSessionID}
-                  ></LiveSessionStage>
-                  <Audience liveSessionRoomID={givenLiveSessionID}></Audience>
-                </div>
-                <div className="outline shrink outline-cyan-500 flex flex-col lg:w-1/4 sm:w-fit md:fit">
-                  <HCPAndLiveSessionMetaData
-                    hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
-                    liveSessionRoomID={givenLiveSessionID}
-                    liveSessionMetaData={currentLiveSession.liveSessionData}
-                  ></HCPAndLiveSessionMetaData>
-                  {user.uid == currentLiveSession.hcpCreatorProfileData.uid ? (
-                    <>
-                      <h1>
-                        Rendering the HCP controls because the current user is
-                        the creator
-                      </h1>
-                      <HCPControls
-                        liveSessionRoomID={givenLiveSessionID}
-                        hcpCreatorInfo={
-                          currentLiveSession.hcpCreatorProfileData
-                        }
-                      ></HCPControls>
-                    </>
-                  ) : (
-                    <>
-                      <HCPControls
-                        liveSessionRoomID={givenLiveSessionID}
-                        hcpCreatorInfo={
-                          currentLiveSession.hcpCreatorProfileData
-                        }
-                      ></HCPControls>
-                      <button
-                        onClick={() => {
-                          router.push("/");
-                        }}
-                      >
-                        Leave Now
-                      </button>
-                    </>
-                  )}
-                  <LiveSessionChatWindow
-                    liveSessionRoomID={givenLiveSessionID}
-                  ></LiveSessionChatWindow>
-                </div>
-              </div>
+    <SignedLayout>
+      {!isLoading ? (
+        <div className="w-full my-8">
+          <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
+            <div className="w-3/4">
+              <h1>{givenLiveSessionID}</h1>
+              <LiveSessionStage
+                liveSessionRoomID={givenLiveSessionID}
+              ></LiveSessionStage>
+              <Audience liveSessionRoomID={givenLiveSessionID}></Audience>
             </div>
-          ) : (
-            <Loading />
-          )}
+            <div className="outline shrink outline-cyan-500 flex flex-col lg:w-1/4 sm:w-fit md:fit">
+              <HCPAndLiveSessionMetaData
+                hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
+                liveSessionRoomID={givenLiveSessionID}
+                liveSessionMetaData={currentLiveSession.liveSessionData}
+              ></HCPAndLiveSessionMetaData>
+              {user.uid == currentLiveSession.hcpCreatorProfileData.uid ? (
+                <>
+                  <h1>
+                    Rendering the HCP controls because the current user is the
+                    creator
+                  </h1>
+                  <HCPControls
+                    liveSessionRoomID={givenLiveSessionID}
+                    hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
+                  ></HCPControls>
+                </>
+              ) : (
+                <>
+                  <HCPControls
+                    liveSessionRoomID={givenLiveSessionID}
+                    hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
+                  ></HCPControls>
+                  <button
+                    onClick={() => {
+                      router.push("/");
+                    }}
+                  >
+                    Leave Now
+                  </button>
+                </>
+              )}
+              <LiveSessionChatWindow
+                liveSessionRoomID={givenLiveSessionID}
+              ></LiveSessionChatWindow>
+            </div>
+          </div>
         </div>
-        <Footer></Footer>
-      </div>
-    </div>
+      ) : (
+        <Loading />
+      )}
+    </SignedLayout>
   );
 };
 
@@ -124,10 +108,6 @@ export const getServerSideProps = async (context) => {
     );
     if (liveSessionResult && liveSessionResult.exists()) {
       liveSessionData = liveSessionResult.data();
-      console.log(
-        "Sucessfully retrieved the live session from getServerSide Props",
-        liveSessionData
-      );
       try {
         const userResult = await getDoc(
           doc(db, "users", String(liveSessionData.createdByHcpId))
@@ -135,10 +115,6 @@ export const getServerSideProps = async (context) => {
         if (userResult && userResult.exists()) {
           hcpCreatorProfileData = userResult.data();
           isAdmin = false;
-          console.log(
-            "Sucessfully retrieved the HCP Creator info from getServerSide Props",
-            hcpCreatorProfileData
-          );
 
           if (!isAdmin && hcpCreatorProfileData) {
             // set the hcp UID

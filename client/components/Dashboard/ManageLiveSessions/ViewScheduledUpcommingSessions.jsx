@@ -20,15 +20,15 @@ const ViewScheduledUpcommingSessions = () => {
         setLiveSessions(data);
         setIsLoading(false);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
 
     loadThreads();
   }, []);
-  
+
   return (
-    <div className="outline outline-blue-500">
+    <div className="">
       <h1>View Scheduled Upcoming Sessions</h1>
     </div>
   );

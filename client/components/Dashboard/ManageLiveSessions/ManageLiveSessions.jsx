@@ -13,8 +13,8 @@ const ManageLiveSessionsIndex = () => {
 
   return (
     <>
-      <div className="outline outline-pink-500  main-content w-full">
-        <div className="overflow-auto outline outline-blue-500 main-content-header flex flex-col gap-y-[2rem]">
+      <div className="  main-content w-full">
+        <div className="overflow-auto  main-content-header flex flex-col gap-y-[2rem]">
           <form>
             <button
               onClick={(e) => triggerShowForm(e)}
@@ -24,8 +24,6 @@ const ManageLiveSessionsIndex = () => {
             </button>
           </form>
           {showForm && <CreateLiveSessionForm></CreateLiveSessionForm>}
-          <p className="outline outline-pink-500">Should render the upcoming live sessions</p>
-          <p className="outline outline-pink-500">Should render the upcoming live sessions</p>
         </div>
       </div>
     </>

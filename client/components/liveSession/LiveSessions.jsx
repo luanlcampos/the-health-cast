@@ -23,7 +23,7 @@ const LiveSessions = () => {
         setLiveSessions(data);
         setIsLoading(false);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
 
@@ -33,7 +33,7 @@ const LiveSessions = () => {
   return (
     <div className="outline">
       {!isLoading && LiveSessions.length > 0 && (
-        <div className="outline">
+        <div>
           <div className="card-list flex flex-row flex-wrap justify-between w-full">
             {isLoading && !LiveSessions ? (
               <Loading />

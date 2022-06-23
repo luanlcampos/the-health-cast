@@ -45,7 +45,7 @@ const LiveSessionStage = ({ liveSessionRoomID }) => {
 
     const { data } = await axios.post("/broadcast", payload);
     const desc = new RTCSessionDescription(data.sdp);
-    peer.setRemoteDescription(desc).catch((e) => console.log(e));
+    peer.setRemoteDescription(desc).catch((e) => console.error(e));
   }
   return (
     <div className="outline outline-cyan-500 ">

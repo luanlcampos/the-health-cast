@@ -6,6 +6,7 @@ import { useAuth } from "@/firebase/auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Loading from "@/components/Loading";
+import SignedLayout from "@/components/Layout/SignedLayout"
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -29,9 +30,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <>
-      <Header user={user} />
+    <SignedLayout>
       <Dashboard></Dashboard>
-    </>
+    </SignedLayout>
   );
 }

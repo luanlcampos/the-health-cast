@@ -33,7 +33,6 @@ const LiveSessionChatWindow = ({ liveSessionRoomID }) => {
   const [formValue, setFormValue] = useState("");
 
   const sendMessage = async (e) => {
-    console.log("THE USER");
     e.preventDefault();
 
     // Add a new document with a generated id.
