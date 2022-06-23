@@ -1,5 +1,6 @@
 import Header from "../components/Layout/Header";
 import SideMenu from "../components/Layout/SideMenu";
+import Footer from "../components/Layout/Footer";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 
@@ -38,6 +39,7 @@ export default function Custom404() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
