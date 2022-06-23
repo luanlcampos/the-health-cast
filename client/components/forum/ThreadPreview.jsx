@@ -19,7 +19,7 @@ const ThreadPreview = ({ thread }) => {
       try {
         const result = await getDoc(doc(db, "users", String(thread.authorId)));
         const data = { ...result.data(), threadId: thread.id };
-    
+
         setCreatorData(data);
         setIsLoading(false);
       } catch (err) {
@@ -77,10 +77,6 @@ const ThreadPreview = ({ thread }) => {
             <div className="mr-7">
               <h4 className="text-gray-400">Replies</h4>
               <div className="text-center">{thread.replies.length}</div>
-            </div>
-            <div>
-              <h4 className="text-gray-400">Users</h4>
-              <div className="text-center">+10</div>
             </div>
           </div>
           <h4 className="text-gray-400">Activity</h4>

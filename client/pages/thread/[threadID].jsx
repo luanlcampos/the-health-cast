@@ -115,30 +115,35 @@ const ThreadById = () => {
           <div className="w-full">
             <Thread thread={thread} user={thrAuthor} />
             <div className="flex bg-gray-200 p-5 shadow-xl m-10 rounded-xl">
-              <img
-                src="https://via.placeholder.com/30"
-                width="30px"
-                height="30px"
-                className="rounded-full mr-5"
-                alt="profile"
-              />
-              <form
-                onSubmit={handleSubmit(handleReplySubmit)}
-                className="w-full flex"
-              >
-                <input
-                  type="text"
-                  {...register("content")}
-                  placeholder="New Comment..."
-                  className="grow py-1 px-3 rounded-md"
+              <div className="my-auto">
+                <img
+                  src="https://via.placeholder.com/80"
+                  width="80px"
+                  height="80px"
+                  className="rounded-full mr-5"
+                  alt="profile"
                 />
-                <button
-                  type="submit"
-                  className="bg-my-green text-white ml-5 px-10 py-1 rounded-lg"
+              </div>
+              <div className="flex-1 h-full">
+                <form
+                  onSubmit={handleSubmit(handleReplySubmit)}
+                  className="flex"
                 >
-                  Reply
-                </button>
-              </form>
+                  <textarea
+                    {...register("content")}
+                    placeholder="New Comment..."
+                    rows={3}
+                    maxLength={1000}
+                    className="border border-gray-300 rounded-md p-2 resize-none focus:outline-none w-full"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-my-green text-white ml-5 px-10 py-1 rounded-lg"
+                  >
+                    Reply
+                  </button>
+                </form>
+              </div>
             </div>
 
             {/* Reply */}
