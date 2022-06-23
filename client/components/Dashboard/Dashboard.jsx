@@ -60,11 +60,12 @@ export default function Dashboard() {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(n
+    setValue(newValue);
+  };
+  return (
     <>
       <div className=" flex flex-col main-content w-full px-10 py-5">
         <div className=" overflow-y-auto main-content-header flex-1 flex flex-col gap-x-10">
-        
           <div className="px-3 py-5 pb-px  ">
             <h1 className="text-3xl font-bold pb-5 ">Dashboard</h1>
           </div>

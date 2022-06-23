@@ -31,7 +31,7 @@ const LiveSessions = () => {
   }, []);
 
   return (
-    <div className="outline">
+    <div className="max-h-[calc(100vh-160px)] overflow-auto">
       {!isLoading && LiveSessions.length > 0 && (
         <div>
           <div className="card-list flex flex-row flex-wrap justify-between w-full">
