@@ -3,12 +3,12 @@ import HcpTable from "@/components/Admin/HcpTable";
 import ReportTable from "@/components/Admin/ReportTable";
 
 //mui tabs
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import * as React from "react";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -23,7 +23,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -39,7 +39,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -53,20 +53,20 @@ function AdminTabs({ user }) {
 
   return (
     <>
-        <Box sx={{ width: '100%' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs">
-              <Tab label="Active HCPs" {...a11yProps(0)} />
-              <Tab label="Community Reports" {...a11yProps(1)} />
-            </Tabs>
-          </Box>
-          <TabPanel value={value} index={0}>
-            <HcpTable user={user} />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <ReportTable user={user}/>
-          </TabPanel>
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs">
+            <Tab label="Active HCPs" {...a11yProps(0)} />
+            <Tab label="Community Reports" {...a11yProps(1)} />
+          </Tabs>
         </Box>
+        <TabPanel value={value} index={0}>
+          <HcpTable user={user} />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <ReportTable user={user} />
+        </TabPanel>
+      </Box>
     </>
   );
 }

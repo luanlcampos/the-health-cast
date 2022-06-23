@@ -4,7 +4,7 @@ import Requests from "./Requests";
 
 export default function OrgConsole({ user }) {
   // tab alerts and notifications
-  const [alertsTab, setAlertsTab] = useState(true);
+  const [alertsTab, setAlertsTab] = useState(false);
   return (
     <div className="org-req">
       <div className="menu">
