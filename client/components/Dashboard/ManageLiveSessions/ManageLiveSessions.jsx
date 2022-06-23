@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CreateLiveSessionForm from "./CreateLiveSessionForm";
 import ViewPastLiveSessions from "./ViewPastLiveSessions";
 import ViewScheduledUpcommingSessions from "./ViewScheduledUpcommingSessions";
+import Button from "@mui/material/Button";
 
 const ManageLiveSessionsIndex = () => {
   const [showForm, setShowForm] = useState(false);
@@ -13,18 +14,30 @@ const ManageLiveSessionsIndex = () => {
 
   return (
     <>
-      <div className="  main-content w-full">
-        <div className="overflow-auto  main-content-header flex flex-col gap-y-[2rem]">
+      <div className=" max-h-[calc(100vh-300px)] main-content w-full">
+        <div className="  main-content-header flex flex-col gap-y-[2rem]">
           <form>
-            <button
+            <Button
               onClick={(e) => triggerShowForm(e)}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              sx={{
+                bgcolor: "#a9de09",
+                color: "black",
+                fontWeight: "bold",
+                padding: "1rem",
+                "&:hover": {
+                  color: "black",
+                  backgroundColor: "#a9de09",
+                },
+              }}
             >
               {showForm ? `Cancel` : `Go Live`}
-            </button>
+            </Button>
           </form>
           {showForm && <CreateLiveSessionForm></CreateLiveSessionForm>}
         </div>
+        {/* <ViewPastLiveSessions></ViewPastLiveSessions>
+        <ViewPastLiveSessions></ViewPastLiveSessions>
+         */}
       </div>
     </>
   );

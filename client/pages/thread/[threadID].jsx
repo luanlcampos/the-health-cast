@@ -123,7 +123,7 @@ const ThreadById = () => {
     router.push("/login");
     return;
   }
-
+// console.log("QUery object")
   return (
     <div>
       <div>
