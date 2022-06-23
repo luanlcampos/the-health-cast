@@ -195,13 +195,6 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
   const handleInterestReload = (e) => {
     e.stopPropagation();
     setInterestListPage(interestListPage + 1);
-    // add the fade out animation to the
-    // setTimeout for the time of the animation class edit-interests-modal-body
-    // document
-    //   .querySelector(".edit-interests-modal-body")
-    //   .classList.remove("fade-out");
-
-    // setTimeout(() => {
     if (interestListPage * itemsPerPage + 6 >= interestsFullList.length) {
       setInterestListPage(0);
     }
@@ -209,7 +202,6 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
     setInterestsList(
       interestsFullList.slice(nextIndex, nextIndex + itemsPerPage)
     );
-    // }, "500");
   };
 
   const handleInterestAdd = async (e, interest) => {
@@ -282,11 +274,6 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
     setUserInterests(newUserInterests);
   };
 
-  const handleScroll = (e) => {
-    e.preventDefault();
-    console.log(e.target.scrollLeft);
-  };
-
   return (
     <>
       {openEditBioModal && (
@@ -302,7 +289,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
       )}
       {interestModalOpen && (
         <div
-          className="modal edit-interests-modal"
+          className="modal edit-interests-modal fade-enter"
           onClick={(e) => handleCloseInterestsModal(e)}
         >
           <div className="modal-container edit-interests-modal-container">
@@ -319,7 +306,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
               {interestsList.map((item, index) => {
                 return (
                   <div
-                    className={`interest-card fade-enter ${
+                    className={`interest-card  fade-enter ${
                       interestsAddedList.includes(item)
                         ? "interest-card-added"
                         : ""
@@ -451,14 +438,10 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                     </>
                   )}
                 </div>
-                <div
-                  className="user-interests-list"
-                  // onMouseDown={} onMouseUp={} onMouseMove={}
-                  onScroll={handleScroll}
-                >
+                <div className="user-interests-list">
                   {userInterests.length > 0 ? (
                     userInterests.map((interest, index) => (
-                      <div key={index} className="interest-card pr-4">
+                      <div key={interest.value} className="interest-card pr-4">
                         {isProfileOwner && (
                           <div className="delete-interest">
                             <button
@@ -522,6 +505,7 @@ export async function getServerSideProps(context) {
     if (!isAdmin && userProfileData) {
       userProfileData.createdAt = JSON.stringify(userProfileData.createdAt);
       userProfileData.updatedAt = JSON.stringify(userProfileData.updatedAt);
+      // userProfileData.firstMonthlyReportDate = JSON.stringify(userProfileData.firstMonthlyReportDate);
     }
     if (userProfileData && userProfileData.firstMonthlyReportDate) {
       userProfileData.firstMonthlyReportDate = JSON.stringify(

@@ -4,7 +4,7 @@ import { GrEmoji } from 'react-icons/gr';
 import dynamic from "next/dynamic";
 import { db } from '../../firebase/clientApp';
 import { collection, doc, Timestamp, addDoc, onSnapshot, query, orderBy } from "firebase/firestore";
-
+import { Avatar } from "@mui/material";
 import ChatMessage from "./ChatMessage";
 import InfoSender from './InfoSender';
 
@@ -25,10 +25,12 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
     
     const emojiPicker = useRef(handleClick);
 
+    
+    
     useEffect(() => {
-        if (selectedProfile.email != null) {
+        if (selectedProfile?.email != null) {
             const getMessages = async () => {
-                const subColRef = collection(db, "chats", selectedProfile.email, "messages");
+                const subColRef = collection(db, "chats", selectedProfile?.email, "messages");
                 const q = query(subColRef, orderBy("timestamp", "asc"));
                 onSnapshot(q, (snapshot) => {
                     let messages = []
@@ -91,7 +93,7 @@ export default function ChatWrapper({ currentUser, selectedProfile }) {
                 <div id="messageheader" className="main-header z-40 text-gray-400">
                     <div className="flex items-center px-4 py-3">
                         <div className="flex-1">
-                            <InfoSender firstName={selectedProfile.firstName || ''} chatMessages={chatMessages} currentUser={currentUser} />
+                            <InfoSender firstName={selectedProfile?.firstName || ''} lastName={selectedProfile?.lastName || ''} chatMessages={chatMessages} currentUser={currentUser} />
                         </div>
                     </div>
                 </div>

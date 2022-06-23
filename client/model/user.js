@@ -57,21 +57,18 @@ class User {
     this.permission = "None";
     this.interests = interests;
     this.following = following;
-    this.follower = [];
+    this.followers = [];
     this.createdAt = new Date();
     this.updatedAt = new Date();
     // default user bio
     this.biography = "Hello World! 😄";
-    // weekly user report data
-    this.firstMonthlyReportDate = new Date(0, 0);
-    this.totalNumberReports = 0;
   }
 
   // save the user to the database
   async save() {
     try {
       // create a new user document in the users collection
-      console.log("saving user", this);
+
       const res = await setDoc(doc(db, "users", this.id), {
         firstName: this.firstName,
         lastName: this.lastName,
@@ -83,12 +80,10 @@ class User {
         hcpSpecialty: this.hcpSpecialty,
         interests: this.interests,
         following: this.following,
-        follower: this.follower,
+        followers: this.followers,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
         biography: this.biography,
-        firstMonthlyReportDate: this.firstMonthlyReportDate,
-        totalNumberReports: this.totalNumberReports,
       });
 
       console.log(res);

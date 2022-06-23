@@ -6,22 +6,24 @@ import {
     AiOutlineSearch
   } from "react-icons/ai";
 import { UserChat } from "@/model/UserChat";
+import { Avatar } from "@mui/material";
+import { useAuth } from "../../firebase/auth";
+
 
 function Sidebar({currentUserFName, currentUserEmail, handleSetAllUsers, handleSetSelectedUser}){
     const [allUsers, setAllUsers] = useState([]);    
     const [searchInput, setSearchInput] = useState("");
     const [userChat, setUserChat] = useState();
+    const { user } = useAuth();
 
-    const data = [{id: 0, label: "Istanbul, TR (AHL)"}, {id: 1, label: "Paris, FR (CDG)"}];
-    const [isOpen, setOpen] = useState(false);
-    const [items, setItem] = useState(data);
-    const [selectedItem, setSelectedItem] = useState(null);
+
     
-    const toggleDropdown = () => setOpen(!isOpen);
-    
-    const handleItemClick = (id) => {
-      selectedItem == id ? setSelectedItem(null) : setSelectedItem(id);}
-      
+    const getUserInitials = () => {
+      console.log(user);
+      return (
+        currentUserFName.charAt(0) + currentUserEmail.charAt(0)
+      ).toUpperCase();
+  };
     
     useEffect(() => {
         const getAllUsers = async () => {          
@@ -40,8 +42,6 @@ function Sidebar({currentUserFName, currentUserEmail, handleSetAllUsers, handleS
                 onSnapshot(q, (snapshot)=>{
                   if(snapshot.docs.length > 0){
                     userData.lastMessage = snapshot.docs[0].data();
-                    // setUserChat(snapshot.docs[0].data())
-                    // setAllUsers((prev)=>[...prev,lastMessage:snapshot.docs])
                   }
                 })
                 
@@ -83,10 +83,14 @@ function Sidebar({currentUserFName, currentUserEmail, handleSetAllUsers, handleS
               <aside className="overflow-y-auto border-r border-gray-800 relative block bg-slate-900">
                   <div className="aside-header sticky top-0 right-0 left-0 z-40 text-gray-400">
                       <div className="flex items-center px-4 py-3">
-                          <div className="flex">
-                              <img className="w-11 h-11 rounded-full"
-                                    src="https://www.writersdigest.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTcxMDY5MzE5OTYyMzcyMDgx/image-placeholder-title.jpg"/>
-                          </div>
+                      <div className="w-1/6">
+                        <Avatar
+                        sx={{ width: "35px", height: "35px", bgcolor: "#9FC131" }}
+                        >
+                        {getUserInitials()}
+                        </Avatar>
+                    </div>
+                
                           <p className="ml-3">{currentUserFName}</p>
                           
                       </div>

@@ -1,6 +1,7 @@
 import Header from "./Header";
 import SideMenu from "./SideMenu";
 import { useAuth } from "@/firebase/auth";
+import Footer from "./Footer";
 
 export default function SignedLayout({ children }) {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ export default function SignedLayout({ children }) {
           {children}
         </div>
       </div>
+      <Footer />
     </>
   );
 }

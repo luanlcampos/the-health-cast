@@ -18,7 +18,6 @@ export default function Home() {
   }
 
   if (user && (userData || adminData) && !user.emailVerified) {
-    console.log(user.emailVerified);
     router.push("/login");
     logout();
   }
