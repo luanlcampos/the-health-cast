@@ -25,7 +25,7 @@ function InfoSender({ firstName, lastName, chatMessages, currentUser }) {
         <div>
 
             <div className="flex">
-                <div className="w-1/6">
+                <div className="mr-2">
                         <Avatar
                         sx={{ width: "35px", height: "35px", bgcolor: "#9FC131" }}
                         >
