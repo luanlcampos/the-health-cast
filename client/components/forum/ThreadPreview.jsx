@@ -63,7 +63,7 @@ const ThreadPreview = ({ thread }) => {
           </Link>
           <p className="text-sm">{thread.desc}</p>
           {user.uid != thread.authorId && (
-            <div className="follow-button ml-5">
+            <div className="follow-button inline-block align-middle">
               <ReportModal
                 reportingThread={true}
                 reportedUserData={creatorData /*getUserProfileData*/}
