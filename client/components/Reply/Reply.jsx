@@ -49,22 +49,22 @@ const Reply = ({ replyId }) => {
     <div className="w-full">
       {!isLoading && reply && author && (
         <div className="px-10 py-5">
-          <h2 className="text-2xl">{author}</h2>
-          <div className="border-b border-black mb-5"></div>
-
           {/* Content */}
           <div className="flex bg-gray-400 rounded-xl shadow-lg">
-            <div>
+            <div className="w-[150px] h-[150px]">
               <img
                 src="https://via.placeholder.com/150"
                 width="150px"
                 height="150px"
-                className="p-4 rounded-full"
+                className="p-4 rounded-full w-[150px] h-[150px]"
                 alt="profile"
               />
             </div>
-            <div className="grow p-5">
-              <div>{reply.content}</div>
+            <div className="flex-1">
+              <div className="p-5">
+                <h2 className="text-2xl">{author}</h2>
+                <div>{reply.content}</div>
+              </div>
             </div>
           </div>
         </div>
