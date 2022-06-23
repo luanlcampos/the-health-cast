@@ -50,13 +50,7 @@ const ThreadPreview = ({ thread }) => {
           </div>
         </div>
         <div className="w-1/2 border-r border-gray-400 p-4">
-          <Link
-            href={{
-              pathname: `/thread/${thread.id}`,
-              query: { threadId: thread.id },
-            }}
-            as={`/thread/${thread.id}`}
-          >
+          <Link href={`/thread/${thread.id}`}>
             <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
               {thread.title}
             </h2>
