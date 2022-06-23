@@ -61,7 +61,7 @@ const LiveSessionPreview = ({ liveSession }) => {
           </p>
         )}
         {user.uid != liveSession.createdByHcpId && (
-          <div className="follow-button ml-5">
+          <div className="follow-button inline-block align-middle">
             <ReportModal
               reportingLive={true}
               reportedUserData={reportedHCP}

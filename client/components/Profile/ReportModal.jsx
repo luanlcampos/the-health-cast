@@ -200,7 +200,7 @@ export default function ReportModal({
     <div>
       {/* <Button sx={{ color: 'white'  }} onClick={handleOpen}>Report</Button> */}
       <button className="btn btn-primary" onClick={handleOpen}>
-        <div className="flex items-center gap-x-3 ">
+        <div className="flex items-center gap-x-3 hover:text-lime-600">
           <AiOutlineFrown />
           <p>Report</p>
         </div>
