@@ -15,12 +15,23 @@ const options = [
   { value: "none", label: "None" },
 ];
 
-export default function HcpTable({ user }) {
+export default function HcpTable({ user, hcpListTabSelected }) {
   // hcpDataList state
   const [hcpDataList, setHcpDataList] = useState(Array());
 
   // enableEdit state
   const [enableEdit, setEnableEdit] = useState(null);
+
+  // loading HCP List state
+  const [loadingHcpList, setLoadingHcpList] = useState(false);
+
+  useEffect(() => {
+    const getHcpCall = async () => {
+      await getHcpList();
+    };
+    console.log("useEffect: ", hcpDataList);
+    getHcpCall();
+  }, []);
 
   // open swal modal
   const openModal = (text) => {
@@ -39,10 +50,13 @@ export default function HcpTable({ user }) {
 
   const getHcpList = async () => {
     try {
+      setLoadingHcpList(true);
       setHcpDataList([]);
       const hcpList = await (
         await getDoc(doc(db, "admin", String(user.uid)))
       ).get("hcpList");
+      console.log("getHcpList.HCPlIST: ", hcpList);
+      let hcpArray = [];
       for (let i = 0; i < hcpList.length; i++) {
         if (hcpList[i] !== null && hcpList[i].length > 0) {
           const hcp = await getDoc(doc(db, "users", String(hcpList[i])));
@@ -57,7 +71,8 @@ export default function HcpTable({ user }) {
           else {
             const data = await hcp.data();
             data.hcpId = hcpList[i];
-            setHcpDataList((prev) => [...prev, data]);
+            hcpArray.push(data);
+            // setHcpDataList((prev) => [...prev, data]);
           }
         } else {
           // remove the id from the array
@@ -66,8 +81,11 @@ export default function HcpTable({ user }) {
           });
         }
       }
+      setHcpDataList(hcpArray);
+      setLoadingHcpList(false);
     } catch (error) {
       console.warn(error);
+      setLoadingHcpList(false);
     }
   };
 
@@ -115,14 +133,6 @@ export default function HcpTable({ user }) {
     }
   };
 
-  useEffect(() => {
-    const getHcpCall = async () => {
-      await getHcpList();
-    };
-
-    return () => getHcpCall();
-  }, []);
-
   const toggleEdit = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -135,7 +145,7 @@ export default function HcpTable({ user }) {
   };
 
   return (
-    <>
+    <div>
       <div className="container table-container overflow-auto">
         <div className="org-table">
           <div className="flex flex-row justify-between items-center">
@@ -144,8 +154,11 @@ export default function HcpTable({ user }) {
             <div className="right-side flex flex-row items-center gap-x-5">
               <div className="reload-list h-full">
                 <button className="reload-btn " onClick={getHcpList}>
-                  <AiOutlineReload className="reload-icon text-xl" />
-                  Reload
+                  <AiOutlineReload
+                    className="reload-icon text-xl"
+                    disabled={loadingHcpList}
+                  />
+                  {loadingHcpList ? "Loading" : "Reload"}
                 </button>
               </div>
               {/* search input */}
@@ -157,7 +170,7 @@ export default function HcpTable({ user }) {
             </div>
           </div>
           <table className="table-auto w-full">
-            <thead className="table-header">
+            <thead className="table-header h-[50px] rounded-md">
               <tr>
                 <th>Full Name</th>
                 <th>Profession</th>
@@ -166,65 +179,65 @@ export default function HcpTable({ user }) {
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-              {hcpDataList.length === 0
-                ? null
-                : hcpDataList.map((hcp, index) => (
-                    <tr key={index} className="fade-enter">
-                      <td>
-                        <span>
-                          {hcp.firstName} {hcp.lastName}
-                        </span>
-                      </td>
-                      <td>
-                        <span>{hcp.hcpProfession}</span>
-                      </td>
-                      <td>
-                        <span>
-                          {hcp.hcpSpecialty === "" || hcp.hcpSpecialty === null
-                            ? "Not Specified"
-                            : hcp.hcpSpecialty}
-                        </span>
-                      </td>
-                      <td>
-                        {/* permission select input */}
-                        <Select
-                          options={options}
-                          isDisabled={enableEdit !== hcp.hcpId ? true : false}
-                          value={{
-                            value: hcp.permission,
-                            label:
-                              hcp.permission[0].toUpperCase() +
-                              hcp.permission.slice(1),
-                          }}
-                          onChange={(e) => handlePermissionChange(e, hcp)}
-                        />
-                      </td>
-                      <td>
-                        <div className="actions flex justify-around text-2xl">
-                          <div className="hover:cursor-pointer">
-                            <AiOutlineEdit
-                              className="hover:cursor-pointer"
-                              onClick={(e) => toggleEdit(e, hcp.hcpId)}
-                            />
-                          </div>
-                          <div className="hover:cursor-pointer">
-                            <AiFillDelete
-                              className="text-red-700"
-                              onClick={(e) => removeHcpFromList(e, hcp)}
-                            />
-                          </div>
-                          <div className="hover:cursor-pointer">
-                            <FaRegShareSquare />
-                          </div>
+            {hcpDataList.length === 0 ? null : (
+              <tbody>
+                {hcpDataList.map((hcp, index) => (
+                  <tr key={index} className="fade-enter">
+                    <td>
+                      <span>
+                        {hcp.firstName} {hcp.lastName}
+                      </span>
+                    </td>
+                    <td>
+                      <span>{hcp.hcpProfession}</span>
+                    </td>
+                    <td>
+                      <span>
+                        {hcp.hcpSpecialty === "" || hcp.hcpSpecialty === null
+                          ? "Not Specified"
+                          : hcp.hcpSpecialty}
+                      </span>
+                    </td>
+                    <td>
+                      {/* permission select input */}
+                      <Select
+                        options={options}
+                        isDisabled={enableEdit !== hcp.hcpId ? true : false}
+                        value={{
+                          value: hcp.permission,
+                          label:
+                            hcp.permission[0].toUpperCase() +
+                            hcp.permission.slice(1),
+                        }}
+                        onChange={(e) => handlePermissionChange(e, hcp)}
+                      />
+                    </td>
+                    <td>
+                      <div className="actions flex justify-around text-2xl">
+                        <div className="hover:cursor-pointer">
+                          <AiOutlineEdit
+                            className="hover:cursor-pointer"
+                            onClick={(e) => toggleEdit(e, hcp.hcpId)}
+                          />
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-            </tbody>
+                        <div className="hover:cursor-pointer">
+                          <AiFillDelete
+                            className="text-red-700"
+                            onClick={(e) => removeHcpFromList(e, hcp)}
+                          />
+                        </div>
+                        <div className="hover:cursor-pointer">
+                          <FaRegShareSquare />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 }
