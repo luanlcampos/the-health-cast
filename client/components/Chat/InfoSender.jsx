@@ -6,14 +6,13 @@ function InfoSender({ firstName, lastName, chatMessages, currentUser }) {
     const [lastSeen, setLastSeen] = useState();
     useEffect(() => {
         for (var i = chatMessages.length - 1; i >= 0; i--) {
-
             if (chatMessages[i].senderEmail != currentUser.email) {
                 const lastSeenTime = chatMessages[i].timestamp.toDate().toLocaleTimeString('en-US');
-                console.log("last seen Time " + lastSeenTime);
                 setLastSeen(lastSeenTime);
+                break;
             }
         };
-    }, [chatMessages, currentUser])
+    }, [chatMessages,currentUser])
 
     const getUserInitials = () => {
         return (
@@ -23,7 +22,6 @@ function InfoSender({ firstName, lastName, chatMessages, currentUser }) {
 
     return (
         <div>
-
             <div className="flex">
                 <div className="mr-2">
                         <Avatar

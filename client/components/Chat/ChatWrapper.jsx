@@ -19,9 +19,9 @@ export default function ChatWrapper({currentUser, selectedProfile}){
     let count = 0;
 
     const emojiPicker = useRef(handleClick);
-const handleClick = (event) =>{
-    document.querySelector('.emoji-picker-react').style.display = 'none';
-}
+    const handleClick = (event) =>{
+        document.querySelector('.emoji-picker-react').style.display = 'none';
+    }
 
     useEffect(()=>{
         if(selectedProfile.email!=null){
@@ -46,38 +46,14 @@ const handleClick = (event) =>{
             };
             getMessages();
         }
-        // collection(db, "chats") loading multiple times
 
     }, [selectedProfile])
 
     useEffect(() => {
-        
-        console.log("new messages firebase");
         chatBox.current.addEventListener("DOMNodeInserted", (event) => {
           const { currentTarget: target } = event;
           target.scroll({ top: target.scrollHeight, behavior: "smooth" });
         });
-        // if(selectedProfile.email!=null){
-        //     const subColRef = collection(db, "chats", currentUser.email, "messages");
-        //     const q = query(subColRef, orderBy("timestamp", "asc")); 
-        //     onSnapshot(q, (snapshot) => {
-        //         console.log("snapshot changes");
-        //         snapshot.docChanges().forEach((change) => {
-        //         if (change.type === "added") {
-        //             console.log("New city added: ", change.doc.data());
-        //             console.log(chatMessages.length + " before");
-        //             chatMessages.push(change.doc.data());
-        //             console.log(chatMessages.length + "after");
-        //         }
-        //         if (change.type === "modified") {
-        //             console.log("Modified city: ", change.doc.data());
-        //         }
-        //         if (change.type === "removed") {
-        //             console.log("Removed city: ", change.doc.data());
-        //         }
-        //         });
-        //     });
-        // }
 
       }, [chatMessages]);
 
@@ -114,7 +90,6 @@ const handleClick = (event) =>{
                             <InfoSender firstName={selectedProfile?.firstName || ''} lastName={selectedProfile?.lastName || ''} chatMessages={chatMessages} currentUser={currentUser} />
                         </div>
                     </div>
-
                 </div>
                 <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper"  ref={chatBox}  onClick ={handleClick}>
                     {
