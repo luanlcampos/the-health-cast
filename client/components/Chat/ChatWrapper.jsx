@@ -16,26 +16,28 @@ export default function ChatWrapper({currentUser, selectedProfile}){
     const chatBox = useRef(null);
 
 
-    let count = 0;
-
     const emojiPicker = useRef(handleClick);
     const handleClick = (event) =>{
         document.querySelector('.emoji-picker-react').style.display = 'none';
     }
 
     useEffect(()=>{
-        if(selectedProfile.email!=null){
-
+        if(selectedProfile?.email!=null){
             const q = query(collection(db, "chats"));
-            
-
             const getMessages = async () => { 
+                console.log(selectedProfile);
                 const subColRef = collection(db, "chats", selectedProfile.email, "messages");
                 const q = query(subColRef, orderBy("timestamp", "asc")); 
                 onSnapshot(q, (snapshot)=>{
                     let messages = []
+                    
                     snapshot.docs.forEach(doc=>{
-                        messages.push(doc.data());
+                        if(doc.data().senderEmail != selectedProfile.email && doc.data().senderEmail != currentUser.email){
+
+                        }else{
+                            messages.push(doc.data());
+                        }
+                        return messages;
                     })
                     setChatMessages(messages);
                 })
@@ -56,6 +58,10 @@ export default function ChatWrapper({currentUser, selectedProfile}){
         });
 
       }, [chatMessages]);
+
+      useEffect(()=>{
+        console.log(selectedProfile);
+      }, [selectedProfile])
 
     const sendMessage = (e) =>{
         e.preventDefault();
