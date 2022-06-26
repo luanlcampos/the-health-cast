@@ -68,10 +68,9 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
             //     return d.data();
             //   });  
 
-              const filtered = allUsers.filter((d)=>d.email!==currentUserEmail);
-              filtered = rearrangeArray(filtered, firstUserSidebar);
-              setAllUsers(filtered);
-              handleSetAllUsers(filtered);
+              allUsers = rearrangeArray(allUsers, firstUserSidebar);
+              setAllUsers(allUsers);
+              handleSetAllUsers(allUsers);
               return null;;
 
         };
