@@ -17,10 +17,11 @@ export default function ChatContainer() {
 
     const handleSetUserProfile = ({profile})=> {
         setUserProfile(profile);
-        console.log(profile);
     }
 
-
+    const handleSetSelectedUser = ({profile})=> {
+        setUserProfile(profile);
+    }
 
 
     
@@ -44,7 +45,9 @@ export default function ChatContainer() {
                                 currentUserFName={userData.firstName} 
                                 currentUserEmail = {userData.email}
                                 handleSetAllUsers = {handleSetAllUsers}
-                                handleSetUserProfile = {handleSetUserProfile}/>
+                                handleSetUserProfile = {handleSetUserProfile}
+                                handleSetSelectedUser = {handleSetSelectedUser}
+                                selectedUserEmail = {userProfile}/>
 
                             <ChatWrapper 
                             currentUser={userData}

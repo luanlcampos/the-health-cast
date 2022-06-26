@@ -4,7 +4,7 @@ import {GrEmoji} from 'react-icons/gr';
 import dynamic from "next/dynamic";
 import {db} from '../../firebase/clientApp';
 import { collection, doc, Timestamp, setDoc,getDoc, addDoc, onSnapshot,  getDocs, query, orderBy } from "firebase/firestore";
-
+import InfoSender from './InfoSender';
 import ChatMessage from "./ChatMessage";
 
 const Picker = dynamic(() => import("emoji-picker-react"), { ssr: false });
@@ -14,9 +14,15 @@ export default function ChatWrapper({currentUser, selectedProfile}){
     const [message, setMessage] = useState("");
     const [chatMessages, setChatMessages] = useState([]);
     const chatBox = useRef(null);
-    const [isPush, setIsPush] = useState(false);
+
 
     let count = 0;
+
+    const emojiPicker = useRef(handleClick);
+const handleClick = (event) =>{
+    document.querySelector('.emoji-picker-react').style.display = 'none';
+}
+
     useEffect(()=>{
         if(selectedProfile.email!=null){
 
@@ -41,7 +47,7 @@ export default function ChatWrapper({currentUser, selectedProfile}){
             getMessages();
         }
         // collection(db, "chats") loading multiple times
-        console.log(count++)
+
     }, [selectedProfile])
 
     useEffect(() => {
@@ -89,18 +95,11 @@ export default function ChatWrapper({currentUser, selectedProfile}){
             const senderMessageRef = collection(senderDocRef, "messages");
             addDoc(senderMessageRef, payload);
 
-            const senderFriendlistRef = doc(db, "friendlist", currentUser.email)
-            const senderListRef = collection(senderFriendlistRef, "list");
-            addDoc(senderListRef, payload);
-
             // recipient
             const recipientDocRef = doc(db, "chats", selectedProfile.email);
             const recipientMessageRef = collection(recipientDocRef, "messages");
             addDoc(recipientMessageRef, payload);
 
-            const recipientFriendlistRef = doc(db, "friendlist", selectedProfile.email)
-            const recipientListRef = collection(recipientFriendlistRef, "list");
-            addDoc(recipientListRef, payload);
             chatMessages.push(payload);
             setMessage("");
         }
@@ -110,22 +109,14 @@ export default function ChatWrapper({currentUser, selectedProfile}){
         <>
             <main id="messageWrapper" className="w-full bg-whatsapp flex-col">
                 <div id="messageheader" className="main-header z-40 text-gray-400">
-                    <div className="flex items-center px-4 py-3">
+                    <div className="flex items-center px-4 py-3 chatheader">
                         <div className="flex-1">
-                            <div className="flex">
-                                <div className="mr-4">
-                                    <img className="w-11 h-11 rounded-full"
-                                         src="https://images.generated.photos/TF1poQJzPyLbQsqitETSQBeDzgY7vEsSLPl4UVbgZTM/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yz/XzA3MzMwMzAuanBn.jpg"/>
-                                </div>
-                                <div>
-                                    <p className="text-md font-bold text-white">{selectedProfile?.firstName ||''}</p>
-                                    <p className="text-sm text-gray-400">last seen today at 14:46</p>
-                                </div>
-                            </div>
+                            <InfoSender firstName={selectedProfile?.firstName || ''} lastName={selectedProfile?.lastName || ''} chatMessages={chatMessages} currentUser={currentUser} />
                         </div>
                     </div>
+
                 </div>
-                <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper"  ref={chatBox}>
+                <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper"  ref={chatBox}  onClick ={handleClick}>
                     {
                         chatMessages.map(({text,timestamp, senderEmail})=>
                         (
@@ -139,10 +130,11 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                             {/* buttons */}
                     {openEmojiBox && (
                     <Picker
-                        onEmojiClick={(event, emojiObject) =>
+                    ref = {emojiPicker}
+                    onEmojiClick={(event, emojiObject) =>
                         setMessage(message + emojiObject.emoji)
-                        }
-                    />
+                    }
+                />
                     )}
                     <div className="flex items-center px-4 py-1">
                         <div className="flex-none text-2xl" onClick={() => setOpenEmojiBox(!openEmojiBox)}>

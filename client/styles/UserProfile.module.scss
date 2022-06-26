@@ -1,0 +1,126 @@
+.user-profile {
+    @apply h-full flex flex-col gap-y-5;
+  
+    .user-header {
+      @apply flex gap-x-4;
+      @apply border-b-2 pb-2;
+      @apply px-5;
+      .user-avatar {
+      }
+  
+      .user-info {
+        @apply flex flex-col gap-y-3;
+        .user-name {
+          @apply text-3xl;
+        }
+  
+        .user-bio {
+          @apply text-gray-600;
+        }
+  
+        .follow-button {
+          @apply flex flex-row gap-x-3 items-center justify-center;
+          @apply bg-my-blue text-white;
+          @apply px-4 py-1 rounded;
+          @apply h-[30px] w-auto max-w-[150px];
+          @apply hover:cursor-pointer;
+  
+          .btn {
+            @apply px-4;
+          }
+        }
+      }
+    }
+  
+    .user-interests {
+      .user-interests-header {
+        @apply flex flex-row gap-x-1  h-fit;
+        h2 {
+          @apply text-3xl;
+          @apply px-5;
+        }
+        .btn {
+          @apply px-4 rounded-md border min-h-full;
+        }
+      }
+  
+      .user-interests-list {
+        @apply flex flex-shrink w-full;
+        @apply p-5;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding: 0 24px;
+  
+        .interest-card {
+          scroll-snap-align: start;
+          flex-shrink: 0;
+          @apply w-[150px] relative;
+  
+          .delete-interest {
+            @apply absolute top-0 right-0 pr-2 pt-2 text-gray-500 hover:text-gray-800 hover:scale-110;
+          }
+        }
+      }
+    }
+  }
+  
+  .edit-interests-modal {
+    @apply flex items-center justify-center;
+    z-index: 100;
+  
+    .edit-interests-modal-container {
+      @apply p-5;
+      @apply max-w-[600px] w-1/2 overflow-y-auto;
+      @apply h-[600px];
+  
+      .edit-interests-modal-header {
+        h2 {
+          @apply text-2xl font-bold;
+          @apply p-1;
+        }
+      }
+      .edit-interests-modal-body {
+        @apply w-full h-fit py-3;
+        @apply grid grid-rows-2 grid-cols-3;
+        @apply justify-around gap-2;
+  
+        .interest-card-added {
+          @apply flex flex-col gap-y-1;
+          @apply bg-gray-200;
+          @apply rounded-md;
+          @apply p-2;
+          @apply text-center;
+          @apply text-gray-600;
+          @apply font-semibold;
+          @apply cursor-pointer;
+          @apply hover:bg-gray-300;
+        }
+      }
+  
+      .edit-interests-modal-footer {
+        @apply flex items-center gap-x-2;
+        .refresh-btn {
+          @apply px-5 py-2 bg-my-green rounded-md text-white text-xl;
+        }
+        .finish-btn {
+          @apply px-5 py-2 bg-my-blue rounded-md text-white text-sm;
+        }
+      }
+    }
+  }
+  
+  .interest-card {
+    @apply flex flex-col justify-center;
+    @apply px-5;
+    @apply rounded-md;
+    @apply bg-gray-200;
+    @apply text-center;
+    @apply text-gray-600;
+    @apply font-semibold;
+    @apply mr-2;
+    @apply mb-2;
+    @apply max-w-[150px];
+    @apply h-[200px];
+    @apply hover:cursor-pointer;
+    @apply break-words;
+  }
