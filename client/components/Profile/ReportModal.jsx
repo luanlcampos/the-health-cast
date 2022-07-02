@@ -213,11 +213,15 @@ export default function ReportModal({
       >
         <Box sx={style}>
           <FormControl>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              // className="text-center"
+            >
               {/* You are reporting {reportedUserId} belonging to {reportedUserData.isHcp? reportedUserData.hcpOrg.orgId : 'just a regular user'} */}
-              You are reporting
-              {reportedUserData.firstName}
-              {reportedUserData.lastName}
+              You are reporting {reportedUserData.firstName}{" "}
+              {reportedUserData.lastName}{" "}
               {reportedUserData.isHcp
                 ? "from " + reportedUserData.hcpOrg.orgName
                 : ""}
