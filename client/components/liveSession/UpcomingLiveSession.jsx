@@ -3,9 +3,14 @@ import ReportModal from "@/components/Profile/ReportModal";
 import Loading from "@/components/Loading";
 import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/firebase/auth";
 import { set } from "react-hook-form";
+
+// pagination
+import Pagination from "../Pagination/Pagination";
+
+const PageSize = 2;
 
 const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
   // const date = new Date(Date(upcomingLives.createdAt)).toDateString();
@@ -18,7 +23,9 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
   const [loadingLiveSessions, setLoadingLiveSessions] = useState(false);
 
   const addUserDetailsToLiveSession = async (liveSessions) => {
-    console.log(`liveSessionsByDate.length: ${liveSessions.length}`);
+    console.log(
+      `liveSessionsByDate.length (addUserDetailsToLiveSession): ${liveSessions.length}`
+    );
     let userProfileData = {};
 
     let liveSessionsByDateWithUserDetails = [];
@@ -92,65 +99,84 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
     setLoadingLiveSessions(false);
   }, []);
 
+  // pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  let currentTableData = useMemo(() => {
+    const firstPageIndex = (currentPage - 1) * PageSize;
+    const lastPageIndex = firstPageIndex + PageSize;
+    console.log(lastPageIndex, ` ... lastPageIndex`);
+    return liveSessionsByDate.slice(firstPageIndex, lastPageIndex);
+  }, [currentPage, liveSessionsByDate]);
+  console.log(`currentTableData.length: `, currentTableData.length);
+
   return (
     <div>
-      {isLoading && !liveSessionsByDate ? (
-        <Loading />
-      ) : (
-        liveSessionsByDate.map((liveSession, index) => {
-          return (
-            // <div className="card-item shadow-lg rounded-xl grow mx-10">
-            <div
-              className="card-item shadow-lg rounded-xl grow my-5"
-              key={index}
-            >
-              <div className="card-item-thumbnail">
-                <img
-                  src="https://via.placeholder.com/315x180"
-                  alt="thumbnail"
-                  className="rounded-t-xl"
-                />
+      <div>
+        {isLoading && !liveSessionsByDate ? (
+          <Loading />
+        ) : (
+          currentTableData.map((liveSession, index) => {
+            return (
+              // <div className="card-item shadow-lg rounded-xl grow mx-10">
+              <div
+                className="card-item shadow-lg rounded-xl grow my-5"
+                key={index}
+              >
+                <div className="card-item-thumbnail">
+                  <img
+                    src="https://via.placeholder.com/315x180"
+                    alt="thumbnail"
+                    className="rounded-t-xl"
+                  />
+                </div>
+                <div className="card-item-content p-5">
+                  <Link
+                    href={{
+                      pathname: `/livesession/${liveSession.id}`,
+                      query: { liveSessionId: liveSession.id },
+                    }}
+                    as={`/livesession/${liveSession.id}`}
+                  >
+                    <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
+                      {liveSession.title}
+                    </h2>
+                  </Link>
+                  <p>{liveSession.description}</p>
+                  {isLoading ? (
+                    <Loading />
+                  ) : (
+                    <p>
+                      Hosted By:{" "}
+                      {liveSession.userProfileData
+                        ? liveSession.userProfileData.firstName
+                        : ""}{" "}
+                      {liveSession.userProfileData
+                        ? liveSession.userProfileData.lastName
+                        : ""}
+                    </p>
+                  )}
+                  {user.uid != liveSession.createdByHcpId && (
+                    <div className="follow-button inline-block align-middle">
+                      <ReportModal
+                        reportingLive={true}
+                        reportedUserData={reportedHCP}
+                        reportedUserId={liveSession.createdByHcpId}
+                      ></ReportModal>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="card-item-content p-5">
-                <Link
-                  href={{
-                    pathname: `/livesession/${liveSession.id}`,
-                    query: { liveSessionId: liveSession.id },
-                  }}
-                  as={`/livesession/${liveSession.id}`}
-                >
-                  <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
-                    {liveSession.title}
-                  </h2>
-                </Link>
-                <p>{liveSession.description}</p>
-                {isLoading ? (
-                  <Loading />
-                ) : (
-                  <p>
-                    Hosted By:{" "}
-                    {liveSession.userProfileData
-                      ? liveSession.userProfileData.firstName
-                      : ""}{" "}
-                    {liveSession.userProfileData
-                      ? liveSession.userProfileData.lastName
-                      : ""}
-                  </p>
-                )}
-                {user.uid != liveSession.createdByHcpId && (
-                  <div className="follow-button inline-block align-middle">
-                    <ReportModal
-                      reportingLive={true}
-                      reportedUserData={reportedHCP}
-                      reportedUserId={liveSession.createdByHcpId}
-                    ></ReportModal>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })
-      )}
+            );
+          })
+        )}
+      </div>
+      <Pagination
+        className="pagination-bar"
+        currentPage={currentPage}
+        totalCount={liveSessionsByDate.length}
+        pageSize={PageSize}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 };
