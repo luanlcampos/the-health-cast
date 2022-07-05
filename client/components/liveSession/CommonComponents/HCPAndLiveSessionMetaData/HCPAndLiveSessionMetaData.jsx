@@ -26,7 +26,6 @@ const HCPAndLiveSessionMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
           <p className="text-sm">{liveSessionMetaData.description}</p>
         </div>
       </div>
-      ;
     </div>
   );
 };

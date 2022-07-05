@@ -2,6 +2,7 @@ export default function ChatMessage({message, time, senderEmail, currentUserEmai
     const newDate = time.toDate().toLocaleTimeString('en-US')
     let messageHTML = "";
 
+    
     if(senderEmail!=currentUserEmail){
         messageHTML = 
         <>

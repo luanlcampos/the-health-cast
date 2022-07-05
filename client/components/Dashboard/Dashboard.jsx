@@ -62,6 +62,7 @@ export default function Dashboard() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   return (
     <>
       <div className=" flex flex-col main-content w-full px-10 py-5">
