@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Alerts from "./Alerts";
+// import Alerts from "./Alerts";
 import Requests from "./Requests";
 
 export default function OrgConsole({ user }) {
@@ -8,12 +8,12 @@ export default function OrgConsole({ user }) {
   return (
     <div className="org-req">
       <div className="menu">
-        <div
+        {/* <div
           className={`tab-title ${alertsTab ? "active" : ""}`}
           onClick={() => setAlertsTab(true)}
         >
           <h1>Alerts</h1>
-        </div>
+        </div> */}
         <div
           className={`tab-title ${!alertsTab ? "active" : ""}`}
           onClick={() => setAlertsTab(false)}
@@ -22,7 +22,8 @@ export default function OrgConsole({ user }) {
         </div>
       </div>
       <div className="tab-content h-full">
-        {alertsTab ? <Alerts /> : <Requests user={user} />}
+        {/* {alertsTab ? <Alerts /> : <Requests user={user} />} */}
+        <Requests user={user} />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@
 @import "./Admin.module.scss";
 @import "./Chat.module.scss";
 @import "../styles/UserProfile.module.scss";
+@import "./Pagination.module.scss";
 
 html,
 body {
@@ -60,3 +61,19 @@ a {
 .report-confirmation {
   z-index: 1400 !important;
 }
+
+// remove the default 'x' on the search bar
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+.report-confirmation {
+  z-index: 1400 !important;
+}
+
+// remove the default 'x' on the search bar
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }

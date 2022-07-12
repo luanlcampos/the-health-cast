@@ -3,6 +3,7 @@ import SideMenu from "../components/Layout/SideMenu";
 import Footer from "../components/Layout/Footer";
 import Button from "@mui/material/Button";
 import Link from "next/link";
+import ChatContainer from "../components/Chat/ChatContainer";
 
 // pages/404.js
 export default function Custom404() {
@@ -38,6 +39,7 @@ export default function Custom404() {
             </div>
           </div>
         </div>
+        <ChatContainer />
       </div>
       <Footer />
     </div>

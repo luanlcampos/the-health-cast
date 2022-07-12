@@ -2,7 +2,7 @@ import React,{memo} from "react";
 import { Avatar } from "@mui/material";
 
 
-function UserProfile({profile, lastMessage, handleSetSelectedUser, photoURL}){
+function UserProfile({profile, lastMessage, handleSetSelectedUser, handleSetFirstUserSidebar}){
     const getUserInitials = () => {
           return (
             profile.firstName.charAt(0) + profile.lastName.charAt(0)
@@ -11,6 +11,7 @@ function UserProfile({profile, lastMessage, handleSetSelectedUser, photoURL}){
     return(
             <div className="message text-gray-300 px-4 py-3 cursor-pointer" 
                 onClick={()=> {
+                    handleSetFirstUserSidebar({profile});
                     handleSetSelectedUser({profile});
                     }}>
                 <div className="flex items-center relative">
