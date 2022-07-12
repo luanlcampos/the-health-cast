@@ -4,7 +4,7 @@ import { db } from "../../firebase/clientApp";
 import LiveSessionPreview from "./LiveSessionPreview";
 import Loading from "@/components/Loading";
 
-const LiveSessions = () => {
+const LiveSessions = ({ userData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [LiveSessions, setLiveSessions] = useState(null);
 
@@ -38,7 +38,9 @@ const LiveSessions = () => {
             {isLoading && !LiveSessions ? (
               <Loading />
             ) : (
-              LiveSessions.map((givenLiveSession) => {
+              LiveSessions.filter((givenLiveSession) =>
+                userData.following.includes(givenLiveSession.createdByHcpId)
+              ).map((givenLiveSession) => {
                 return (
                   <LiveSessionPreview
                     liveSession={givenLiveSession}
@@ -56,7 +58,10 @@ const LiveSessions = () => {
             {isLoading && !LiveSessions ? (
               <Loading />
             ) : (
-              LiveSessions.map((givenLiveSession) => {
+              LiveSessions.filter(
+                (givenLiveSession) =>
+                  !userData.following.includes(givenLiveSession.createdByHcpId)
+              ).map((givenLiveSession) => {
                 return (
                   <LiveSessionPreview
                     liveSession={givenLiveSession}

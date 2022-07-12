@@ -12,23 +12,18 @@ import Thread from "@/components/forum/Thread";
 import Reply from "@/components/Reply/Reply";
 import Loading from "@/components/Loading";
 import { Reply as ReplyModel } from "@/model/Reply/reply";
+import SignedLayout from "@/components/Layout/SignedLayout";
 
 const ThreadById = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const { threadID, currentThread, author } = router.query;
+  const { threadID, author } = router.query;
   const [thread, setThread] = useState();
   const [thrAuthor, setThrAuthor] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [reply, setReply] = useState();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState,
-    formState: { isSubmitSuccessful },
-  } = useForm();
+  const { register, handleSubmit, reset, formState } = useForm();
 
   const loadThread = async () => {
     try {
@@ -62,35 +57,22 @@ const ThreadById = () => {
     }
   };
 
-  if (currentThread) {
-    useEffect(() => {
-      setIsLoading(true);
-      setThread(JSON.parse(currentThread));
-      setThrAuthor(JSON.parse(author));
-      setIsLoading(false);
+  useEffect(() => {
+    setIsLoading(true);
 
-      if (isSubmitSuccessful) {
-        reset({ content: "" });
-      }
-    }, [reply, formState, reset]);
-  } else {
-    useEffect(() => {
-      setIsLoading(true);
+    loadThread()
+      .then((thread) => {
+        setThread(thread);
+        loadUser(thread.authorId).catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
 
-      loadThread()
-        .then((thread) => {
-          setThread(thread);
-          loadUser(thread.authorId).catch((err) => console.log(err));
-        })
-        .catch((err) => console.log(err));
+    setIsLoading(false);
 
-      setIsLoading(false);
-
-      if (formState.isSubmitSuccessful) {
-        reset({ content: "" });
-      }
-    }, [reply, formState, reset]);
-  }
+    if (formState.isSubmitSuccessful) {
+      reset({ content: "" });
+    }
+  }, [reply]);
 
   const saveReply = async (rep) => {
     await rep.save();
@@ -123,37 +105,34 @@ const ThreadById = () => {
     router.push("/login");
     return;
   }
-// console.log("QUery object")
+
   return (
     <div>
-      <div>
-        {/* Header */}
-        <Header user={user} />
-        <div className="flex main-container h-[calc(100vh-70px)]">
-          {/* SideMenu */}
-          <div className="side-menu w-2/12 min-w-[200px]">
-            <SideMenu />
-          </div>
-          {!isLoading && thread ? (
-            <div className="w-full">
-              <Thread thread={thread} user={thrAuthor} />
-              <div className="flex bg-gray-200 p-5 shadow-xl m-10 rounded-xl">
+      <SignedLayout>
+        {!isLoading && thread ? (
+          <div className="w-full">
+            <Thread thread={thread} user={thrAuthor} />
+            <div className="flex bg-gray-200 p-5 shadow-xl m-10 rounded-xl">
+              <div className="my-auto">
                 <img
-                  src="https://via.placeholder.com/30"
-                  width="30px"
-                  height="30px"
+                  src="https://via.placeholder.com/80"
+                  width="80px"
+                  height="80px"
                   className="rounded-full mr-5"
                   alt="profile"
                 />
+              </div>
+              <div className="flex-1 h-full">
                 <form
                   onSubmit={handleSubmit(handleReplySubmit)}
-                  className="w-full flex"
+                  className="flex"
                 >
-                  <input
-                    type="text"
+                  <textarea
                     {...register("content")}
                     placeholder="New Comment..."
-                    className="grow py-1 px-3 rounded-md"
+                    rows={3}
+                    maxLength={1000}
+                    className="border border-gray-300 rounded-md p-2 resize-none focus:outline-none w-full"
                   />
                   <button
                     type="submit"
@@ -163,19 +142,19 @@ const ThreadById = () => {
                   </button>
                 </form>
               </div>
-
-              {/* Reply */}
-              {!isLoading &&
-                thread.replies.length > 0 &&
-                thread.replies.map((reply) => (
-                  <Reply replyId={reply} key={reply} />
-                ))}
             </div>
-          ) : (
-            <Loading />
-          )}
-        </div>
-      </div>
+
+            {/* Reply */}
+            {!isLoading &&
+              thread.replies.length > 0 &&
+              thread.replies.map((reply) => (
+                <Reply replyId={reply} key={reply} />
+              ))}
+          </div>
+        ) : (
+          <Loading />
+        )}
+      </SignedLayout>
     </div>
   );
 };

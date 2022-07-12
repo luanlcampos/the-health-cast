@@ -7,8 +7,8 @@ const Thread = ({ thread, user }) => {
         <div className="border-b border-black mb-5"></div>
 
         {/* Content */}
-        <div className="flex bg-gray-400 rounded-xl shadow-lg">
-          <div>
+        <div className="flex bg-my-green rounded-xl shadow-lg">
+          <div className="w-[150px] h-[150px]">
             <img
               src="https://via.placeholder.com/150"
               width="150px"
@@ -17,7 +17,7 @@ const Thread = ({ thread, user }) => {
               alt="profile"
             />
           </div>
-          <div className="grow p-5">
+          <div className="flex-1 p-5">
             <div className="text-xl">{user}</div>
             <div>{thread.content}</div>
           </div>

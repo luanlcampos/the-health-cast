@@ -115,7 +115,7 @@ const CreateLiveSessionForm = () => {
   };
 
   return (
-    <div className="outline outline-green-500">
+    <div className="">
       <form
         className="flex flex-col gap-y-[2rem]"
         noValidate

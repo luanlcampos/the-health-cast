@@ -1,3 +1,4 @@
+import Button from "@mui/material/Button";
 import Header from "@/components/Layout/Header";
 import Loading from "@/components/Loading";
 import SideMenu from "@/components/Layout/SideMenu";
@@ -44,13 +45,18 @@ const livesession = ({ currentLiveSession }) => {
         <div className="w-full my-8">
           <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
             <div className="w-3/4">
-              <h1>{givenLiveSessionID}</h1>
-              <LiveSessionStage
+              <div className="flex justify-center">
+                <LiveSessionStage
+                  liveSessionRoomID={givenLiveSessionID}
+                  hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
+                ></LiveSessionStage>
+              </div>
+              <Audience
+                className="m-8"
                 liveSessionRoomID={givenLiveSessionID}
-              ></LiveSessionStage>
-              <Audience liveSessionRoomID={givenLiveSessionID}></Audience>
+              ></Audience>
             </div>
-            <div className="outline shrink outline-cyan-500 flex flex-col lg:w-1/4 sm:w-fit md:fit">
+            <div className="shrink flex flex-col lg:w-1/4 sm:w-fit md:fit">
               <HCPAndLiveSessionMetaData
                 hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
                 liveSessionRoomID={givenLiveSessionID}
@@ -70,16 +76,23 @@ const livesession = ({ currentLiveSession }) => {
               ) : (
                 <>
                   <HCPControls
+                    className="m-8"
                     liveSessionRoomID={givenLiveSessionID}
                     hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
                   ></HCPControls>
-                  <button
-                    onClick={() => {
-                      router.push("/");
+                  <Button
+                    variant="contained"
+                    className="m-8"
+                    sx={{
+                      bgcolor: "#86a819",
+                      "&:hover": {
+                        color: "white",
+                        backgroundColor: "#a9de09",
+                      },
                     }}
                   >
-                    Leave Now
-                  </button>
+                    Leave as a Participant
+                  </Button>
                 </>
               )}
               <LiveSessionChatWindow
