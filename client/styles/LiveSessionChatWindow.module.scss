@@ -1,0 +1,76 @@
+#mainMessagesContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgb(40, 37, 53);
+  outline: red solid 3px;
+}
+#mainMessages {
+  padding: 10px;
+  margin: 10vh 0 10vh;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+
+  &::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #1e1e24;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #6649b8;
+  }
+}
+
+#formSendMessage {
+  position: sticky;
+}
+
+userData #btnSendMessage {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+#btnSendMessage:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#inputSendMessage {
+  outline: none;
+  border: none;
+}
+
+#displayMessage {
+  max-width: 500px;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+}
+
+.sent {
+  flex-direction: row-reverse;
+  #textContent {
+    color: white;
+    background: #0b93f6;
+    align-self: flex-end;
+  }
+}
+.received {
+  #textContent {
+    background: #e5e5ea;
+    color: black;
+  }
+}

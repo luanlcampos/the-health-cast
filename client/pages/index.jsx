@@ -18,13 +18,12 @@ export default function Home() {
   }
 
   if (user && (userData || adminData) && !user.emailVerified) {
-    console.log(user.emailVerified);
     router.push("/login");
     logout();
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <Header />
       {!user ? <UnsignedHome /> : <SignedHome />}
     </div>

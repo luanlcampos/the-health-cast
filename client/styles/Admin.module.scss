@@ -1,6 +1,6 @@
 .main {
   margin: 0 auto;
-  @apply flex flex-col items-center justify-center;
+  @apply flex flex-col items-center justify-start;
   height: calc(100vh - 75px);
   row-gap: 10px;
   @apply pl-2 pr-2;
@@ -99,7 +99,7 @@
       }
 
       .menu .active {
-        @apply bg-[#9FC131];
+        @apply bg-my-green;
         @apply text-white;
       }
     }
@@ -123,12 +123,11 @@
       }
 
       .table-auto {
-        @apply mt-4;
+        @apply mt-3;
         width: 100%;
 
         .table-header {
-          @apply bg-[#c4c4c4];
-          @apply rounded-md;
+          @apply bg-[#c4c4c4] h-12;
         }
 
         tbody {

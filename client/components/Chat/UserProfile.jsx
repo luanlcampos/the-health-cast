@@ -1,26 +1,34 @@
-import React from "react";
+import React,{memo} from "react";
+import { Avatar } from "@mui/material";
 
 
-export default function UserProfile({profile, handleSetUserProfile, photoURL}){
+function UserProfile({profile, lastMessage, handleSetSelectedUser, handleSetFirstUserSidebar}){
+    const getUserInitials = () => {
+          return (
+            profile.firstName.charAt(0) + profile.lastName.charAt(0)
+          ).toUpperCase();
+      };
     return(
             <div className="message text-gray-300 px-4 py-3 cursor-pointer" 
                 onClick={()=> {
-                    handleSetUserProfile({profile});
+                    handleSetFirstUserSidebar({profile});
+                    handleSetSelectedUser({profile});
                     }}>
                 <div className="flex items-center relative">
                     <div className="w-1/6">
-                        <img className="w-11 h-11 rounded-full"
-                             src={photoURL}/>
+                        <Avatar
+                        sx={{ width: "27px", height: "27px", bgcolor: "#9FC131" }}
+                        >
+                        {getUserInitials()}
+                        </Avatar>
                     </div>
                     <div className="w-5/6">
                         <div className="text-xl text-white">{profile.firstName}</div>
-                        <div className="text-sm truncate">Hello World! It's been a pleasure to meet you!
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta, ullam.
-                        </div>
+                        <div className="text-sm truncate">{lastMessage}</div>
                     </div>
-                    <span className="absolute right-0 top-0 text-xs mt-1">13:00</span>
                 </div>
             </div>
 
     )
 }
+export default memo(UserProfile)
