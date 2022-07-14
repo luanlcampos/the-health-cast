@@ -13,7 +13,7 @@ const LiveSessions = ({ userData }) => {
   const [searchLSField, setSearchLSField] = useState("");
   const [useSearch, setUseSearch] = useState(false);
   const [recommendedLives, setRecommendedLives] = useState(null);
-
+  const [livesToday, setLivesToday] = useState(null);
   useEffect(() => {
     setIsLoading(true);
     const loadLiveSessions = async () => {
@@ -30,7 +30,7 @@ const LiveSessions = ({ userData }) => {
 //		console.log(`loadLiveSessions: ${JSON.stringify(data)}`);
 			setLiveSessions(data);
 
-      //finding sessions "LIVE" today
+      /***************** finding sessions "LIVE" today *********************/
       var start = new Date();
       start.setUTCHours(0,0,0,0);
 
@@ -38,12 +38,14 @@ const LiveSessions = ({ userData }) => {
       end.setUTCHours(23,59,59,999);
 
       console.log(`data[0].sessionScheduleDate: ${data[0].sessionScheduleDate.seconds}`);
-//      const liveSessionsToday = data.filter(liveSession =>{
-//        liveSessionDate = new Date(liveSession.sessionScheduleDate);
-//        if (liveSessionDate > start.setUTCHours(0,0,0,0) && liveSessionDate < end.setUTcHours(23,59,59,999))
-//          return liveSession;
-//      })
-
+      const liveSessionsToday = data.filter(liveSession =>{
+        let liveSessionDate = liveSession.sessionScheduleDate.seconds * 1000;
+        console.log(`liveSessionDate: ${liveSessionDate} | start: ${start.setUTCHours(0,0,0,0)} | end: ${end.setUTCHours(23,59,59,999)}`);
+        if (liveSessionDate > start.setUTCHours(0,0,0,0) && liveSessionDate < end.setUTCHours(23,59,59,999))
+          return liveSession;
+      })
+      console.log(`liveSessionsToday: ${liveSessionsToday}`);
+      setLivesToday(liveSessionsToday);
 // finding HCP creators
 //        const usersRef = collection(db, "users");
 //        const usersSnap = await getDocs(usersRef);
