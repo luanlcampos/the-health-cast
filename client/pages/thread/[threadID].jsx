@@ -1,27 +1,33 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
-import SideMenu from "@/components/Layout/SideMenu";
-import Header from "@/components/Layout/Header";
 import Thread from "@/components/forum/Thread";
 import Reply from "@/components/Reply/Reply";
 import Loading from "@/components/Loading";
-import { Reply as ReplyModel } from "@/model/Reply/reply";
+import { Reply as ReplyModel, replyConverter } from "@/model/Reply/reply";
 import SignedLayout from "@/components/Layout/SignedLayout";
 
 const ThreadById = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const { threadID, author } = router.query;
+  const { threadID } = router.query;
   const [thread, setThread] = useState();
   const [thrAuthor, setThrAuthor] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [reply, setReply] = useState();
+  const [replies, setReplies] = useState([]);
 
   const { register, handleSubmit, reset, formState } = useForm();
 
@@ -39,6 +45,19 @@ const ThreadById = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const loadReplies = async () => {
+    const replyRef = collection(db, "threads", threadID, "replies");
+
+    const q = query(replyRef, orderBy("createdAt", "asc"));
+    onSnapshot(q, (s) => {
+      let reps = [];
+      s.docs.forEach((doc) => {
+        reps.push(doc.data());
+      });
+      setReplies(reps);
+    });
   };
 
   const loadUser = async (userId) => {
@@ -67,6 +86,8 @@ const ThreadById = () => {
       })
       .catch((err) => console.log(err));
 
+    loadReplies().catch((err) => console.log(err));
+
     setIsLoading(false);
 
     if (formState.isSubmitSuccessful) {
@@ -74,31 +95,18 @@ const ThreadById = () => {
     }
   }, [reply]);
 
-  const saveReply = async (rep) => {
-    await rep.save();
-  };
-
-  const addReply = async (data) => {
-    const threadRef = doc(db, "threads", threadID);
-
-    await updateDoc(threadRef, {
-      replies: arrayUnion(data.replyId),
-    });
-  };
-
-  const handleReplySubmit = (data) => {
-    setIsLoading(true);
+  const handleReplySubmit = async (data) => {
     const { content } = data;
 
     const rep = new ReplyModel(uuidv4(), user.uid, content);
 
-    saveReply(rep)
-      .then(() => {
-        setReply(rep);
-        addReply(rep);
-      })
-      .then(() => setIsLoading(false))
-      .catch(() => setIsLoading(false));
+    setReply(rep);
+
+    const threadRef = doc(db, "threads", threadID);
+    const replyRef = collection(threadRef, "replies").withConverter(
+      replyConverter
+    );
+    await addDoc(replyRef, rep);
   };
 
   if (!user) {
@@ -111,7 +119,7 @@ const ThreadById = () => {
       <SignedLayout>
         {!isLoading && thread ? (
           <div className="w-full">
-            <Thread thread={thread} user={thrAuthor} />
+            <Thread thread={thread} threadId={threadID} user={thrAuthor} />
             <div className="flex bg-gray-200 p-5 shadow-xl m-10 rounded-xl">
               <div className="my-auto">
                 <img
@@ -143,13 +151,9 @@ const ThreadById = () => {
                 </form>
               </div>
             </div>
-
-            {/* Reply */}
             {!isLoading &&
-              thread.replies.length > 0 &&
-              thread.replies.map((reply) => (
-                <Reply replyId={reply} key={reply} />
-              ))}
+              replies.length > 0 &&
+              replies.map((reply) => <Reply data={reply} />)}
           </div>
         ) : (
           <Loading />
