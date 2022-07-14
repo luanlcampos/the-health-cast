@@ -1,11 +1,9 @@
 import Link from "next/link";
-
 import ReportModal from "@/components/Profile/ReportModal";
 import { db } from "@/firebase/clientApp";
-import { getDoc, doc, getDocs } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { useAuth } from "@/firebase/auth";
 import { useEffect, useState } from "react";
-import Loading from "../Loading";
 
 const ThreadPreview = ({ thread }) => {
   const date = new Date(Date(thread.createdBy)).toDateString();
