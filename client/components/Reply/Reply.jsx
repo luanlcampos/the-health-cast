@@ -2,47 +2,28 @@ import { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/clientApp";
 
-const Reply = ({ replyId }) => {
-  const [reply, setReply] = useState();
+const Reply = ({ data }) => {
+  const [reply, setReply] = useState(data);
   const [author, setAuthor] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
+  const loadAuthor = async (userId) => {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const user = userSnap.data();
+
+      setAuthor(user.firstName + " " + user.lastName);
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true);
-    const loadReply = async () => {
-      const replyRef = doc(db, "replies", replyId);
-      const replySnap = await getDoc(replyRef);
 
-      console.log(replySnap.exists());
-      if (replySnap.exists()) {
-        const data = replySnap.data();
+    loadAuthor(data.authorId).catch((err) => console.log(err));
 
-        setReply(data);
-
-        return data;
-      }
-    };
-
-    const loadAuthor = async (userId) => {
-      const userRef = doc(db, "users", userId);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        const user = userSnap.data();
-
-        setAuthor(user.firstName + " " + user.lastName);
-      }
-    };
-
-    loadReply()
-      .then((data) => {
-        loadAuthor(data.authorId).catch((err) => console.log(err));
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        console.log(err);
-      });
+    setIsLoading(false);
   }, []);
 
   return (
