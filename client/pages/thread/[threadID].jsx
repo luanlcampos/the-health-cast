@@ -106,8 +106,6 @@ const ThreadById = () => {
     return;
   }
 
-  console.log("Query object");
-
   return (
     <div>
       <SignedLayout>

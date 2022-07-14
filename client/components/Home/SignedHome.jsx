@@ -3,9 +3,11 @@ import SideMenu from "../Layout/SideMenu";
 import LiveSessions from "@/components//liveSession/LiveSessions";
 import ChatContainer from "../Chat/ChatContainer";
 import Footer from "../Layout/Footer";
+import SignedLayout from "@/components/Layout/SignedLayout";
 
 export default function SignedHome() {
   const { user, userData } = useAuth();
+  
   return (
     <>
       <div className="main-container flex flex-column h-[calc(100vh-70px)]">
@@ -14,7 +16,7 @@ export default function SignedHome() {
         </div>
         {/* Live Now */}
         <div className="main-content w-full px-10 py-5">
-          <LiveSessions></LiveSessions>
+          <LiveSessions userData={userData}></LiveSessions>
         </div>
         {/* ChatContainer Btn */}
         <ChatContainer />

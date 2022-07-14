@@ -8,10 +8,7 @@ import Header from "@/components/Layout/Header";
 import SideMenu from "@/components/Layout/SideMenu";
 import Loading from "@/components/Loading";
 import SignedLayout from "@/components/Layout/SignedLayout";
-<<<<<<< HEAD
 import ChatContainer from "../components/Chat/ChatContainer";
-=======
->>>>>>> 2dc441f (Fixed few bugs on frontend)
 
 const Forum = () => {
   const router = useRouter();
@@ -99,10 +96,7 @@ const Forum = () => {
           <div></div>
         </div>
       </SignedLayout>
-<<<<<<< HEAD
       <ChatContainer />
-=======
->>>>>>> 2dc441f (Fixed few bugs on frontend)
     </div>
   );
 };

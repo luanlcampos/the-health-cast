@@ -1,5 +1,8 @@
 // model/users/UserData.js
 
+import { getDocs, doc } from "firebase/firestore";
+import { db } from "@/firebase/clientApp";
+
 export class UserData {
   /**
    * User data constructor
@@ -44,4 +47,42 @@ export class UserData {
     this.firstMonthlyReportDate = userData.createdAt;
     this.totalNumberReports = userData.totalNumberReports;
   }
+
+  /**
+   * 
+   * @param {String} type - type of notification (live, thread, schedule?)) 
+   * @param {String} link - action link to the notification (user.accessToken)
+   * @param {String} token - firebase access token  
+   */
+  async sendNotification(type, link, token) {
+    // get the followers
+    // const res = await getDocs(
+    //   doc(db, "users", this.id)
+    // );
+    // console.log(res);
+    // get message based on type
+    let message = "";
+    if (type === "live") {
+      message = `${this.firstName} ${this.lastName} has started a live`;
+    } else if (type === "thread") {
+      message = `${this.firstName} ${this.lastName} has created a thread`;
+    }
+
+    // call the next api to send the notification to the array of followers
+    fetch('/api/sendNotifications', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `${token}`
+      },
+      body: JSON.stringify({
+        usersId: this.followers,
+        type: type,
+        hcpName: this.firstName + " " + this.lastName,
+        message: message,
+        link: link
+      })
+    });
+  }
+
 }

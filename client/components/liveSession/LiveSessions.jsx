@@ -5,7 +5,7 @@ import LiveSessionPreview from "./LiveSessionPreview";
 import Loading from "@/components/Loading";
 import { useAuth } from "@/firebase/auth";
 
-const LiveSessions = () => {
+const LiveSessions = ({ userData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [LiveSessions, setLiveSessions] = useState(null);
   const { user } = useAuth();
