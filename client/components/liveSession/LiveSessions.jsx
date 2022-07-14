@@ -116,27 +116,28 @@ const LiveSessions = ({ userData }) => {
   }, [searchLSField]);
   
   return (
-    <div className="max-h-[calc(100vh-160px)] overflow-auto">
+    <div className="max-h-[calc(100vh-160px)] overflow-y-auto container-snap">
       {!isLoading && LiveSessions.length > 0 && (
-        <div>
-          <div className="flex flex-1 md:w-1/3 justify-end md:justify-start px-2 py-4">
+        <div className="px-3">
+          <h1 className="text-3xl font-extrabold pb-1">Latest Live Sessions</h1>
+          <div className="flex flex-1 md:w-1/3 justify-end md:justify-start py-2">
             {user && (
               <span className="relative w-full">
                 <input
                   type="search"
-                  className="w-full bg-gray-200 rounded-full px-3 py-1 focus:outline-none focus:shadow-outline appearance-none leading-normal"
+                  className="w-full bg-gray-200 rounded px-3 py-1 mb-5 focus:outline-none focus:shadow-outline appearance-none leading-normal"
                   placeholder="Search By Live Session Title ..."
 				  onChange={e=>setSearchLSField(e.target.value)}
                   id="onChange={e=>{setSearchLSField(e.target.value); filterLiveSessions(e);}}"
                 />
               </span>
             )}
-            <p>&nbsp;&nbsp;{!searchedLiveSessions? 0: searchedLiveSessions.length}</p>
+            <p>&nbsp;&nbsp;{/*!searchedLiveSessions? 0: searchedLiveSessions.length*/}</p>
           </div>
           <div className="main-content-header flex flex-col gap-x-10">
-            <h1 className="text-3xl font-bold pb-5">Live Now</h1>
+            <h2 className="text-3xl font-semibold pb-5">Live Now</h2>
           </div>
-          <div className="card-list flex flex-row flex-wrap justify-between w-full">
+          <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 my-10">
             {isLoading && !LiveSessions ? (
               <Loading />
             ) : (
@@ -161,9 +162,9 @@ const LiveSessions = ({ userData }) => {
           </div>
           {/* Recommended Lives */}
           <div className="main-content-header flex flex-col gap-x-10">
-            <h1 className="text-3xl font-bold my-5">Recommended HCP&#39;s</h1>
+            <h2 className="text-3xl font-semibold my-5">Recommended HCP&#39;s</h2>
           </div>
-          <div className="card-list flex flex-row flex-wrap justify-between w-full ">
+          <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 my-10">
             {isLoading && !LiveSessions ? (
               <Loading />
             ) : (

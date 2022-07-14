@@ -5,6 +5,7 @@ import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/firebase/auth";
+import { AiFillEdit } from "react-icons/ai";
 
 const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
@@ -32,45 +33,49 @@ const LiveSessionPreview = ({ liveSession }) => {
   }, []);
 
   return (
-    <div className="card-item shadow-lg rounded-xl grow mx-10">
-      <div className="card-item-thumbnail">
-        <img
-          src="https://via.placeholder.com/315x180"
-          alt="thumbnail"
-          className="rounded-t-xl"
-        />
-      </div>
-      <div className="card-item-content p-5">
-        <Link
-          href={{
-            pathname: `/livesession/${liveSession.id}`,
-            query: { liveSessionId: liveSession.id },
-          }}
-          as={`/livesession/${liveSession.id}`}
-        >
-          <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
-            {liveSession.title}
-          </h2>
-        </Link>
-        <p>{liveSession.description}</p>
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <p>
-            Hosted By: {createdByHcp.firstName} {createdByHcp.lastName}
-          </p>
-        )}
-        {user.uid != liveSession.createdByHcpId && (
-          <div className="follow-button inline-block align-middle">
-            <ReportModal
-              reportingLive={true}
-              reportedUserData={reportedHCP}
-              reportedUserId={liveSession.createdByHcpId}
-            ></ReportModal>
+    <>
+        <div class="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
+          <img src="https://via.placeholder.com/315x180" alt="thumbnail" className="rounded-t-xl w-full" />            
+          <div class="p-3">
+              <span class="text-sm text-primary">
+                {isLoading ? (
+                  <Loading />
+                ) : (
+                  <p>
+                    Hosted By: {createdByHcp.firstName} {createdByHcp.lastName}
+                  </p>
+                )}                
+              </span>
+              <h3 class="font-semibold text-xl leading-6 text-gray-700 my-2">
+                <Link
+                  href={{
+                    pathname: `/livesession/${liveSession.id}`,
+                    query: { liveSessionId: liveSession.id },
+                  }}
+                  as={`/livesession/${liveSession.id}`}
+                >
+                  <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
+                    {liveSession.title}
+                  </h2>
+                </Link>
+              </h3>
+              <p class="paragraph-normal text-gray-600">
+                {liveSession.description}
+              </p>
+              <p class="mt-3 block" href="#">
+                {user.uid != liveSession.createdByHcpId && (
+                  <div className="follow-button inline-block align-middle">
+                    <ReportModal
+                      reportingLive={true}
+                      reportedUserData={reportedHCP}
+                      reportedUserId={liveSession.createdByHcpId}
+                    ></ReportModal>
+                  </div>
+                )}
+              </p>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+    </>
   );
 };
 
