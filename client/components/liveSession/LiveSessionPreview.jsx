@@ -34,10 +34,10 @@ const LiveSessionPreview = ({ liveSession }) => {
 
   return (
     <>
-        <div class="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
+        <div className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
           <img src="https://via.placeholder.com/315x180" alt="thumbnail" className="rounded-t-xl w-full" />            
-          <div class="p-3">
-              <span class="text-sm text-primary">
+          <div className="p-3">
+              <span className="text-sm text-primary">
                 {isLoading ? (
                   <Loading />
                 ) : (
@@ -46,7 +46,7 @@ const LiveSessionPreview = ({ liveSession }) => {
                   </p>
                 )}                
               </span>
-              <h3 class="font-semibold text-xl leading-6 text-gray-700 my-2">
+              <div className="font-semibold text-xl leading-6 text-gray-700 my-2">
                 <Link
                   href={{
                     pathname: `/livesession/${liveSession.id}`,
@@ -58,11 +58,11 @@ const LiveSessionPreview = ({ liveSession }) => {
                     {liveSession.title}
                   </h2>
                 </Link>
-              </h3>
-              <p class="paragraph-normal text-gray-600">
+              </div>
+              <p className="paragraph-normal text-gray-600">
                 {liveSession.description}
               </p>
-              <p class="mt-3 block" href="#">
+              <div className="mt-3 block" href="#">
                 {user.uid != liveSession.createdByHcpId && (
                   <div className="follow-button inline-block align-middle">
                     <ReportModal
@@ -72,7 +72,7 @@ const LiveSessionPreview = ({ liveSession }) => {
                     ></ReportModal>
                   </div>
                 )}
-              </p>
+              </div>
           </div>
         </div>
     </>
