@@ -34,6 +34,7 @@ const LiveSessionPreview = ({ liveSession }) => {
 
   return (
     <>
+<<<<<<< HEAD
         <div className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
           <img src="https://via.placeholder.com/315x180" alt="thumbnail" className="rounded-t-xl w-full" />            
           <div className="p-3">
@@ -47,17 +48,30 @@ const LiveSessionPreview = ({ liveSession }) => {
                 )}                
               </span>
               <div className="font-semibold text-xl leading-6 text-gray-700 my-2">
+=======
+      <div className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
+        <img
+          src="https://via.placeholder.com/315x180"
+          alt="thumbnail"
+          className="rounded-t-xl w-full"
+        />
+        <div className="p-3">
+          <span className="text-sm text-primary">
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <p>
+                Hosted By:{" "}
+>>>>>>> ef8120a86fe7b665cdea72d5e4d084d5c5fe82e2
                 <Link
-                  href={{
-                    pathname: `/livesession/${liveSession.id}`,
-                    query: { liveSessionId: liveSession.id },
-                  }}
-                  as={`/livesession/${liveSession.id}`}
+                  href={`/profile/${liveSession.createdByHcpId}`}
+                  as={`/profile/${liveSession.createdByHcpId}`}
                 >
-                  <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
-                    {liveSession.title}
-                  </h2>
+                  <span className="hover:cursor-pointer hover:underline">
+                    {createdByHcp.firstName} {createdByHcp.lastName}
+                  </span>
                 </Link>
+<<<<<<< HEAD
               </div>
               <p className="paragraph-normal text-gray-600">
                 {liveSession.description}
@@ -74,7 +88,40 @@ const LiveSessionPreview = ({ liveSession }) => {
                 )}
               </div>
           </div>
+=======
+              </p>
+            )}
+          </span>
+          <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
+            <Link
+              href={{
+                pathname: `/livesession/${liveSession.id}`,
+                query: { liveSessionId: liveSession.id },
+              }}
+              as={`/livesession/${liveSession.id}`}
+            >
+              <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
+                {liveSession.title}
+              </h2>
+            </Link>
+          </h3>
+          <p className="paragraph-normal text-gray-600">
+            {liveSession.description}
+          </p>
+          <p className="mt-3 block" href="#">
+            {user.uid != liveSession.createdByHcpId && (
+              <div className="follow-button inline-block align-middle">
+                <ReportModal
+                  reportingLive={true}
+                  reportedUserData={reportedHCP}
+                  reportedUserId={liveSession.createdByHcpId}
+                ></ReportModal>
+              </div>
+            )}
+          </p>
+>>>>>>> ef8120a86fe7b665cdea72d5e4d084d5c5fe82e2
         </div>
+      </div>
     </>
   );
 };
