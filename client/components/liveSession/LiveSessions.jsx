@@ -45,34 +45,7 @@ const LiveSessions = ({ userData }) => {
           return liveSession;
       })
       console.log(`liveSessionsToday: ${liveSessionsToday}`);
-      setLivesToday(liveSessionsToday);
-// finding HCP creators
-//        const usersRef = collection(db, "users");
-//        const usersSnap = await getDocs(usersRef);
-//        let users = usersSnap.docs.map(user => ({...user.data(), id: user.id}));
-//        //console.log(`live session hcps: ${users[0].isHcp}`);
-//
-//        //console.log(`users.length: ${users.length}`);
-//        //console.log(`find only hcp content creators`);
-//        let hcps = [];
-//        for (let i = 0; i < users.length; i++){
-//          if (users[i].isHcp)
-//            hcps.push(users[i].id);
-//        }
-//
-//        console.log(`after finding: ${hcps.length}\nhcps: ${hcps}`)
-//        console.log(`data.length: ${data.length}`);
-//        let livesWithHCPInfo = [];
-//        for (let i = 0; i < data.length; i++){
-//          for (let j = 0; j < hcps.length; j++){
-//            if (hcps[j] == data[i].createdByHcpId){
-//              livesWithHCPInfo.push(data[i]);
-//              //console.log(`data[i].createdByHcpId: ${data[i].createdByHcpId} && hcps[j]: ${hcps[j]}`)
-//            }
-//          }
-//        }
-//        console.log(`lives with HCP info: ${livesWithHCPInfo.length}\nlives With HCP info: ${JSON.stringify(livesWithHCPInfo)}`);
-        
+      setLivesToday(liveSessionsToday);        
         setIsLoading(false);
       } catch (err) {
         console.error(err);
