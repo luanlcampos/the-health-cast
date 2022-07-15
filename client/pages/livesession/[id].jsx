@@ -1,18 +1,11 @@
 import Button from "@mui/material/Button";
-import Header from "@/components/Layout/Header";
+
 import Loading from "@/components/Loading";
-import SideMenu from "@/components/Layout/SideMenu";
-import Footer from "@/components/Layout/Footer";
+
 import { useAuth } from "@/firebase/auth";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import {
-  doc,
-  getDoc,
-  arrayRemove,
-  arrayUnion,
-  updateDoc,
-} from "firebase/firestore";
+import { useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/clientApp";
 import LiveSessionStage from "@/components/liveSession/CommonComponents/LiveSessionStage/LiveSessionStage";
 import Audience from "@/components/liveSession/CommonComponents/Audience/Audience";
