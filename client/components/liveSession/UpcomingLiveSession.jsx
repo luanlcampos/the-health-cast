@@ -34,7 +34,9 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
         doc(db, "users", String(liveSessions[i].createdByHcpId))
       );
       userProfileData = result.data();
-      let tmpDate = new Date(liveSessions[i].sessionScheduleDate.seconds);             
+      let tmpDate = new Date(liveSessions[i].sessionScheduleDate.seconds * 1000); 
+      console.log(`tmpDate: ${tmpDate}`);
+
       const dataWithLsId = {
         ...liveSessions[i],
         userProfileData,
