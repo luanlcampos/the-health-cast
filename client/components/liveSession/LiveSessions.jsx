@@ -158,7 +158,7 @@ const LiveSessions = ({ userData }) => {
             </p>
           </div>
           <div className="main-content-header flex flex-col gap-x-10">
-            <h2 className="text-3xl font-semibold pb-5">Live Now</h2>
+            <h2 className="text-3xl font-semibold pb-5">Followed HCP&#39;s</h2>
           </div>
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 my-10">
             {isLoading && !LiveSessions ? (
