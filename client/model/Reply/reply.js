@@ -1,6 +1,4 @@
-// /model/reply.js
-import { setDoc, doc } from "firebase/firestore";
-import { db } from "/firebase/clientApp";
+const { Timestamp } = require("firebase/firestore");
 
 // class to represent a Reply
 class Reply {
@@ -15,25 +13,22 @@ class Reply {
     this.replyId = id;
     this.authorId = userId;
     this.content = content;
-    this.createdAt = new Date();
+    this.createdAt = Timestamp.now();
   }
-
-  // save the thread to the database
-  async save() {
-    try {
-      // create a new thread document in the thread collection
-      console.log("saving a reply", this);
-      await setDoc(doc(db, "replies", this.replyId), {
-        authorId: this.authorId,
-        content: this.content,
-        createdAt: this.createdAt,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  // TODO: add functions to update reply data
 }
+const replyConverter = {
+  toFirestore: (reply) => {
+    return {
+      replyId: reply.replyId,
+      authorId: reply.authorId,
+      content: reply.content,
+      createdAt: reply.createdAt,
+    };
+  },
+  fromFirestore: (snapshot, options) => {
+    const data = snapshot.data(options);
+    return new Reply(data.replyId, data.authorId, data.content);
+  },
+};
 
-module.exports.Reply = Reply;
+module.exports = { Reply, replyConverter };

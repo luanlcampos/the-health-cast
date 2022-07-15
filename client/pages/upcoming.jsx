@@ -71,12 +71,12 @@ const Upcoming = () => {
   return (
     <div>
       <div>
-        <Header user={user} />
+        <Header className="z-100" user={user} />
         <div className="flex main-container h-[calc(100vh-70px)]">
           <div className="side-menu w-2/12 min-w-[200px]">
             <SideMenu />
           </div>
-          <div className="w-full px-10 py-5">
+          <div className="w-full px-10 py-3">
             {liveSessions.length > 0 ? (
               <UpcomingPreview upcomingLiveSessions={liveSessions} />
             ) : (
