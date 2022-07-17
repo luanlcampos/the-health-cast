@@ -9,9 +9,10 @@ import { v4 as uuidv4 } from "uuid";
 import AddInterestTagsFormInput from "../HelperComponents/AddInterestTagsFormInput";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { AiOutlineLoading } from "react-icons/ai";
+import { UserData } from "@/model/users/UserData";
 
 const CreateThread = () => {
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -52,6 +53,14 @@ const CreateThread = () => {
       );
 
       await createdThread.save();
+
+      // send notification to all followers
+      const currentUser = new UserData(userData);
+      currentUser.sendNotification(
+        "thread",
+        `thread/${createdThread.id}`,
+        user.accessToken
+      );
 
       setLoading(false);
     } catch (error) {

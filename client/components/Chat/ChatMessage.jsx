@@ -6,7 +6,6 @@ export default function ChatMessage({message,id, time, senderEmail, currentUserE
     const newDate = time.toDate().toLocaleTimeString('en-US')
     let messageHTML = "";
     let targetModal;
-    console.log(recipientEmail)
     function updateMessage(event, message){
 
         let parentE = event.target.parentNode.parentNode;
@@ -20,24 +19,22 @@ export default function ChatMessage({message,id, time, senderEmail, currentUserE
         }
     }
 
-    function deleteAMessage(event, deletedId, message){
-        console.log(deletedId)
-        console.log(message)
-        // sender
-        console.log(recipientEmail);
+    function deleteAMessage(event, deletedId, message, time){
         const senderDocRef = doc(db, "chats", recipientEmail,"messages",deletedId);
+        deleteDoc(senderDocRef);
 
-        // const senderMessageRef = collection(senderDocRef, "messages");
-        // const q = query(senderMessageRef, 
-        //     where(documentId(), "==", "124EN6VYSQLkYnQVbPjN"));
-        deleteDoc(senderDocRef)
-
-        //const querySnapshot =  getDocs(q);
 
         // recipient
-        const recipientDocRef = doc(db, "chats", senderEmail);
+        const recipientDocRef = doc(db, "chats", currentUserEmail);
         const recipientMessageRef = collection(recipientDocRef, "messages");
-        
+        const qSnap = query(recipientMessageRef, where("text","==",message), where("timestamp","==", time))
+        const querySnapshot = getDocs(qSnap);
+        let deletedRecipientId;
+        querySnapshot.then(q=>{
+            deletedRecipientId = q.docs[0].id;
+            const recipientDocRef = doc(db, "chats", currentUserEmail,"messages",deletedRecipientId);
+            deleteDoc(recipientDocRef)
+        })
     }
 
 
@@ -69,7 +66,7 @@ export default function ChatMessage({message,id, time, senderEmail, currentUserE
             <div className="flex justify-end">
                 <div class='custom-modal bg-white p-2 rounded-md hidden'>
                     <div class='hover:bg-slate-300 cursor-pointer p-2 rounded-md'   onClick={(event) => {
-            deleteAMessage(event, id, message);
+            deleteAMessage(event, id, message, time);
           }}> Delete</div>
                     <div class='hover:bg-slate-300 cursor-pointer p-2 rounded-md'>Modify</div>
                 </div>

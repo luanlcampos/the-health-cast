@@ -2,6 +2,7 @@ import Header from "./Header";
 import SideMenu from "./SideMenu";
 import { useAuth } from "@/firebase/auth";
 import Footer from "./Footer";
+import ChatContainer from "@/components/Chat/ChatContainer";
 
 export default function SignedLayout({ children }) {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export default function SignedLayout({ children }) {
         </div>
         <div className="main-content w-[calc(100%-200px)] px-10 py-5">
           {children}
+          <ChatContainer />
         </div>
       </div>
       <Footer />

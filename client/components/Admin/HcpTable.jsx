@@ -81,6 +81,16 @@ export default function HcpTable({ user, hcpListTabSelected }) {
           });
         }
       }
+      // sort hcpArray by firstName
+      hcpArray.sort((a, b) => {
+        if (a.firstName < b.firstName) {
+          return -1;
+        }
+        if (a.firstName > b.firstName) {
+          return 1;
+        }
+        return 0;
+      });
       setHcpDataList(hcpArray);
       setLoadingHcpList(false);
     } catch (error) {

@@ -117,9 +117,10 @@ export default function ReportModal({
           reportingUserProfileData.totalNumberReports
         );
 
+        let periodSinceLastReport = 0;
         const canSubmitReport = async (date, numOfReportsSubmittedThisWeek) => {
           let currDate = new Date() / 1000;
-          let periodSinceLastReport = currDate - date.seconds;
+          periodSinceLastReport = currDate - date.seconds;
 
           console.log(
             `canSubmitReport: `,
@@ -160,7 +161,10 @@ export default function ReportModal({
           console.log("createReport:", createReport);
           await createReport.save(); // to add a report to the collection "reports"
 
-          if (reportingUserProfileData.totalNumberReports > 5) {
+          if (
+            reportingUserProfileData.totalNumberReports > 5 &&
+            periodSinceLastReport > 7 * 24 * 60 * 60
+          ) {
             console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
             await updateDoc(doc(db, "users", String(user.uid)), {
               totalNumberReports: 0 + 1,
@@ -213,11 +217,15 @@ export default function ReportModal({
       >
         <Box sx={style}>
           <FormControl>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              // className="text-center"
+            >
               {/* You are reporting {reportedUserId} belonging to {reportedUserData.isHcp? reportedUserData.hcpOrg.orgId : 'just a regular user'} */}
-              You are reporting
-              {reportedUserData.firstName}
-              {reportedUserData.lastName}
+              You are reporting {reportedUserData.firstName}{" "}
+              {reportedUserData.lastName}{" "}
               {reportedUserData.isHcp
                 ? "from " + reportedUserData.hcpOrg.orgName
                 : ""}

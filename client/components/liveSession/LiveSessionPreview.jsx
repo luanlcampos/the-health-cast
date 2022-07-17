@@ -5,6 +5,7 @@ import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/firebase/auth";
+import { AiFillEdit } from "react-icons/ai";
 
 const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
@@ -32,45 +33,61 @@ const LiveSessionPreview = ({ liveSession }) => {
   }, []);
 
   return (
-    <div className="card-item shadow-lg rounded-xl grow mx-10">
-      <div className="card-item-thumbnail">
+    <>
+      <div className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
         <img
           src="https://via.placeholder.com/315x180"
           alt="thumbnail"
-          className="rounded-t-xl"
+          className="rounded-t-xl w-full"
         />
-      </div>
-      <div className="card-item-content p-5">
-        <Link
-          href={{
-            pathname: `/livesession/${liveSession.id}`,
-            query: { liveSessionId: liveSession.id },
-          }}
-          as={`/livesession/${liveSession.id}`}
-        >
-          <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
-            {liveSession.title}
-          </h2>
-        </Link>
-        <p>{liveSession.description}</p>
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <p>
-            Hosted By: {createdByHcp.firstName} {createdByHcp.lastName}
+        <div className="p-3">
+          <span className="text-sm text-primary">
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <p>
+                Hosted By:{" "}
+                <Link
+                  href={`/profile/${liveSession.createdByHcpId}`}
+                  as={`/profile/${liveSession.createdByHcpId}`}
+                >
+                  <span className="hover:cursor-pointer hover:underline">
+                    {createdByHcp.firstName} {createdByHcp.lastName}
+                  </span>
+                </Link>
+              </p>
+            )}
+          </span>
+          <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
+            <Link
+              href={{
+                pathname: `/livesession/${liveSession.id}`,
+                query: { liveSessionId: liveSession.id },
+              }}
+              as={`/livesession/${liveSession.id}`}
+            >
+              <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
+                {liveSession.title}
+              </h2>
+            </Link>
+          </h3>
+          <p className="paragraph-normal text-gray-600">
+            {liveSession.description}
           </p>
-        )}
-        {user.uid != liveSession.createdByHcpId && (
-          <div className="follow-button inline-block align-middle">
-            <ReportModal
-              reportingLive={true}
-              reportedUserData={reportedHCP}
-              reportedUserId={liveSession.createdByHcpId}
-            ></ReportModal>
-          </div>
-        )}
+          <p className="mt-3 block" href="#">
+            {user.uid != liveSession.createdByHcpId && (
+              <div className="follow-button inline-block align-middle">
+                <ReportModal
+                  reportingLive={true}
+                  reportedUserData={reportedHCP}
+                  reportedUserId={liveSession.createdByHcpId}
+                ></ReportModal>
+              </div>
+            )}
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

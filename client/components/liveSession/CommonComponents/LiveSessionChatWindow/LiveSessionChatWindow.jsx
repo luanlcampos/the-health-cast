@@ -50,7 +50,6 @@ const LiveSessionChatWindow = ({ liveSessionRoomID }) => {
 
   return (
     <div id={styles.mainMessagesContainer} className="">
-      <h1>This is the room you reside in: {liveSessionRoomID}</h1>
       <div id={styles.mainMessages} className="">
         {messages &&
           messages.map((msg) => (
