@@ -18,14 +18,24 @@ export default function ChatWrapper({currentUser, selectedProfile}){
 
     const emojiPicker = useRef(handleClick);
     const handleClick = (event) =>{
-        document.querySelector('.emoji-picker-react').style.display = 'none';
+        let emojiPicker = document.querySelector('.emoji-picker-react');
+        let customModal = document.getElementsByClassName("custom-modal");
+        
+        if(!event.target.matches('path')&& !event.target.matches('svg') ){
+            for(var i = 0; i < customModal.length; i++){
+                customModal[i].style.display = "none"
+            }
+        }
+        if(emojiPicker!=null){
+            document.querySelector('.emoji-picker-react').style.display = 'none';
+        }
+
     }
 
     useEffect(()=>{
         if(selectedProfile?.email!=null){
             const q = query(collection(db, "chats"));
             const getMessages = async () => { 
-                console.log(selectedProfile);
                 const subColRef = collection(db, "chats", selectedProfile.email, "messages");
                 const q = query(subColRef, orderBy("timestamp", "asc")); 
                 onSnapshot(q, (snapshot)=>{
@@ -35,10 +45,13 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                         if(doc.data().senderEmail != selectedProfile.email && doc.data().senderEmail != currentUser.email){
 
                         }else{
-                            messages.push(doc.data());
-                        }
+                            let aMessage = Object.assign(doc.data(), {id:doc.id});
+                            messages.push(aMessage);
+                        }          
+          
                         return messages;
                     })
+
                     setChatMessages(messages);
                 })
                 // const qSnap = getDocs(q);
@@ -99,9 +112,9 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                 </div>
                 <div id = "messageBody"className="bg-slate-900 block px-4 py-3 chat-wrapper"  ref={chatBox}  onClick ={handleClick}>
                     {
-                        chatMessages.map(({text,timestamp, senderEmail})=>
+                        chatMessages.map(({text,id, timestamp, senderEmail, recipientEmail})=>
                         (
-                            <ChatMessage message = {text} time={timestamp} senderEmail = {senderEmail} currentUserEmail = {currentUser.email}/>
+                            <ChatMessage message = {text} id = {id} time={timestamp} senderEmail = {senderEmail} currentUserEmail = {currentUser.email} recipientEmail = {recipientEmail}/>
                         ))
                     }
 
