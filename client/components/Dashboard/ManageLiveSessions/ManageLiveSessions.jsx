@@ -1,9 +1,39 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase/clientApp";
+import Loading from "@/components/Loading";
+
 import CreateLiveSessionForm from "./CreateLiveSessionForm";
 import ViewPastLiveSessions from "./ViewPastLiveSessions";
 import ViewScheduledUpcommingSessions from "./ViewScheduledUpcommingSessions";
+import Button from "@mui/material/Button";
 
 const ManageLiveSessionsIndex = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [LiveSessions, setLiveSessions] = useState(null);
+  useEffect(() => {
+    setIsLoading(true);
+    const loadLiveSessions = async () => {
+      try {
+        // thread collection reference
+        const liveSessionsRef = collection(db, "liveSessions");
+        const liveSessionsSnap = await getDocs(liveSessionsRef);
+        const data = liveSessionsSnap.docs.map((givenLiveSession) => ({
+          ...givenLiveSession.data(),
+          id: givenLiveSession.id,
+        }));
+
+        setLiveSessions(data);
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadLiveSessions();
+  }, []);
+
   const [showForm, setShowForm] = useState(false);
 
   const triggerShowForm = (e) => {
@@ -13,18 +43,33 @@ const ManageLiveSessionsIndex = () => {
 
   return (
     <>
-      <div className="  main-content w-full">
-        <div className="overflow-auto  main-content-header flex flex-col gap-y-[2rem]">
+      <div className=" max-h-[calc(100vh-300px)] main-content w-full">
+        <div className="  main-content-header flex flex-col gap-y-[2rem]">
           <form>
-            <button
+            <Button
               onClick={(e) => triggerShowForm(e)}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              sx={{
+                bgcolor: "#a9de09",
+                color: "black",
+                fontWeight: "bold",
+                padding: "1rem",
+                "&:hover": {
+                  color: "black",
+                  backgroundColor: "#a9de09",
+                },
+              }}
             >
               {showForm ? `Cancel` : `Go Live`}
-            </button>
+            </Button>
           </form>
           {showForm && <CreateLiveSessionForm></CreateLiveSessionForm>}
         </div>
+        <ViewPastLiveSessions
+          LiveSessions={LiveSessions}
+        ></ViewPastLiveSessions>
+        <ViewScheduledUpcommingSessions
+          LiveSessions={LiveSessions}
+        ></ViewScheduledUpcommingSessions>
       </div>
     </>
   );

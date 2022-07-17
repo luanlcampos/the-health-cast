@@ -21,7 +21,7 @@ export default function Home() {
     router.push("/login");
     logout();
   }
-
+  
   return (
     <div className="min-h-screen">
       <Header />

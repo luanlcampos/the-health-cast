@@ -7,6 +7,7 @@ import {
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { useAuth } from "../../firebase/auth";
 import { Menu } from "@headlessui/react";
+import Notification from "./Notification";
 
 function Header() {
   const { logout, userData, adminData, user, loading } = useAuth();
@@ -45,7 +46,8 @@ function Header() {
 
           <div className="flex flex-shrink md:w-1/3 justify-end md:flex-none">
             <div className="flex items-end">
-              <div className="flex items-center pr-4">
+              <div className="flex items-center pr-4 gap-x-4">
+                <Notification />
                 {(user && userData) || adminData ? (
                   <Menu as="div" className="relative inline-block text-left">
                     <Menu.Button className="px-2 py-2">
@@ -54,7 +56,7 @@ function Header() {
                         {userData ? userData.firstName : adminData.institution}{" "}
                       </span>
                     </Menu.Button>
-                    <Menu.Items className="flex flex-col absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="flex flex-col absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                       <Menu.Item>
                         {({ active }) => (
                           <a
