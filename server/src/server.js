@@ -1,100 +1,75 @@
-let http = require("http");
-let express = require("express");
-let cors = require("cors");
-let wrtc = require("wrtc");
-
+const express = require("express");
 const app = express();
-const server = http.createServer(app);
-// forward the broadcast stream to the consumers: 
+const bodyParser = require("body-parser");
+const webrtc = require("wrtc");
+const cors = require("cors");
+
 let senderStream;
+
+app.use(express.static("public"));
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-let receiverPCs = {};
-let senderPCs = {};
-let users = {};
-let socketToRoom = {};
-
-const pc_config = {
-  iceServers: [
-    // {
-    //   urls: 'stun:[STUN_IP]:[PORT]',
-    //   'credentials': '[YOR CREDENTIALS]',
-    //   'username': '[USERNAME]'
-    // },
-    {
-      urls: "stun:stun.l.google.com:19302",
-    },
-  ],
-};
-
-const io = require("socket.io")(server, {
-  cors: { origin: "http://localhost:3000", methods: ["GET", "POST"] },
+app.get("/", (req, res) => {
+  res.send("hello world");
 });
 
-io.on("connection", (socket) => {
-  socket.on("broadcast", async (data) => {
-    try {
-      const peer = new wrtc.RTCPeerConnection(pc_config);
-      peer.ontrack = (e) => handleTrackEvent(e, peer);
-      const desc = new webrtc.RTCSessionDescription(data.sdp);
-      await peer.setRemoteDescription(desc);
-      const answer = await peer.createAnswer();
-      await peer.setLocalDescription(answer);
-      const payload = {
-          sdp: peer.localDescription
-      }
-      socket.emit("to all users", payload);
-     // res.json(payload);
-    } catch (error) {
-      console.log(error);
-    }
+app.post("/consumer", async ({ body }, res) => {
+  const peer = new webrtc.RTCPeerConnection({
+    iceServers: [
+      {
+        urls: "stun:stun.stunprotocol.org",
+      },
+    ],
   });
-  socket.on("joinRoom", async (data) => {
-    try {
-      const peer = new wrtc.RTCPeerConnection(pc_config);
-      const desc = new webrtc.RTCSessionDescription(data.sdp);
-      await peer.setRemoteDescription(desc);
-      senderStream
-        .getTracks()
-        .forEach((track) => peer.addTrack(track, senderStream));
-      const answer = await peer.createAnswer();
-      await peer.setLocalDescription(answer);
-      const payload = {
-        sdp: peer.localDescription,
-      };
+  const desc = new webrtc.RTCSessionDescription(body.sdp);
+  await peer.setRemoteDescription(desc);
+  senderStream
+    .getTracks()
+    .forEach((track) => peer.addTrack(track, senderStream));
+  const answer = await peer.createAnswer();
+  await peer.setLocalDescription(answer);
+  const payload = {
+    sdp: peer.localDescription,
+  };
 
-      // res.json(payload);
-      socket.emit("accept viewing", payload);
-    } catch (error) {
-      console.log(error);
-    }
+  res.json(payload);
+});
+
+app.post("/broadcast", async ({ body }, res) => {
+  console.log(body);
+
+  const peer = new webrtc.RTCPeerConnection({
+    iceServers: [
+      {
+        urls: "stun:stun.stunprotocol.org",
+      },
+    ],
   });
+  peer.ontrack = (e) => handleTrackEvent(e, peer);
+  const desc = new webrtc.RTCSessionDescription(body.sdp);
+  await peer.setRemoteDescription(desc);
+  const answer = await peer.createAnswer();
+  await peer.setLocalDescription(answer);
+  const payload = {
+    sdp: peer.localDescription,
+  };
+  console.log("sensed something");
+  res.status(201).json(payload);
 });
 
 function handleTrackEvent(e, peer) {
-    senderStream = e.streams[0];
-};
+  senderStream = e.streams[0];
+}
 
-server.listen(process.env.PORT || 8080, () => {
-  console.log("server running on 8080");
+var messageId = 2;
+var messages = { 1: { name: "Bruce Lee", text: "Don't think - feel!!" } };
+
+app.post("/api", function (request, response) {
+  console.log(request.body.text);
+  messages[messageId] = { name: "test", text: request.body.text };
+  return response.status(201).json({ name: "test", text: request.body.text });
 });
 
-// io.sockets.on("connection", (socket) => {
-//   socket.emit("me", socket.id);
-
-//   socket.on("disconnect", () => {
-//     socket.broadcast.emit("callEnded");
-//   });
-
-//   socket.on("callUser", (data) => {
-//     io.to(data.userToCall).emit("callUser", {
-//       signal: data.signalData,
-//       from: data.from,
-//       name: data.name,
-//     });
-//   });
-
-//   socket.on("answerCall", (data) => {
-//     io.to(data.to).emit("callAccepted", data.signal);
-//   });
-// });
+app.listen(8080, () => console.log("server started"));
