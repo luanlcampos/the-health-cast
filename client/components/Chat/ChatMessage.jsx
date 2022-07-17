@@ -31,9 +31,11 @@ export default function ChatMessage({message,id, time, senderEmail, currentUserE
         const querySnapshot = getDocs(qSnap);
         let deletedRecipientId;
         querySnapshot.then(q=>{
-            deletedRecipientId = q.docs[0].id;
-            const recipientDocRef = doc(db, "chats", currentUserEmail,"messages",deletedRecipientId);
-            deleteDoc(recipientDocRef)
+            if(q.docs[0]!=undefined){
+                deletedRecipientId = q.docs[0].id;
+                const recipientDocRef = doc(db, "chats", currentUserEmail,"messages",deletedRecipientId);
+                deleteDoc(recipientDocRef)
+            }
         })
     }
 
