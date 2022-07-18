@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { AiFillEdit } from "react-icons/ai";
+import { useAuth } from "@/firebase/auth";
 import EditThreadModal from "./EditThreadModal";
 
-const Thread = ({ thread, threadId, user }) => {
+const Thread = ({ thread, threadId, userName }) => {
   const [isOpen, setIsOpen] = useState();
   const [threadContent, setThreadContent] = useState();
+  const { user } = useAuth();
 
   useEffect(() => {
     setIsOpen(false);
@@ -31,15 +33,17 @@ const Thread = ({ thread, threadId, user }) => {
               />
             </div>
             <div className="flex-1 p-5">
-              <div className="text-xl">{user}</div>
+              <div className="text-xl">{userName}</div>
               <div>{threadContent}</div>
             </div>
-            <div className="p-4">
-              <AiFillEdit
-                onClick={() => setIsOpen(true)}
-                className="hover:cursor-pointer"
-              />
-            </div>
+            {thread.authorId === user.uid && (
+              <div className="p-4">
+                <AiFillEdit
+                  onClick={() => setIsOpen(true)}
+                  className="hover:cursor-pointer"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

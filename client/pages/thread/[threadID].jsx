@@ -119,7 +119,7 @@ const ThreadById = () => {
       <SignedLayout>
         {!isLoading && thread ? (
           <div className="w-full">
-            <Thread thread={thread} threadId={threadID} user={thrAuthor} />
+            <Thread thread={thread} threadId={threadID} userName={thrAuthor} />
             <div className="flex bg-gray-200 p-5 shadow-xl m-10 rounded-xl">
               <div className="my-auto">
                 <img
