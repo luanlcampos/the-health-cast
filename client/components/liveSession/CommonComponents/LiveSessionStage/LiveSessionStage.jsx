@@ -47,7 +47,7 @@ const LiveSessionStage = ({
         <JitsiMeeting
           configOverwrite={{
             prejoinPageEnabled: false, //This here
-            startSilent: !creatorStatus,
+          
             startWithVideoMuted: !creatorStatus,
             localRecording: { enabled: creatorStatus },
             toolbarButtons: creatorStatus ? creatorTools : regularTools,
