@@ -1,18 +1,11 @@
 import Button from "@mui/material/Button";
-import Header from "@/components/Layout/Header";
+
 import Loading from "@/components/Loading";
-import SideMenu from "@/components/Layout/SideMenu";
-import Footer from "@/components/Layout/Footer";
+
 import { useAuth } from "@/firebase/auth";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import {
-  doc,
-  getDoc,
-  arrayRemove,
-  arrayUnion,
-  updateDoc,
-} from "firebase/firestore";
+import { useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/clientApp";
 import LiveSessionStage from "@/components/liveSession/CommonComponents/LiveSessionStage/LiveSessionStage";
 import Audience from "@/components/liveSession/CommonComponents/Audience/Audience";
@@ -45,16 +38,14 @@ const livesession = ({ currentLiveSession }) => {
         <div className="w-full my-8">
           <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
             <div className="w-3/4">
-              <div className="flex justify-center">
+              <div className="flex justify-center h-full">
                 <LiveSessionStage
                   liveSessionRoomID={givenLiveSessionID}
                   hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
+                  currentUser={user}
+                  currentUserData={userData}
                 ></LiveSessionStage>
               </div>
-              <Audience
-                className="m-8"
-                liveSessionRoomID={givenLiveSessionID}
-              ></Audience>
             </div>
             <div className="shrink flex flex-col lg:w-1/4 sm:w-fit md:fit">
               <HCPAndLiveSessionMetaData

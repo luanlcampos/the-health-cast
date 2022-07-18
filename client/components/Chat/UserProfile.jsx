@@ -2,7 +2,7 @@ import React,{memo} from "react";
 import { Avatar } from "@mui/material";
 
 
-function UserProfile({profile, lastMessage, handleSetSelectedUser, handleSetFirstUserSidebar}){
+function UserProfile({profile, handleSetSelectedUser, handleSetFirstUserSidebar}){
     const getUserInitials = () => {
           return (
             profile.firstName.charAt(0) + profile.lastName.charAt(0)
@@ -24,7 +24,6 @@ function UserProfile({profile, lastMessage, handleSetSelectedUser, handleSetFirs
                     </div>
                     <div className="w-5/6">
                         <div className="text-xl text-white">{profile.firstName}</div>
-                        <div className="text-sm truncate">{lastMessage}</div>
                     </div>
                 </div>
             </div>

@@ -120,10 +120,11 @@ const UpcomingPreview = ({ upcomingLiveSessions }) => {
               <UpcomingLiveSession
                 upcomingLives={upcomingLiveSessions}
                 upcomingDate={date}
-              />
+              />                        
             </TabPanel>
           );
         })}
+
       </TabContext>
     </Box>
   );

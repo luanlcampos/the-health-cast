@@ -38,7 +38,7 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
     
           const followers = data.filter((u) => u.id === user.uid)[0].followers;
           const followings = data.filter((u) => u.id === user.uid)[0].following;
-    
+  
           const chatUserIds = filterFollowersFollowings(followers, followings);
           const chatUsers = data.filter(function (d) {
             let chatUser = chatUserIds.filter((id) => d.id === id)[0];
@@ -104,12 +104,14 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
       }
 
       const filterFollowersFollowings = (followers, followings) => {
-        if (followers == null && followings == null) return [];
-        if (followers == null && followings != null) return followings;
-        if (followers != null && followings == null) return followers;
-        return followers.filter(function (obj) {
-          return followings.indexOf(obj) == -1;
-        });
+        if (followers.length == 0 && followings.length == 0) return [];
+        if (followers.length == 0 && followings.length > 0) return followings;
+        if (followers.length > 0 && followings.length == 0) return followers;
+        let mergeArr = [...followers, ...followings];
+        let uniqueArray = mergeArr.filter(function(item, pos, self) {
+          return self.indexOf(item) == pos;
+      })
+        return uniqueArray;
       };
 
       
@@ -167,7 +169,6 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
                                 profile = {subscriber}
                                 handleSetUserProfile={handleSetUserProfile}
                                 handleSetSelectedUser={handleSetSelectedUser}
-                                lastMessage = {subscriber.lastMessage?.text}
                                 handleSetFirstUserSidebar = {handleSetFirstUserSidebar}
                                 />                            
                         ))

@@ -15,6 +15,9 @@ const Forum = () => {
   const { user } = useAuth();
   const [threads, setThreads] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [searchThreadField, setSearchThreadField] = useState("");
+  const [searchedThreads, setSearchedThreads] = useState(null);
+  const [useSearch, setUseSearch] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -56,6 +59,35 @@ const Forum = () => {
 
     loadThreads();
   }, []);
+  
+  // search Thread useEffect
+  useEffect(()=>{
+    let matchingThreads = [];
+    const filterThreads = async () => {
+      try {
+        //e.preventDefault();
+        setSearchedThreads(null);
+        console.log(`value (2nd useEffect): ${searchThreadField}`);
+
+        //if (!LiveSessions)
+        //  console.log(`length: ${threads.length}`);
+        
+        console.log(`threads is ${threads.length}`);
+        if (threads){
+          matchingThreads = threads.filter(thread => thread.title.toLowerCase().includes(searchThreadField.toLowerCase()));
+          console.log(`searched threads (matchingThreads): ${JSON.stringify(matchingThreads)}`);
+          console.log(`matchingLS.length: ${matchingThreads.length}`);
+          setSearchedThreads(matchingThreads);
+          setUseSearch(true);
+        }
+      } catch (err){
+        console.error(err);
+      }
+    }
+    filterThreads();
+
+    console.log(`state (searchedThreads): ${!searchedThreads? 0: searchedThreads.length}`);
+  }, [searchThreadField]);  
 
   if (!user) {
     router.push("/login");
@@ -66,7 +98,18 @@ const Forum = () => {
     <div>
       <SignedLayout>
         <div className="w-full px-10 py-5">
-          <h1 className="text-3xl font-bold pb-10">Latest Posts</h1>
+          <h1 className="text-3xl font-bold pb-3">Latest Posts</h1>
+          {user && (
+            <span className="relative w-full">
+              <input
+                type="search"
+                className="w-1/3 bg-gray-200 rounded px-3 py-1 my-5 focus:outline-none focus:shadow-outline appearance-none leading-normal"
+                placeholder="Search By Forum Thread Title ..."
+        onChange={e=>setSearchThreadField(e.target.value)}
+                id="onChange={e=>{setSearchLSField(e.target.value); filterLiveSessions(e);}}"
+              />
+            </span>
+          )}          
           <h2 className="text-2xl font">Followed HCP's</h2>
           <div className="border-b border-black mb-5"></div>
 
@@ -74,9 +117,12 @@ const Forum = () => {
             {isLoading && !threads ? (
               <Loading />
             ) : (
-              threads.map((thread) => {
+              useSearch && searchThreadField.length > 0? 
+              (searchedThreads.map((thread) => {
                 return <ThreadPreview thread={thread} key={thread.id} />;
-              })
+              })) : (threads.map((thread) => {
+                return <ThreadPreview thread={thread} key={thread.id} />;
+              }))
             )}
           </div>
 
