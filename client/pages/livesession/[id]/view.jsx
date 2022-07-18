@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/clientApp";
-import LiveSessionStage from "@/components/liveSession/CommonComponents/LiveSessionStage/LiveSessionStage";
+import LiveSessionViewBroadcast from "@/components/liveSession/CommonComponents/LiveSessionStage/LiveSessionViewBroadcast";
 import Audience from "@/components/liveSession/CommonComponents/Audience/Audience";
 import HCPAndLiveSessionMetaData from "@/components/liveSession/CommonComponents/HCPAndLiveSessionMetaData/HCPAndLiveSessionMetaData";
 import LiveSessionChatWindow from "@/components/liveSession/CommonComponents/LiveSessionChatWindow/LiveSessionChatWindow";
@@ -38,14 +38,16 @@ const livesession = ({ currentLiveSession }) => {
         <div className="w-full my-8">
           <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
             <div className="w-3/4">
-              <div className="flex justify-center h-full">
-                <LiveSessionStage
+              <div className="flex justify-center">
+                <LiveSessionViewBroadcast
                   liveSessionRoomID={givenLiveSessionID}
                   hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
-                  currentUser={user}
-                  currentUserData={userData}
-                ></LiveSessionStage>
+                ></LiveSessionViewBroadcast>
               </div>
+              <Audience
+                className="m-8"
+                liveSessionRoomID={givenLiveSessionID}
+              ></Audience>
             </div>
             <div className="shrink flex flex-col lg:w-1/4 sm:w-fit md:fit">
               <HCPAndLiveSessionMetaData
@@ -100,7 +102,9 @@ const livesession = ({ currentLiveSession }) => {
 };
 
 export const getServerSideProps = async (context) => {
+  
   const givenLiveSessionId = context.params.id; // Get ID from slug `/livesession/[id]`
+  console.log(givenLiveSessionId);
   let hcpCreatorProfileData;
   let liveSessionData;
   let currentLiveSession;
@@ -140,6 +144,7 @@ export const getServerSideProps = async (context) => {
             liveSessionData.updatedAt = JSON.stringify(
               liveSessionData.updatedAt
             );
+            console.log(liveSessionData);
           }
           if (
             hcpCreatorProfileData &&
@@ -154,6 +159,9 @@ export const getServerSideProps = async (context) => {
       } catch (e) {
         console.error("error: ", e);
       }
+    }
+    else{
+      console.log("error")
     }
   } catch (e) {
     console.error(e);
