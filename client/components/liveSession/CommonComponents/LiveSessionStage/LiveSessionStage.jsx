@@ -27,6 +27,7 @@ const LiveSessionStage = ({
     "mute-everyone",
     "mute-video-everyone",
     "security",
+    "hangup"
   ];
 
  const  regularTools = ["fullscreen", "raisehand"];
@@ -51,6 +52,7 @@ const LiveSessionStage = ({
             startWithVideoMuted: !creatorStatus,
             localRecording: { enabled: creatorStatus },
             toolbarButtons: creatorStatus ? creatorTools : regularTools,
+              tileView: {  numberOfVisibleTiles: 1}
           }}
           roomName={`${liveSessionRoomID}`}
           userInfo={{
