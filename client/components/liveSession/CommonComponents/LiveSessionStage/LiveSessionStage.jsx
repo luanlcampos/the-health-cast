@@ -27,6 +27,7 @@ const LiveSessionStage = ({
     "mute-everyone",
     "mute-video-everyone",
     "security",
+    "hangup"
   ];
 
  const  regularTools = ["fullscreen", "raisehand"];
@@ -47,10 +48,11 @@ const LiveSessionStage = ({
         <JitsiMeeting
           configOverwrite={{
             prejoinPageEnabled: false, //This here
-            // startSilent: !creatorStatus,
-            // startWithVideoMuted: !creatorStatus,
-            // localRecording: { enabled: creatorStatus },
+          startWithAudioMuted: !creatorStatus,
+            startWithVideoMuted: !creatorStatus,
+            localRecording: { enabled: creatorStatus },
             toolbarButtons: creatorStatus ? creatorTools : regularTools,
+              tileView: {  numberOfVisibleTiles: 1}
           }}
           roomName={`${liveSessionRoomID}`}
           userInfo={{

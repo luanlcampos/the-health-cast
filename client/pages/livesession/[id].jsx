@@ -38,7 +38,7 @@ const livesession = ({ currentLiveSession }) => {
         <div className="w-full my-8">
           <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
             <div className="w-3/4">
-              <div className="flex justify-center h-full">
+              <div className="flex justify-center h-[76vh]">
                 <LiveSessionStage
                   liveSessionRoomID={givenLiveSessionID}
                   hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
