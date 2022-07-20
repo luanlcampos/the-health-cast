@@ -116,7 +116,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
               // <div className="card-item shadow-lg rounded-xl grow mx-10">
               <div className="grid flex flex-col md:flex-row bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2" key={index}>
                 <div className='relative m-0 flex bg-white rounded-lg'>
-                  <div className='flex-no-shrink'>
+                  <div className='flex-no-shrink max-w-xs'>
                     <img alt='' className='rounded-l-lg inset-0 h-full w-full object-cover object-center' src='https://via.placeholder.com/315x180' />
                   </div>
                   <div className='flex-1 card-block relative grid grid-cols-3'>
