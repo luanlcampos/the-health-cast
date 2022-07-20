@@ -27,6 +27,8 @@ const Upcoming = () => {
           return {
             ...user.data(),
             id: user.id,
+            initials: user.data().firstName.at(0).toUpperCase() + user.data().lastName.at(0).toUpperCase(),
+            fullName: (user.data().firstName.toLowerCase() + " " + user.data().lastName.toLowerCase()).replace(/  +/g, ' '),
           };
         });
 
