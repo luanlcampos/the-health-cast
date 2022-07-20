@@ -27,7 +27,7 @@ export const getAdminData = async (id, token) => {
     try {
         // Vercel exposes some variables in the environment by default. See more at:
         // https://vercel.com/docs/concepts/projects/environment-variables#system-environment-variables
-        const baseUrl = process.env.NODE_ENV === 'production' ? process.env.VERCEL_URL : 'http://localhost:3000';
+        const baseUrl = process.env.NODE_ENV === 'production' ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
         const url = `${baseUrl}/api/admin/${id}`;
         console.log("url: ", url);
 
