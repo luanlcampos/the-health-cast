@@ -22,3 +22,24 @@ export class AdminData {
         this.followers = adminData.followers;
     }
 }
+// get admin data
+export const getAdminData = async (id, token) => {
+    try {
+        // Vercel exposes some variables in the environment by default. See more at:
+        // https://vercel.com/docs/concepts/projects/environment-variables#system-environment-variables
+        const baseUrl = process.env.NODE_ENV === 'production' ? process.env.VERCEL_URL : 'http://localhost:3000';
+        const url = `${baseUrl}/api/admin/${id}`;
+
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                'Authorization': `${token}`,
+            }
+        });
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.warn(error.message);
+        return null;
+    }
+}
