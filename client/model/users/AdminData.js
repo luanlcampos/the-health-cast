@@ -29,6 +29,7 @@ export const getAdminData = async (id, token) => {
         // https://vercel.com/docs/concepts/projects/environment-variables#system-environment-variables
         const baseUrl = process.env.NODE_ENV === 'production' ? process.env.VERCEL_URL : 'http://localhost:3000';
         const url = `${baseUrl}/api/admin/${id}`;
+        console.log("url: ", url);
 
         const res = await fetch(url, {
             method: "GET",
