@@ -7,7 +7,9 @@ import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/firebase/auth";
 import { set } from "react-hook-form";
 import { Avatar } from "@mui/material";
+import Image from "next/image";
 
+// pagination content limit per page
 const PageSize = 3;
 
 const UpcomingLiveSession = ({ account }) => {
@@ -38,6 +40,7 @@ const UpcomingLiveSession = ({ account }) => {
 //      {account.id}
 //    </div>
 // <img className="w-32 mx-auto mt-2 rounded-full border-8 border-white" src="https://th.bing.com/th/id/OIP.audMX4ZGbvT2_GJTx2c4GgHaHw?pid=ImgDet&rs=1" alt="profile avatar"/>
+// <span className="text-xl">{account.firstName[0].toUpperCase()}{" "}{ account.lastName[0].toUpperCase()}</span>
       <div className="bg-gray-190 font-sans w-full flex flex-row justify-center items-center rounded-lg">
         <div className="card w-96 mx-auto bg-white h-full shadow-xl hover:shadow rounded">
            <Link
@@ -47,19 +50,30 @@ const UpcomingLiveSession = ({ account }) => {
              }}
              as={`/profile/${account.id}`}
            >        
-              <div className="user-avatar">
+              <div className="user-avatar pt-1">
                 <Avatar
                   sx={{ width: "135px", height: "135px", bgcolor: "#9FC131" }}
                   className="w-32 mx-auto rounded-full border-8 border-white cursor-pointer" 
                 >
-                  {account.firstName[0]}{" "}{ account.lastName[0]}
+                  <span className="text-4xl">
+                    {account.initials}
+                  </span>                  
                 </Avatar>
               </div>
            </Link>           
 
            <div className="text-center mt-2 text-3xl font-medium">{account.firstName} {account.lastName}</div>
            <div className="text-center mt-2 font-light text-sm">{/*@devpenzil*/}</div>
-           <div className="text-center font-normal text-lg">{account.hcpOrg? account.hcpOrg.orgName: <br/>}</div>
+           <div className="text-center font-normal text-lg">
+              {account.hcpOrg ? (
+                <span>
+                  {account.hcpOrg.orgName}
+                  <Image src="/images/hcpLogo.svg" width="30px" height="30px" />
+                </span>
+              ) : (
+                <br />
+              )}
+           </div>
            <div className="px-6 text-center mt-2 font-light text-sm">
              <p className="text-ellipsis truncate ...">
                {account.biography? account.biography : <br/>}
