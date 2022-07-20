@@ -46,12 +46,13 @@ const Pagination = (props) => {
           disabled: currentPage === 1,
         })}
         onClick={onPrevious}
+        key={currentPage-1}
       >
         <div className="arrow left" />
       </li>
       {paginationRange.map((pageNumber) => {
         if (pageNumber === DOTS) {
-          return <li className="pagination-item dots">&#8230;</li>;
+          return <li className="pagination-item dots" key={pageNumber}>&#8230;</li>;
         }
 
         return (
@@ -60,6 +61,7 @@ const Pagination = (props) => {
               selected: pageNumber === currentPage,
             })}
             onClick={() => onPageChange(pageNumber)}
+            key={pageNumber}
           >
             {pageNumber}
           </li>
@@ -70,6 +72,7 @@ const Pagination = (props) => {
           disabled: currentPage === lastPage,
         })}
         onClick={onNext}
+        key={currentPage}
       >
         <div className="arrow right" />
       </li>

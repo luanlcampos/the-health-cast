@@ -66,15 +66,15 @@ const LiveSessionPreview = ({ liveSession }) => {
               }}
               as={`/livesession/${liveSession.id}`}
             >
-              <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
+              <p className="text-2xl pb-2 hover:cursor-pointer hover:underline">
                 {liveSession.title}
-              </h2>
+              </p>
             </Link>
           </h3>
           <p className="paragraph-normal text-gray-600">
             {liveSession.description}
           </p>
-          <p className="mt-3 block" href="#">
+          <div className="mt-3 block" href="#">
             {user.uid != liveSession.createdByHcpId && (
               <div className="follow-button inline-block align-middle">
                 <ReportModal
@@ -84,7 +84,7 @@ const LiveSessionPreview = ({ liveSession }) => {
                 ></ReportModal>
               </div>
             )}
-          </p>
+          </div>
         </div>
       </div>
     </>

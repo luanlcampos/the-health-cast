@@ -133,27 +133,23 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
                         </h2>
                       </Link>         
                       <p className='leading-normal'>{liveSession.description}</p>
-                      <p className="mt-2">
-                        Hosted By:{" "}
-                        {isLoading ? (
-                          <Loading />
-                        ) : (
-                          <Link
-                            href={`/profile/${liveSession.createdByHcpId}`}
-                            as={`/profile/${liveSession.createdByHcpId}`}
-                          >                      
-                            <span className="hover:cursor-pointer hover:underline">
+                      <Link
+                        href={`/profile/${liveSession.createdByHcpId}`}
+                        as={`/profile/${liveSession.createdByHcpId}`}
+                      > 
+                        <p className="mt-2">
+                          Hosted By:{" "}
+                              <span className="hover:cursor-pointer hover:underline">
 
-                              {liveSession.userProfileData
-                                ? liveSession.userProfileData.firstName
-                                : ""}{" "}
-                              {liveSession.userProfileData
-                                ? liveSession.userProfileData.lastName
-                                : ""}
-                            </span>
-                          </Link>                        
-                        )}
-                      </p>
+                                {liveSession.userProfileData
+                                  ? liveSession.userProfileData.firstName
+                                  : ""}{" "}
+                                {liveSession.userProfileData
+                                  ? liveSession.userProfileData.lastName
+                                  : ""}
+                              </span>
+                        </p>
+                      </Link>                                              
                       {user.uid != liveSession.createdByHcpId && (
                         <div className="follow-button inline-block align-middle pt-3 text-sm">
                           <ReportModal

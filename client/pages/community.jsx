@@ -9,7 +9,7 @@ import Loading from "@/components/Loading";
 
 import CommunityPreview from "@/components/Community/CommunityPreview";
 
-const Upcoming = () => {
+const Community = () => {
   const router = useRouter();
   const { user } = useAuth();
   const [accounts, setAccounts] = useState([]);
@@ -69,12 +69,11 @@ const Upcoming = () => {
             <SideMenu />
           </div>
           <div className="w-full px-10 py-3">
-            <CommunityPreview communityAccounts={accounts}/>
-            {/*liveSessions.length > 0 ? (
-              <UpcomingPreview upcomingLiveSessions={liveSessions} />
+            {accounts.length > 0 ? (
+              <CommunityPreview communityAccounts={accounts} />
             ) : (
               ""
-            )*/}
+            )}
           </div>
         </div>
       </div>
@@ -82,4 +81,4 @@ const Upcoming = () => {
   );
 };
 
-export default Upcoming;
+export default Community;

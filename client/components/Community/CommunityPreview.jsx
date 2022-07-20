@@ -18,8 +18,8 @@ const CommunityPreview = ({ communityAccounts }) => {
   const { user } = useAuth();
 
   const accounts = communityAccounts;
-  console.log(`accounts: `, accounts);
-  console.log(`accounts.length: `, accounts.length);
+//  console.log(`accounts: `, accounts);
+//  console.log(`accounts.length: `, accounts.length);
 
   // pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,14 +27,15 @@ const CommunityPreview = ({ communityAccounts }) => {
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
     console.log(lastPageIndex, ` ... lastPageIndex`);
+
     if (searchAccountsField.length == 0)
       return accounts.slice(firstPageIndex, lastPageIndex);
     else if (searchAccountsField.length > 0 && searchedAccounts)
       return searchedAccounts.slice(firstPageIndex, lastPageIndex);      
-  }, [currentPage, accounts, searchedAccounts, searchAccountsField]);
-  console.log(`currentTableData.length: `, currentTableData.length);
+  }, [currentPage, accounts, searchedAccounts]);
+//  console.log(`currentTableData.length: `, currentTableData.length);
 
-  console.log(`searchAccountsField: ${searchAccountsField}`);
+//  console.log(`searchAccountsField: ${searchAccountsField}`);
 
   useEffect(() => {
     let matchingAccts = [];
@@ -42,17 +43,17 @@ const CommunityPreview = ({ communityAccounts }) => {
       try {
         //e.preventDefault();
         setSearchedAccounts(null);
-        console.log(`value (2nd useEffect): ${searchAccountsField}`);
+        //console.log(`value (2nd useEffect): ${searchAccountsField}`);
 
         if (accounts) {
           matchingAccts = accounts.filter((account) =>
             account.fullName.includes(searchAccountsField.toLowerCase()) ||
             account.initials.includes(searchAccountsField.toUpperCase())
           );
-          console.log(
-            `searched accounts (matchingAccts): ${JSON.stringify(matchingAccts)}`
-          );
-          console.log(`matchingAccts.length: ${matchingAccts.length}`);
+//          console.log(
+//            `searched accounts (matchingAccts): ${JSON.stringify(matchingAccts)}`
+//          );
+//          console.log(`matchingAccts.length: ${matchingAccts.length}`);
 
           setSearchedAccounts(matchingAccts);
           setCurrentPage(1);
@@ -107,7 +108,7 @@ const CommunityPreview = ({ communityAccounts }) => {
       <Pagination
         className="pagination-bar pt-3"
         currentPage={currentPage}
-        totalCount={accounts.length}
+        totalCount={searchedAccounts? searchedAccounts.length : accounts.length}
         pageSize={PageSize}
         onPageChange={(page) => setCurrentPage(page)}
       />      
