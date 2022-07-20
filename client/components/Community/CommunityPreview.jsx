@@ -55,7 +55,7 @@ const CommunityPreview = ({ communityAccounts }) => {
           console.log(`matchingAccts.length: ${matchingAccts.length}`);
 
           setSearchedAccounts(matchingAccts);
-
+          setCurrentPage(1);
           //if (matchingAccts.length > 0 && searchAccountsField.length !== "")
           setUseSearch(true);
         }
