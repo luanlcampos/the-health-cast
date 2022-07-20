@@ -83,6 +83,22 @@ export default function SideMenu() {
               </Link>
             </div>
           </li>
+          <li
+            className={`p-0 w-[150px] py-3 px-8 mx-auto hover:bg-[#d4d4d4] hover:rounded-xl  ${
+              router.pathname == "/community"
+                ? "active shadow-lg bg-my-green rounded-xl"
+                : ""
+            }`}
+          >
+            <div className="flex flex-col text-center">
+              <Link href="/community">
+                <a>
+                  <AiOutlineCalendar className="mx-auto text-3xl mb-2" />
+                  <div className="mx-auto text-md">Community</div>
+                </a>
+              </Link>
+            </div>
+          </li>          
           {userData && userData.isHcp && (
             <li
               className={`p-0 w-[150px] py-3 px-8 mx-auto hover:bg-[#d4d4d4] hover:rounded-xl  ${
