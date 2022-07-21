@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import nookies from "nookies";
 
 import Loading from "@/components/Loading";
 
@@ -44,9 +45,18 @@ const livesession = ({ currentLiveSession }) => {
   if (!user) {
     router.push("/login");
     return;
+  } else {
+
   }
 
   useEffect(() => {
+    console.log("Rendering out the page", currentLiveSession.liveSessionData.createdByHcpId);
+    console.log(user.uid)
+    setCreatorStatus(currentLiveSession.liveSessionData.createdByHcpId == user.uid);
+    console.log(
+      "Setting the creator status as: ",
+      currentLiveSession.liveSessionData.createdByHcpId == user.uid
+    );
     router.beforePopState(({ url, as, options }) => {
       // Analyze if health care professional is leaving the room admist them recording or leaving the session open.
       if (
@@ -65,12 +75,6 @@ const livesession = ({ currentLiveSession }) => {
     if (user && userData) {
       setIsLoading(false);
     }
-    if (
-      user &&
-      userData &&
-      user.uid == currentLiveSession.hcpCreatorProfileData.uid
-    )
-      setCreatorStatus(true);
 
     const getLiveSessionReferenceAndDocument = async () => {
       try {
@@ -120,10 +124,6 @@ const livesession = ({ currentLiveSession }) => {
               ></HCPAndLiveSessionMetaData>
               {creatorStatus ? (
                 <>
-                  <h1>
-                    Rendering the HCP controls because the current user is the
-                    creator
-                  </h1>
                   <HCPControls
                     liveSessionMetaData={currentLiveSession.liveSessionData}
                     liveSessionRoomID={givenLiveSessionID}
@@ -134,7 +134,6 @@ const livesession = ({ currentLiveSession }) => {
               ) : (
                 <>
                   <Button
-                    ob
                     onClick={handleLeaveRoom}
                     variant="contained"
                     className="m-8"
@@ -171,6 +170,9 @@ export const getServerSideProps = async (context) => {
 
   if (!givenLiveSessionId) throw Error("Live session Id is not given");
   try {
+    const cookies = nookies.get(context);
+    const token = cookies.token;
+
     const liveSessionDocReference = doc(
       db,
       "liveSessions",

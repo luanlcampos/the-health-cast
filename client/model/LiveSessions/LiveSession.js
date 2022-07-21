@@ -89,5 +89,6 @@ class LiveSessionData {
       throw new Error(error);
     }
   }
+
 }
 module.exports.LiveSession = LiveSessionData;

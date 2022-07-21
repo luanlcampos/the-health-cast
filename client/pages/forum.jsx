@@ -8,7 +8,7 @@ import Header from "@/components/Layout/Header";
 import SideMenu from "@/components/Layout/SideMenu";
 import Loading from "@/components/Loading";
 import SignedLayout from "@/components/Layout/SignedLayout";
-import ChatContainer from "../components/Chat/ChatContainer";
+
 
 const Forum = () => {
   const router = useRouter();
@@ -142,7 +142,7 @@ const Forum = () => {
           <div></div>
         </div>
       </SignedLayout>
-      <ChatContainer />
+      
     </div>
   );
 };

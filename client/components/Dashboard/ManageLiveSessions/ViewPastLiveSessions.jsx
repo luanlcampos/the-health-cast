@@ -13,8 +13,10 @@ import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 
-import { AiTwotoneEdit } from "react-icons/ai";
-import { AiFillDelete } from "react-icons/ai";
+
+
+import EditLiveSessionModal from "./EditLiveSessionModal";
+
 const ViewPastLiveSessions = ({ LiveSessions }) => {
   //1657076400438
   if (LiveSessions) {
@@ -36,8 +38,10 @@ const ViewPastLiveSessions = ({ LiveSessions }) => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Title</TableCell>
-                  <TableCell align="left">Description</TableCell>
+                  <TableCell className="w-1/3">Title</TableCell>
+                  <TableCell className="w-1/3" align="left">
+                    Description
+                  </TableCell>
                   <TableCell align="left">Date</TableCell>
                   <TableCell align="left">Tags</TableCell>
                   <TableCell align="left">Edit</TableCell>
@@ -58,10 +62,12 @@ const ViewPastLiveSessions = ({ LiveSessions }) => {
                     key={row.title}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
+                    <TableCell className="w-1/3" component="th" scope="row">
                       {row.title}
                     </TableCell>
-                    <TableCell align="left">{row.description}</TableCell>
+                    <TableCell className="w-1/3" align="left">
+                      {row.description}
+                    </TableCell>
                     <TableCell align="left">
                       {new Timestamp(
                         row.sessionScheduleDate.seconds,
@@ -87,7 +93,7 @@ const ViewPastLiveSessions = ({ LiveSessions }) => {
                       </Stack>
                     </TableCell>
                     <TableCell align="left">
-                      <AiTwotoneEdit className="cursor-pointer"></AiTwotoneEdit>
+                      <EditLiveSessionModal></EditLiveSessionModal>
                     </TableCell>
                   </TableRow>
                 ))}

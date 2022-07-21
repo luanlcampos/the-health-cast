@@ -3,6 +3,10 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
+import { BsRecordCircle } from "react-icons/bs";
+import { BiStopCircle } from "react-icons/bi";
+import { BsFillStopBtnFill } from "react-icons/bs";
+import { BiCameraMovie } from "react-icons/bi";
 
 import RecordingSettingsModal from "./RecordingStreamSettings/RecordingSettingsModal";
 import {
@@ -10,6 +14,13 @@ import {
   modifyLiveSessionRecordingStatus,
 } from "./modifyLiveSession";
 import { saveToFirestore } from "./saveToFirestore";
+
+import EditLiveSessionModal from "@/components/Dashboard/ManageLiveSessions/EditLiveSessionModal";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+
+import Typography from "@mui/material/Typography";
 
 const HCPControls = ({
   liveSessionRoomID,
@@ -79,25 +90,97 @@ const HCPControls = ({
   };
 
   return (
-    <div className="outline outline-cyan-500 ">
-      <h1>HCP Controls</h1>
-      {!videoRecordingStatus &&
-        !audioRecordingStatus &&
-        !shareScreenRecordingStatus && (
-          <Button
-            onClick={handleOpen}
-            variant="contained"
-            sx={{
-              bgcolor: "#86a819",
-              "&:hover": {
-                color: "white",
-                backgroundColor: "#a9de09",
-              },
-            }}
-          >
-            Record Live Stream
-          </Button>
-        )}
+    <div className="outline ">
+      <Card sx={{ minWidth: 275 }}>
+        <CardContent>
+          <Typography sx={{ fontSize: 16 }} color="text.primary" gutterBottom>
+            Actions
+          </Typography>
+          {(videoRecordingStatus ||
+            audioRecordingStatus ||
+            shareScreenRecordingStatus) && (
+            <Typography sx={{ fontSize: 16 }} color="text.primary" gutterBottom>
+              <span className="px-8">Recording Status: {status}</span>
+            </Typography>
+          )}
+        </CardContent>
+        <CardActions>
+          <div className="flex flex-col space-y-4">
+            {!videoRecordingStatus &&
+              !audioRecordingStatus &&
+              !shareScreenRecordingStatus && (
+                <Button
+                  className="flex-1"
+                  onClick={handleOpen}
+                  variant="contained"
+                  sx={{
+                    bgcolor: "#86a819",
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "#a9de09",
+                    },
+                  }}
+                >
+                  <BiCameraMovie></BiCameraMovie>
+                  <span className="px-8">Record Live Stream</span>
+                </Button>
+              )}
+            {(videoRecordingStatus ||
+              audioRecordingStatus ||
+              shareScreenRecordingStatus) && (
+              <>
+                <Button
+                  className="flex-1"
+                  onClick={startRecording}
+                  variant="contained"
+                  sx={{
+                    bgcolor: "#86a819",
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "#a9de09",
+                    },
+                  }}
+                >
+                  <BsRecordCircle></BsRecordCircle>
+                  <span className="px-8"> Start Recording</span>
+                </Button>
+                <Button
+                  className="flex-1"
+                  variant="contained"
+                  onClick={handleStopRecordingAndSave}
+                  sx={{
+                    bgcolor: "#86a819",
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "#a9de09",
+                    },
+                  }}
+                >
+                  <BiStopCircle></BiStopCircle>
+                  <span className="px-8">Stop Recording</span>
+                </Button>
+              </>
+            )}
+
+            <EditLiveSessionModal></EditLiveSessionModal>
+            <Button
+              className="flex-1"
+              variant="contained"
+              onClick={handleCloseLiveSession}
+              sx={{
+                bgcolor: "#86a819",
+                "&:hover": {
+                  color: "white",
+                  backgroundColor: "#a9de09",
+                },
+              }}
+            >
+              <BsFillStopBtnFill></BsFillStopBtnFill>
+              <span className="px-8">Close Room</span>
+            </Button>
+          </div>
+        </CardActions>
+      </Card>
 
       <RecordingSettingsModal
         open={open}
@@ -109,54 +192,6 @@ const HCPControls = ({
         setAudioRecordingStatus={setAudioRecordingStatus}
         setShareScreenRecordingStatus={setShareScreenRecordingStatus}
       ></RecordingSettingsModal>
-      {(videoRecordingStatus ||
-        audioRecordingStatus ||
-        shareScreenRecordingStatus) && (
-        <>
-          <Button
-            onClick={startRecording}
-            variant="contained"
-            sx={{
-              bgcolor: "#86a819",
-              "&:hover": {
-                color: "white",
-                backgroundColor: "#a9de09",
-              },
-            }}
-          >
-            Start Recording
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleStopRecordingAndSave}
-            sx={{
-              bgcolor: "#86a819",
-              "&:hover": {
-                color: "white",
-                backgroundColor: "#a9de09",
-              },
-            }}
-          >
-            Stop Recording
-          </Button>
-        </>
-      )}
-
-      <Button
-        variant="contained"
-        onClick={handleCloseLiveSession}
-        sx={{
-          bgcolor: "#86a819",
-          "&:hover": {
-            color: "white",
-            backgroundColor: "#a9de09",
-          },
-        }}
-      >
-        Close Room
-      </Button>
-      <p>{status}</p>
-      <video src={mediaBlobUrl} controls autoPlay loop />
     </div>
   );
 };
