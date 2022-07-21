@@ -109,22 +109,21 @@ const UpcomingPreview = ({ upcomingLiveSessions }) => {
         {upcomingDates.map((date, index) => {
           return (
             <TabPanel value={index.toString()} key={(index + 1).toString()}>
-              Live Sessions on{" "}
+              {/* Live Sessions on{" "}
               {date
                 .toString()
                 .split(" ")
                 .slice(0, 4)
                 .join()
                 .replaceAll(",", " ")
-                .replace(" ", ", ")}
+                .replace(" ", ", ")} */}
               <UpcomingLiveSession
                 upcomingLives={upcomingLiveSessions}
                 upcomingDate={date}
-              />                        
+              />
             </TabPanel>
           );
         })}
-
       </TabContext>
     </Box>
   );
