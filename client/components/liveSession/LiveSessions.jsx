@@ -165,8 +165,11 @@ const LiveSessions = ({ userData }) => {
               <Loading />
             ) : useSearch && searchLSField.length > 0 ? (
               searchedLiveSessions
-                .filter((givenLiveSession) =>
-                  userData.following.includes(givenLiveSession.createdByHcpId)
+                .filter(
+                  (givenLiveSession) =>
+                    userData.following.includes(
+                      givenLiveSession.createdByHcpId
+                    ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
                   return (
@@ -177,8 +180,11 @@ const LiveSessions = ({ userData }) => {
                   );
                 })
             ) : (
-              LiveSessions.filter((givenLiveSession) =>
-                userData.following.includes(givenLiveSession.createdByHcpId)
+              LiveSessions.filter(
+                (givenLiveSession) =>
+                  userData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  ) && givenLiveSession.isOngoing
               ).map((givenLiveSession) => {
                 return (
                   <LiveSessionPreview
@@ -204,7 +210,7 @@ const LiveSessions = ({ userData }) => {
                   (givenLiveSession) =>
                     !userData.following.includes(
                       givenLiveSession.createdByHcpId
-                    )
+                    ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
                   return (
@@ -217,7 +223,9 @@ const LiveSessions = ({ userData }) => {
             ) : (
               LiveSessions.filter(
                 (givenLiveSession) =>
-                  !userData.following.includes(givenLiveSession.createdByHcpId)
+                  !userData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  ) && givenLiveSession.isOngoing
               ).map((givenLiveSession) => {
                 return (
                   <LiveSessionPreview

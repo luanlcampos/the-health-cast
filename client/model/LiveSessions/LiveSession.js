@@ -39,6 +39,8 @@ class LiveSessionData {
     sessionScheduleDate,
     createdByHcpId,
     interests = [],
+    isOngoing = false,
+    isScheduled = false,
     reports = [],
     mediaId = mediaIDList.liveSession
   ) {
@@ -51,7 +53,8 @@ class LiveSessionData {
     this.interests = interests;
     this.reports = reports;
     this.isRecording = false;
-    this.isOngoing = false;
+    this.isOngoing = isOngoing;
+    this.isScheduled = isScheduled;
     this.isARecording = false;
     this.liveSessionDuration = 0;
     this.startTime = "";
@@ -81,7 +84,6 @@ class LiveSessionData {
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
       });
-      
     } catch (error) {
       console.error(error);
       throw new Error(error);
