@@ -21,6 +21,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
   const { user } = useAuth();
 
   const [loadingLiveSessions, setLoadingLiveSessions] = useState(false);
+  const [date, setDate] = useState("");
 
   const addUserDetailsToLiveSession = async (liveSessions) => {
     console.log(
@@ -69,6 +70,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
       let nextDate = new Date(currDate);
       nextDate.setDate(currDate.getDate() + 1);
 
+      setDate(currDate.toDateString());
       if (
         currDate <= liveSessionScheduledDate &&
         liveSessionScheduledDate < nextDate
@@ -108,14 +110,14 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
     <div className="container w-full lg:w-full mx-auto flex flex-col">          
         {isLoading && !liveSessionsByDate ? (
           <Loading />
-        ) : (
-          currentTableData.map((liveSession, index) => {
+        ) : ( liveSessionsByDate.length > 0?
+          (currentTableData.map((liveSession, index) => {
             return (
               // <div className="card-item shadow-lg rounded-xl grow mx-10">
               <div className="grid flex flex-col md:flex-row bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2" key={index}>
-                <div className='relative m-0 flex bg-white'>
+                <div className='relative m-0 flex bg-white rounded-lg'>
                   <div className='flex-no-shrink'>
-                    <img alt='' className='inset-0 h-full w-full object-cover object-center' src='https://via.placeholder.com/315x180' />
+                    <img alt='' className='rounded-l-lg inset-0 h-full w-full object-cover object-center' src='https://via.placeholder.com/315x180' />
                   </div>
                   <div className='flex-1 card-block relative grid grid-cols-3'>
                     <div className="p-6 col-span-2">
@@ -173,7 +175,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
                 </div>
               </div>
             );
-          })
+          })) : (<div>No lives currently scheduled on {date}.</div>)
         )}
       <Pagination
         className="pagination-bar pt-3"
