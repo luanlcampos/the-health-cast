@@ -76,10 +76,16 @@ export default function ReportModal({
       //check if live sess, thread, or user
       if (reportingThread && reportedUserData.threadId) {
         formValues.reportedSrc = `/thread/${reportedUserData.threadId}`;
-      } else if (reportingLive && reportedUserData.liveSessId) {
-        formValues.reportedSrc = `/livesession/${reportedUserData.liveSessId}`;
+      } else if (reportingLive && reportedUserData.liveSessId) { 
+        if (reportedUserData.userProfileData)
+          formValues.reportedSrc = `/livesession/${reportedUserData.id}`;
+        else
+          formValues.reportedSrc = `/livesession/${reportedUserData.liveSessId}`;
       } else {
-        formValues.reportedSrc = `/profile/${reportedUserId}`;
+        if (reportedUserData.userProfileData)
+          formValues.reportedSrc = `/profile/${reportedUserData.createdByHcpId}`;  
+        else
+          formValues.reportedSrc = `/profile/${reportedUserId}`;
       }
 
       const res = await Swal.fire({
@@ -95,15 +101,16 @@ export default function ReportModal({
         },
       });
 
+      console.log(`before res.isConfirmed`);
       if (res.isConfirmed) {
         formValues.reportedAccount = reportedUserId;
-        formValues.reportedAccountOrg = reportedUserData.isHcp
-          ? reportedUserData.hcpOrg.orgId
-          : "";
+        formValues.reportedAccountOrg = reportedUserData.userProfileData? 
+          (reportedUserData.userProfileData.isHcp? reportedUserData.userProfileData.hcpOrg.orgId: "") :
+          (reportedUserData.isHcp? reportedUserData.hcpOrg.orgId : "");
         formValues.reportingAccount = user.uid;
 
         // send reportedSrc data (if threads, live sessions, recordings ...)
-        console.log(formValues);
+        console.log(`formValues: ${JSON.stringify(formValues)}`);
 
         // submit report data to firebase
         // query user's number of reports and last report submission date (>5 reports and not over 1 week, failed to submit)
@@ -217,11 +224,10 @@ export default function ReportModal({
               // className="text-center"
             >
               {/* You are reporting {reportedUserId} belonging to {reportedUserData.isHcp? reportedUserData.hcpOrg.orgId : 'just a regular user'} */}
-              You are reporting {reportedUserData.firstName}{" "}
-              {reportedUserData.lastName}{" "}
-              {reportedUserData.isHcp
-                ? "from " + reportedUserData.hcpOrg.orgName
-                : ""}
+              You are reporting {reportedUserData.userProfileData? reportedUserData.userProfileData.firstName : reportedUserData.firstName}{" "}
+              {reportedUserData.userProfileData? reportedUserData.userProfileData.lastName : reportedUserData.lastName}{" "}
+              {!reportedUserData.userProfileData && (reportedUserData.isHcp?"from " + reportedUserData.hcpOrg.orgName: "")}  
+              {reportedUserData.userProfileData && (reportedUserData.userProfileData.isHcp?"from " + reportedUserData.userProfileData.hcpOrg.orgName: "")}  
             </Typography>
             <Typography
               id="modal-modal-description"

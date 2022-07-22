@@ -41,12 +41,12 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
       const dataWithLsId = {
         ...liveSessions[i],
         userProfileData,
-        liveSessId: upcomingLives.id,
+        liveSessId: liveSessions[i].id,//upcomingLives.id,
         upcomingTime: tmpDate.toLocaleTimeString().substr(0,5).concat(" " + tmpDate.toLocaleTimeString().substr(-2)),
       };
       //console.log(`dataWithLSId: ${JSON.stringify(dataWithLsId)}`);
       liveSessionsByDateWithUserDetails.push(dataWithLsId);
-      setReportedHCP(userProfileData);
+      setReportedHCP(dataWithLsId);
     }
     // console.log(userProfileData);
 
