@@ -260,8 +260,10 @@ export default function ReportTable({ user }) {
                                query: { accountId: report.reportedAccountId },
                              }}
                              as={`${report.reportedSrc}`}
-                            >                           
-                              <FaRegShareSquare />
+                            >    
+                              <span>                       
+                                <FaRegShareSquare />
+                              </span>
                             </Link>                              
                           </div>
                         </div>
