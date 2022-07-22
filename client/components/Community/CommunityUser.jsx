@@ -95,7 +95,7 @@ const UpcomingLiveSession = ({ account }) => {
                         <div className="follow-button inline-block align-middle text-sm">
                         <ReportModal
                         reportingLive={true}
-                        reportedUserData={reportedHCP}
+                        reportedUserData={account}
                         reportedUserId={account.id}
                         ></ReportModal>
                         </div>

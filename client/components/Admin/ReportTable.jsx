@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { AiOutlineEdit, AiFillDelete, AiOutlineReload } from "react-icons/ai";
 import { FaRegShareSquare } from "react-icons/fa";
@@ -253,7 +254,15 @@ export default function ReportTable({ user }) {
                             />
                           </div>
                           <div className="hover:cursor-pointer">
-                            <FaRegShareSquare />
+                            <Link
+                             href={{
+                               pathname: `${report.reportedSrc}`,
+                               query: { accountId: report.reportedAccountId },
+                             }}
+                             as={`${report.reportedSrc}`}
+                            >                           
+                              <FaRegShareSquare />
+                            </Link>                              
                           </div>
                         </div>
                       </td>

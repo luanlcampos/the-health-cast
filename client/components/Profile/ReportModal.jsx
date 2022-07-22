@@ -50,6 +50,7 @@ export default function ReportModal({
   reportingThread,
   reportingLive,
 }) {
+  console.log(`reportedUserData: ${JSON.stringify(reportedUserData)}`);
   const [open, setOpen] = React.useState(false);
   const [formValues, setFormValues] = React.useState(defaultValues);
   const { user } = useAuth();
@@ -160,9 +161,9 @@ export default function ReportModal({
           );
           console.log("createReport:", createReport);
           await createReport.save(); // to add a report to the collection "reports"
-
+          console.log(`periodSinceLastReport: ${periodSinceLastReport}`);
           if (
-            reportingUserProfileData.totalNumberReports > 5 &&
+            reportingUserProfileData.totalNumberReports >= 5 ||
             periodSinceLastReport > 7 * 24 * 60 * 60
           ) {
             console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
