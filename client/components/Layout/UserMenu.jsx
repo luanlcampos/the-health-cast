@@ -5,7 +5,7 @@ import {
   AiOutlineSearch,
   AiOutlineLogout,
 } from "react-icons/ai";
-import { MdOutlineManageAccounts } from "react-icons/md";
+import { MdOutlineBubbleChart, MdOutlineManageAccounts } from "react-icons/md";
 import { useAuth } from "../../firebase/auth";
 // import { Menu } from "@headlessui/react";
 import Menu from "@mui/material/Menu";
@@ -70,6 +70,14 @@ export default function UserMenu({ user, userData, adminData }) {
             </div>
           </MenuItem>
         )}
+        {user && userData && userData.isHcp && (
+          <MenuItem onClick={() => router.push("/stats")}>
+            <div className="flex items-center gap-x-3">
+              <MdOutlineBubbleChart />
+              <span>Stats</span>
+            </div>
+          </MenuItem>
+        )}        
         <MenuItem onClick={handleLogOut}>
           <div className="flex items-center gap-x-3">
             <AiOutlineLogout />
