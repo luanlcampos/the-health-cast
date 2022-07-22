@@ -7,7 +7,7 @@ import {
   AiOutlinePlusCircle,
 } from "react-icons/ai";
 import { RiRecordCircleLine } from "react-icons/ri";
-import { MdOutlineForum } from "react-icons/md";
+import { MdOutlineForum, MdPeopleOutline } from "react-icons/md";
 
 import { useRouter } from "next/router";
 
@@ -93,7 +93,7 @@ export default function SideMenu() {
             <div className="flex flex-col text-center">
               <Link href="/community">
                 <a>
-                  <AiOutlineCalendar className="mx-auto text-3xl mb-2" />
+                  <MdPeopleOutline className="mx-auto text-3xl mb-2" />
                   <div className="mx-auto text-md">Community</div>
                 </a>
               </Link>

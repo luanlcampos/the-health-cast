@@ -59,7 +59,7 @@ const LiveSessionPreview = ({ liveSession }) => {
               </p>
             )}
           </span>
-          <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
+          <div className="font-semibold text-xl leading-6 text-gray-700 my-2">
             {liveSession.isARecording ? (
               <RecordingPreviewHyperLink
                 liveSession={liveSession}
@@ -69,7 +69,7 @@ const LiveSessionPreview = ({ liveSession }) => {
                 liveSession={liveSession}
               ></LiveSessionPreviewHyperLink>
             )}
-          </h3>
+          </div>
           <p className="paragraph-normal text-gray-600">
             {liveSession.description}
           </p>
