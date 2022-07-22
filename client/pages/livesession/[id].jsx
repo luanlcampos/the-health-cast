@@ -1,20 +1,31 @@
 import Button from "@mui/material/Button";
+import nookies from "nookies";
 
 import Loading from "@/components/Loading";
 
 import { useAuth } from "@/firebase/auth";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import Stack from "@mui/material/Stack";
+
+import dynamic from "next/dynamic";
+
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/clientApp";
 import LiveSessionStage from "@/components/liveSession/CommonComponents/LiveSessionStage/LiveSessionStage";
-import Audience from "@/components/liveSession/CommonComponents/Audience/Audience";
+
 import HCPAndLiveSessionMetaData from "@/components/liveSession/CommonComponents/HCPAndLiveSessionMetaData/HCPAndLiveSessionMetaData";
 import LiveSessionChatWindow from "@/components/liveSession/CommonComponents/LiveSessionChatWindow/LiveSessionChatWindow";
-import HCPControls from "@/components/liveSession/HCPControls/HCPControls";
-import SignedLayout from "@/components/Layout/SignedLayout";
 
-//import "@/styles/LiveSession.module.scss";
+import SignedLayout from "@/components/Layout/SignedLayout";
+import { modifyLiveSessionLife } from "@/components/liveSession/HCPControls/modifyLiveSession";
+const HCPControls = dynamic(
+  () => import("@/components/liveSession/HCPControls/HCPControls"),
+  { ssr: false }
+);
 
 const livesession = ({ currentLiveSession }) => {
   // obtaining user info from AuthProvider
@@ -24,26 +35,84 @@ const livesession = ({ currentLiveSession }) => {
   const router = useRouter();
   const givenLiveSessionID = router.query.id;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [creatorStatus, setCreatorStatus] = useState(false);
+
+  const [liveSessionDocReference, setLiveSessionDocReference] = useState();
+  const [liveSessionDocument, setLiveSessionDocument] = useState();
 
   // redirect user back to the login page
   if (!user) {
     router.push("/login");
     return;
+  } else {
+
   }
+
+  useEffect(() => {
+    console.log("Rendering out the page", currentLiveSession.liveSessionData.createdByHcpId);
+    console.log(user.uid)
+    setCreatorStatus(currentLiveSession.liveSessionData.createdByHcpId == user.uid);
+    console.log(
+      "Setting the creator status as: ",
+      currentLiveSession.liveSessionData.createdByHcpId == user.uid
+    );
+    router.beforePopState(({ url, as, options }) => {
+      // Analyze if health care professional is leaving the room admist them recording or leaving the session open.
+      if (
+        creatorStatus &&
+        currentLiveSession.liveSessionMetaData &&
+        currentLiveSession.liveSessionMetaData.isOngoing
+      ) {
+        // Have SSR render bad routes as a 404.
+        if (liveSessionDocument.isOngoing)
+          modifyLiveSessionLife(liveSessionDocReference);
+      }
+
+      return true;
+    });
+
+    if (user && userData) {
+      setIsLoading(false);
+    }
+
+    const getLiveSessionReferenceAndDocument = async () => {
+      try {
+        console.log(givenLiveSessionID);
+        let lsref = await doc(db, "liveSessions", givenLiveSessionID);
+
+        setLiveSessionDocReference(lsref);
+        let lsdoc = await getDoc(lsref);
+
+        const data = { ...lsdoc.data() };
+        console.log("-----------");
+        console.log(data);
+        console.log("-----------");
+        setLiveSessionDocument(data);
+      } catch (e) {
+        console.error("Could not fetch the document");
+      }
+    };
+    getLiveSessionReferenceAndDocument();
+  }, []);
+
+  const handleLeaveRoom = async () => {
+    router.push(`/`);
+  };
 
   return (
     <SignedLayout>
-      {!isLoading ? (
+      {!user && !userData ? (
+        <Loading />
+      ) : (
         <div className="w-full my-8">
           <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
             <div className="w-3/4">
-              <div className="flex justify-center h-full">
+              <div className="flex justify-center h-[76vh]">
                 <LiveSessionStage
                   liveSessionRoomID={givenLiveSessionID}
-                  hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
-                  currentUser={user}
                   currentUserData={userData}
+                  creatorStatus={creatorStatus}
                 ></LiveSessionStage>
               </div>
             </div>
@@ -53,25 +122,19 @@ const livesession = ({ currentLiveSession }) => {
                 liveSessionRoomID={givenLiveSessionID}
                 liveSessionMetaData={currentLiveSession.liveSessionData}
               ></HCPAndLiveSessionMetaData>
-              {user.uid == currentLiveSession.hcpCreatorProfileData.uid ? (
+              {creatorStatus ? (
                 <>
-                  <h1>
-                    Rendering the HCP controls because the current user is the
-                    creator
-                  </h1>
                   <HCPControls
+                    liveSessionMetaData={currentLiveSession.liveSessionData}
                     liveSessionRoomID={givenLiveSessionID}
-                    hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
+                    liveSessionDocReference={liveSessionDocReference}
+                    liveSessionDocument={liveSessionDocument}
                   ></HCPControls>
                 </>
               ) : (
                 <>
-                  <HCPControls
-                    className="m-8"
-                    liveSessionRoomID={givenLiveSessionID}
-                    hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
-                  ></HCPControls>
                   <Button
+                    onClick={handleLeaveRoom}
                     variant="contained"
                     className="m-8"
                     sx={{
@@ -82,7 +145,7 @@ const livesession = ({ currentLiveSession }) => {
                       },
                     }}
                   >
-                    Leave as a Participant
+                    Leave Room
                   </Button>
                 </>
               )}
@@ -92,24 +155,30 @@ const livesession = ({ currentLiveSession }) => {
             </div>
           </div>
         </div>
-      ) : (
-        <Loading />
       )}
     </SignedLayout>
   );
 };
 
 export const getServerSideProps = async (context) => {
-  const givenLiveSessionId = context.params.id; // Get ID from slug `/livesession/[id]`
+  const { id } = context.query; // Get ID from slug `/livesession/[id]`
+  const givenLiveSessionId = id;
   let hcpCreatorProfileData;
   let liveSessionData;
   let currentLiveSession;
   let isAdmin = false;
 
+  if (!givenLiveSessionId) throw Error("Live session Id is not given");
   try {
-    const liveSessionResult = await getDoc(
-      doc(db, "liveSessions", String(givenLiveSessionId))
+    const cookies = nookies.get(context);
+    const token = cookies.token;
+
+    const liveSessionDocReference = doc(
+      db,
+      "liveSessions",
+      String(givenLiveSessionId)
     );
+    const liveSessionResult = await getDoc(liveSessionDocReference);
     if (liveSessionResult && liveSessionResult.exists()) {
       liveSessionData = liveSessionResult.data();
       try {
@@ -150,10 +219,14 @@ export const getServerSideProps = async (context) => {
             );
           }
           currentLiveSession = { liveSessionData, hcpCreatorProfileData };
+        } else {
+          throw Error("Health care professional does not exist");
         }
       } catch (e) {
         console.error("error: ", e);
       }
+    } else {
+      throw Error("Live session does not exist!");
     }
   } catch (e) {
     console.error(e);

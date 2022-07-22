@@ -32,18 +32,14 @@ const ThreadById = () => {
   const { register, handleSubmit, reset, formState } = useForm();
 
   const loadThread = async () => {
-    try {
-      // thread collection reference
-      const threadRef = doc(db, "threads", threadID);
-      const threadSnap = await getDoc(threadRef);
+    // thread collection reference
+    const threadRef = doc(db, "threads", threadID);
+    const threadSnap = await getDoc(threadRef);
 
-      if (threadSnap.exists()) {
-        const data = threadSnap.data();
+    if (threadSnap.exists()) {
+      const data = threadSnap.data();
 
-        return data;
-      }
-    } catch (err) {
-      console.error(err);
+      return data;
     }
   };
 
@@ -54,25 +50,21 @@ const ThreadById = () => {
     onSnapshot(q, (s) => {
       let reps = [];
       s.docs.forEach((doc) => {
-        reps.push(doc.data());
+        reps.push({ id: doc.id, data: doc.data() });
       });
       setReplies(reps);
     });
   };
 
   const loadUser = async (userId) => {
-    try {
-      // user collection reference
-      const userRef = doc(db, "users", userId);
-      const userSnap = await getDoc(userRef);
+    // user collection reference
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
 
-      if (userSnap.exists()) {
-        const user = userSnap.data();
+    if (userSnap.exists()) {
+      const user = userSnap.data();
 
-        setThrAuthor(user.firstName + " " + user.lastName);
-      }
-    } catch (err) {
-      console.log(err);
+      setThrAuthor(user.firstName + " " + user.lastName);
     }
   };
 
@@ -84,15 +76,19 @@ const ThreadById = () => {
         setThread(thread);
         loadUser(thread.authorId).catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
 
-    loadReplies().catch((err) => console.log(err));
-
-    setIsLoading(false);
+    loadReplies().catch((err) => {
+      console.log(err);
+    });
 
     if (formState.isSubmitSuccessful) {
       reset({ content: "" });
     }
+
+    setIsLoading(false);
   }, [reply]);
 
   const handleReplySubmit = async (data) => {
@@ -153,7 +149,13 @@ const ThreadById = () => {
             </div>
             {!isLoading &&
               replies.length > 0 &&
-              replies.map((reply) => <Reply data={reply} />)}
+              replies.map((reply) => (
+                <Reply
+                  data={reply.data}
+                  threadID={threadID}
+                  replyID={reply.id}
+                />
+              ))}
           </div>
         ) : (
           <Loading />
@@ -164,3 +166,10 @@ const ThreadById = () => {
 };
 
 export default ThreadById;
+
+// Prevent loss of threadID after hard-refresh
+export async function getServerSideProps() {
+  return {
+    props: {},
+  };
+}

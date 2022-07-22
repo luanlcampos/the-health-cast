@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useState } from "react";
 import {
   AiOutlineUser,
   AiOutlineSearch,
@@ -8,16 +9,16 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 import { useAuth } from "../../firebase/auth";
 import { Menu } from "@headlessui/react";
 import Notification from "./Notification";
+import SearchModal from "./SearchModal";
+import UserMenu from "./UserMenu";
 
 function Header() {
-  const { logout, userData, adminData, user, loading } = useAuth();
-  const handleLogOut = async () => {
-    await logout();
-    window.location.href = "/";
-  };
+  const { userData, adminData, user } = useAuth();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <header>
+      {searchOpen === true && <SearchModal setSearchOpen={setSearchOpen} />}
       <nav
         aria-label="menu nav"
         className="bg-white-800 pt-2 md:pt-1 pb-1 px-1 mt-0 min-h-[60px] h-auto w-full z-20 top-0 drop-shadow-sm"
@@ -32,74 +33,29 @@ function Header() {
               />
             </a>
           </div>
-          <div className="flex flex-1 md:w-1/3 justify-end md:justify-start px-2">
-            {user && (
-              <span className="relative w-full">
-                <input
-                  type="search"
-                  className="w-full bg-gray-200 rounded-full px-3 py-1 focus:outline-none focus:shadow-outline appearance-none leading-normal"
-                  placeholder="Search"
-                />
-              </span>
-            )}
-          </div>
+          {/* <div className="flex flex-1 md:w-1/3 justify-end md:justify-start px-2"></div> */}
 
-          <div className="flex flex-shrink md:w-1/3 justify-end md:flex-none">
-            <div className="flex items-end">
+          <div className="flex flex-shrink md:w-2/3 justify-end md:flex-none">
+            <div className="flex ">
               <div className="flex items-center pr-4 gap-x-4">
+                {user && (
+                  <span
+                    className="relative w-full"
+                    onClick={() => setSearchOpen(true)}
+                  >
+                    <button className="flex items-center gap-x-2 px-2 py-1 rounded-full text-gray-500 focus:outline-none focus:shadow-outline">
+                      <AiOutlineSearch className="h-6 w-6" />
+                      <span className="ml-1">Search</span>
+                    </button>
+                  </span>
+                )}
                 <Notification />
                 {(user && userData) || adminData ? (
-                  <Menu as="div" className="relative inline-block text-left">
-                    <Menu.Button className="px-2 py-2">
-                      <span className="flex flex-row items-center gap-2">
-                        <AiOutlineUser /> Hello,{" "}
-                        {userData ? userData.firstName : adminData.institution}{" "}
-                      </span>
-                    </Menu.Button>
-                    <Menu.Items className="flex flex-col absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            className={`px-2 py-2 flex flex-row items-center gap-2 ${
-                              active && "bg-my-green text-white text-bold"
-                            }`}
-                            href={`/profile/${user.uid}`}
-                          >
-                            <AiOutlineUser />
-                            Profile
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            className={`px-2 py-2 flex flex-row items-center gap-2 hover:cursor-pointer ${
-                              active && "bg-my-green text-white text-bold"
-                            }`}
-                            onClick={handleLogOut}
-                          >
-                            <AiOutlineLogout />
-                            Logout
-                          </a>
-                        )}
-                      </Menu.Item>
-                      {adminData !== null && (
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              className={`px-2 py-2 flex flex-row items-center gap-2 hover:cursor-pointer ${
-                                active && "bg-my-green text-white text-bold"
-                              }`}
-                              href="/admin"
-                            >
-                              <MdOutlineManageAccounts />
-                              Admin Console
-                            </a>
-                          )}
-                        </Menu.Item>
-                      )}
-                    </Menu.Items>
-                  </Menu>
+                  <UserMenu
+                    user={user}
+                    userData={userData}
+                    adminData={adminData}
+                  />
                 ) : (
                   <>
                     <button className="login-button p-2 rounded-md border border-my-blue text-my-blue mr-2 font-bold">

@@ -8,7 +8,7 @@ import { useAuth } from "@/firebase/auth";
 const LiveSessions = ({ userData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [LiveSessions, setLiveSessions] = useState(null);
-  const { user } = useAuth();
+  const { user, adminData } = useAuth();
   const [searchedLiveSessions, setSearchedLiveSessions] = useState(null);
   const [searchLSField, setSearchLSField] = useState("");
   const [useSearch, setUseSearch] = useState(false);
@@ -165,8 +165,11 @@ const LiveSessions = ({ userData }) => {
               <Loading />
             ) : useSearch && searchLSField.length > 0 ? (
               searchedLiveSessions
-                .filter((givenLiveSession) =>
-                  userData.following.includes(givenLiveSession.createdByHcpId)
+                .filter(
+                  (givenLiveSession) =>
+                    userData.following.includes(
+                      givenLiveSession.createdByHcpId
+                    ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
                   return (
@@ -177,8 +180,12 @@ const LiveSessions = ({ userData }) => {
                   );
                 })
             ) : (
-              LiveSessions.filter((givenLiveSession) =>
-                userData.following.includes(givenLiveSession.createdByHcpId)
+              !adminData &&
+              LiveSessions.filter(
+                (givenLiveSession) =>
+                  userData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  ) && givenLiveSession.isOngoing
               ).map((givenLiveSession) => {
                 return (
                   <LiveSessionPreview
@@ -200,11 +207,14 @@ const LiveSessions = ({ userData }) => {
               <Loading />
             ) : useSearch && searchLSField.length > 0 ? (
               searchedLiveSessions
-                .filter(
-                  (givenLiveSession) =>
-                    !userData.following.includes(
-                      givenLiveSession.createdByHcpId
-                    )
+                .filter((givenLiveSession) =>
+                  adminData
+                    ? !adminData.following.includes(
+                        givenLiveSession.createdByHcpId
+                      )
+                    : !userData.following.includes(
+                        givenLiveSession.createdByHcpId
+                      ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
                   return (
@@ -215,9 +225,14 @@ const LiveSessions = ({ userData }) => {
                   );
                 })
             ) : (
-              LiveSessions.filter(
-                (givenLiveSession) =>
-                  !userData.following.includes(givenLiveSession.createdByHcpId)
+              LiveSessions.filter((givenLiveSession) =>
+                adminData
+                  ? !adminData.following.includes(
+                      givenLiveSession.createdByHcpId
+                    )
+                  : !userData.following.includes(
+                      givenLiveSession.createdByHcpId
+                    ) && givenLiveSession.isOngoing
               ).map((givenLiveSession) => {
                 return (
                   <LiveSessionPreview

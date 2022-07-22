@@ -64,6 +64,8 @@ const CreateLiveSessionForm = () => {
         givenData.UpcomingLiveSessionDatePicker,
         givenData.createdByHcpId,
         givenData.interests,
+        givenData.isOngoing,
+        givenData.isScheduled,
         [] /*empty report set*/,
         givenData.mediaId
       );
@@ -101,17 +103,21 @@ const CreateLiveSessionForm = () => {
 
     givenData = {
       ...givenData,
-      id: nanoid(), //uuidv4(),
+      id: nanoid(),
       interests: interestTags,
       mediaId: mediaIDList.liveSession,
       createdByHcpId: user.uid,
+      isOngoing: false,
     };
-    if (givenData.isScheduled === false)
+    if (givenData.isScheduled === false) {
       givenData.UpcomingLiveSessionDatePicker = new Date();
+      givenData.isOngoing = true;
+    }
 
     saveLiveSessionData(givenData, e);
-    // redirect to live session page
-    router.push(`/livesession/${givenData.id}`);
+
+    if (givenData.isScheduled) router.push(`/dashboard`);
+    else router.push(`/livesession/${givenData.id}`);
   };
 
   return (
@@ -175,6 +181,7 @@ const CreateLiveSessionForm = () => {
                     className="input"
                     placeholderText="Select date"
                     onChange={(e) => field.onChange(e)}
+                    minDate={new Date()}
                     disabled={!watch("isScheduled")}
                     selected={field.value}
                   />

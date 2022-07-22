@@ -6,6 +6,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { FBAuthUser } from "@/model/users/FBAuthUser";
 import { AdminData } from "@/model/users/AdminData";
 import { UserData } from "@/model/users/UserData";
+import nookies from 'nookies';
 
 const AuthContext = createContext();
 
@@ -19,9 +20,11 @@ export const AuthProvider = ({ children }) => {
     console.log('AuthProvider: user', user);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (data) => {
+        const unsubscribe = onAuthStateChanged(auth, async (data) => {
             setIsLoading(true);
             if (data) {
+                const token = await data.getIdToken(true);
+                nookies.set(undefined, 'token', token, { path: '/' });
                 setUser(new FBAuthUser(data));
                 const fetchUser = async () => {
                     const docRef = doc(db, 'users', data.uid);
@@ -53,6 +56,7 @@ export const AuthProvider = ({ children }) => {
             } else {
                 setUser(null);
                 setIsLoading(false);
+                nookies.set(undefined, 'token', '', { path: '/' });
             }
             setIsLoading(false);
         });

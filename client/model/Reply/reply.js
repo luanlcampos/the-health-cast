@@ -14,6 +14,7 @@ class Reply {
     this.authorId = userId;
     this.content = content;
     this.createdAt = Timestamp.now();
+    this.updatedAt = Timestamp.now();
   }
 }
 const replyConverter = {
@@ -23,6 +24,7 @@ const replyConverter = {
       authorId: reply.authorId,
       content: reply.content,
       createdAt: reply.createdAt,
+      updatedAt: reply.updatedAt,
     };
   },
   fromFirestore: (snapshot, options) => {
