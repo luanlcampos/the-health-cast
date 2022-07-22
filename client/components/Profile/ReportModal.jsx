@@ -162,25 +162,17 @@ export default function ReportModal({
           console.log("createReport:", createReport);
           await createReport.save(); // to add a report to the collection "reports"
           console.log(`periodSinceLastReport: ${periodSinceLastReport}`);
-          if (
-            reportingUserProfileData.totalNumberReports >= 5 ||
-            periodSinceLastReport > 7 * 24 * 60 * 60
-          ) {
-            console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
-            await updateDoc(doc(db, "users", String(user.uid)), {
-              totalNumberReports: 0 + 1,
-              firstMonthlyReportDate: new Date(),
-            });
-          } else {
-            console.log(
-              `totalNumberReports added (reportingUserProfileData.totalNumberReports + 1): ${
-                reportingUserProfileData.totalNumberReports + 1
-              }`
-            );
-            await updateDoc(doc(db, "users", String(user.uid)), {
-              totalNumberReports:
-                reportingUserProfileData.totalNumberReports + 1,
-            });
+          if (reportingUserProfileData.totalNumberReports < 5 && periodSinceLastReport < 7 * 24 * 60 * 60) {
+              console.log(`totalNumberReports added (reportingUserProfileData.totalNumberReports + 1): ${reportingUserProfileData.totalNumberReports + 1}`);
+              await updateDoc(doc(db, "users", String(user.uid)), {
+                  totalNumberReports: reportingUserProfileData.totalNumberReports + 1,
+              });
+          } else if (reportingUserProfileData.totalNumberReports >= 5 || periodSinceLastReport > 7 * 24 * 60 * 60) {
+              console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
+              await updateDoc(doc(db, "users", String(user.uid)), {
+                  totalNumberReports: 0 + 1,
+                  firstMonthlyReportDate: new Date(),
+              });
           }
         } else {
           console.log(
