@@ -83,7 +83,7 @@ const Stats = () => {
                   ? null
                   : reports.map((report, index /*hcp, index*/) => (
                     <Link key={report.reportId} href={report.reportedSrc} >
-                      <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100 hover:cursor-pointer">
+                      <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-lime-200 hover:cursor-pointer">
                         <td className="px-6 py-4 whitespace-nowrap text-base font-medium text-gray-900">{index + 1}</td>
                         <td className="text-base text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           {report.reportReason}
