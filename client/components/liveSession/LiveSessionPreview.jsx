@@ -5,7 +5,8 @@ import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/firebase/auth";
-import { AiFillEdit } from "react-icons/ai";
+import LiveSessionPreviewHyperLink from "./LiveSessionPreviewHyperLink";
+import RecordingPreviewHyperLink from "./RecordingPreviewHyperLink";
 
 const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
@@ -58,23 +59,21 @@ const LiveSessionPreview = ({ liveSession }) => {
               </p>
             )}
           </span>
-          <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
-            <Link
-              href={{
-                pathname: `/livesession/${liveSession.id}`,
-                query: { liveSessionId: liveSession.id },
-              }}
-              as={`/livesession/${liveSession.id}`}
-            >
-              <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
-                {liveSession.title}
-              </h2>
-            </Link>
-          </h3>
+          <div className="font-semibold text-xl leading-6 text-gray-700 my-2">
+            {liveSession.isARecording ? (
+              <RecordingPreviewHyperLink
+                liveSession={liveSession}
+              ></RecordingPreviewHyperLink>
+            ) : (
+              <LiveSessionPreviewHyperLink
+                liveSession={liveSession}
+              ></LiveSessionPreviewHyperLink>
+            )}
+          </div>
           <p className="paragraph-normal text-gray-600">
             {liveSession.description}
           </p>
-          <p className="mt-3 block" href="#">
+          <div className="mt-3 block" href="#">
             {user.uid != liveSession.createdByHcpId && (
               <div className="follow-button inline-block align-middle">
                 <ReportModal
@@ -84,7 +83,7 @@ const LiveSessionPreview = ({ liveSession }) => {
                 ></ReportModal>
               </div>
             )}
-          </p>
+          </div>
         </div>
       </div>
     </>

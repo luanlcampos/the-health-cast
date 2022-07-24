@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import { Timestamp } from "firebase/firestore";
-
 import { useAuth } from "../../../firebase/auth";
-import LiveSessionPreview from "../../liveSession/LiveSessionPreview";
+import { Timestamp } from "firebase/firestore";
 import Loading from "@/components/Loading";
-
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -16,29 +14,21 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 
 import EditLiveSessionModal from "./EditLiveSessionModal";
-import DeleteLiveSessionModal from "./DeleteUpcomingLiveSessionModal";
-import { BsBroadcast } from "react-icons/bs";
+import DeleteRecordingModal from "./DeleteRecordingModal";
 
-const ViewScheduledUpcommingSessions = ({ LiveSessions }) => {
-  if (LiveSessions)
-    console.log(
-      new Timestamp(
-        LiveSessions[0].sessionScheduleDate.seconds,
-        LiveSessions[0].sessionScheduleDate.nanoseconds,
-        LiveSessions[0]
-      )
-        .toDate()
-        .valueOf() < new Date().valueOf(),
-      LiveSessions[0].interests
+const ViewRecordings = ({ LiveSessions }) => {
+  //1657076400438
+  if (LiveSessions) {
+    LiveSessions[0].interests.map((givenInterest) =>
+      console.log(givenInterest)
     );
+  }
+
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   return (
     <div className="w-full px-10 py-5">
-      <h1 className="text-3xl font-bold pb-10">
-        {" "}
-        Upcoming Live Sessions Scheduled
-      </h1>{" "}
+      <h1 className="text-3xl font-bold pb-10">Current & Past Live Sessions</h1>
       <div className="card-list flex flex-row flex-wrap justify-between w-full">
         {isLoading && !LiveSessions ? (
           <Loading />
@@ -54,8 +44,6 @@ const ViewScheduledUpcommingSessions = ({ LiveSessions }) => {
                   <TableCell align="left">Date</TableCell>
                   <TableCell align="left">Tags</TableCell>
                   <TableCell align="left">Edit</TableCell>
-                  <TableCell align="left">Delete</TableCell>
-                  <TableCell align="left">Start</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -67,13 +55,13 @@ const ViewScheduledUpcommingSessions = ({ LiveSessions }) => {
                       givenLiveSession.sessionScheduleDate.nanoseconds
                     )
                       .toDate()
-                      .valueOf() > new Date().valueOf()
+                      .valueOf() < new Date().valueOf()
                 ).map((row) => (
                   <TableRow
                     key={row.title}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row" className="w-1/3">
+                    <TableCell className="w-1/3" component="th" scope="row">
                       {row.title}
                     </TableCell>
                     <TableCell className="w-1/3" align="left">
@@ -96,18 +84,15 @@ const ViewScheduledUpcommingSessions = ({ LiveSessions }) => {
                       {" "}
                       <Stack direction="row" spacing={1}>
                         {row.interests.map((givenInterest) => {
-                          <Chip label={givenInterest} />;
+                          <Chip
+                            key={givenInterest.toString()}
+                            label={givenInterest.toString()}
+                          />;
                         })}
                       </Stack>
                     </TableCell>
                     <TableCell align="left">
                       <EditLiveSessionModal></EditLiveSessionModal>
-                    </TableCell>
-                    <TableCell align="left">
-                      <DeleteLiveSessionModal></DeleteLiveSessionModal>
-                    </TableCell>
-                    <TableCell align="left">
-                      <BsBroadcast className="cursor-not-allowed"></BsBroadcast>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -120,4 +105,4 @@ const ViewScheduledUpcommingSessions = ({ LiveSessions }) => {
   );
 };
 
-export default ViewScheduledUpcommingSessions;
+export default ViewRecordings;

@@ -21,6 +21,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
   const { user } = useAuth();
 
   const [loadingLiveSessions, setLoadingLiveSessions] = useState(false);
+  const [date, setDate] = useState("");
 
   const addUserDetailsToLiveSession = async (liveSessions) => {
     console.log(
@@ -40,12 +41,12 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
       const dataWithLsId = {
         ...liveSessions[i],
         userProfileData,
-        liveSessId: upcomingLives.id,
+        liveSessId: liveSessions[i].id,//upcomingLives.id,
         upcomingTime: tmpDate.toLocaleTimeString().substr(0,5).concat(" " + tmpDate.toLocaleTimeString().substr(-2)),
       };
       //console.log(`dataWithLSId: ${JSON.stringify(dataWithLsId)}`);
       liveSessionsByDateWithUserDetails.push(dataWithLsId);
-      setReportedHCP(userProfileData);
+      setReportedHCP(dataWithLsId);
     }
     // console.log(userProfileData);
 
@@ -69,6 +70,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
       let nextDate = new Date(currDate);
       nextDate.setDate(currDate.getDate() + 1);
 
+      setDate(currDate.toDateString());
       if (
         currDate <= liveSessionScheduledDate &&
         liveSessionScheduledDate < nextDate
@@ -108,14 +110,14 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
     <div className="container w-full lg:w-full mx-auto flex flex-col">          
         {isLoading && !liveSessionsByDate ? (
           <Loading />
-        ) : (
-          currentTableData.map((liveSession, index) => {
+        ) : ( liveSessionsByDate.length > 0?
+          (currentTableData.map((liveSession, index) => {
             return (
               // <div className="card-item shadow-lg rounded-xl grow mx-10">
               <div className="grid flex flex-col md:flex-row bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2" key={index}>
-                <div className='relative m-0 flex bg-white'>
-                  <div className='flex-no-shrink'>
-                    <img alt='' className='inset-0 h-full w-full object-cover object-center' src='https://via.placeholder.com/315x180' />
+                <div className='relative m-0 flex bg-white rounded-lg'>
+                  <div className='flex-no-shrink max-w-xs'>
+                    <img alt='' className='rounded-l-lg inset-0 h-full w-full object-cover object-center' src='https://via.placeholder.com/315x180' />
                   </div>
                   <div className='flex-1 card-block relative grid grid-cols-3'>
                     <div className="p-6 col-span-2">
@@ -131,27 +133,23 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
                         </h2>
                       </Link>         
                       <p className='leading-normal'>{liveSession.description}</p>
-                      <p className="mt-2">
-                        Hosted By:{" "}
-                        {isLoading ? (
-                          <Loading />
-                        ) : (
-                          <Link
-                            href={`/profile/${liveSession.createdByHcpId}`}
-                            as={`/profile/${liveSession.createdByHcpId}`}
-                          >                      
-                            <span className="hover:cursor-pointer hover:underline">
+                      <Link
+                        href={`/profile/${liveSession.createdByHcpId}`}
+                        as={`/profile/${liveSession.createdByHcpId}`}
+                      > 
+                        <p className="mt-2">
+                          Hosted By:{" "}
+                              <span className="hover:cursor-pointer hover:underline">
 
-                              {liveSession.userProfileData
-                                ? liveSession.userProfileData.firstName
-                                : ""}{" "}
-                              {liveSession.userProfileData
-                                ? liveSession.userProfileData.lastName
-                                : ""}
-                            </span>
-                          </Link>                        
-                        )}
-                      </p>
+                                {liveSession.userProfileData
+                                  ? liveSession.userProfileData.firstName
+                                  : ""}{" "}
+                                {liveSession.userProfileData
+                                  ? liveSession.userProfileData.lastName
+                                  : ""}
+                              </span>
+                        </p>
+                      </Link>                                              
                       {user.uid != liveSession.createdByHcpId && (
                         <div className="follow-button inline-block align-middle pt-3 text-sm">
                           <ReportModal
@@ -173,7 +171,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
                 </div>
               </div>
             );
-          })
+          })) : (<div>No lives currently scheduled on {date}.</div>)
         )}
       <Pagination
         className="pagination-bar pt-3"
