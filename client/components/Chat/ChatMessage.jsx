@@ -2,7 +2,7 @@ import {db} from '../../firebase/clientApp';
 import { collection, doc,where, query, limit, useFirestoreQuery, getDocs, deleteDoc, documentId } from "firebase/firestore";
 
 
-export default function ChatMessage({message,id, time, senderEmail, currentUserEmail, recipientEmail}){
+export default function ChatMessage({message,id, time, senderEmail, currentUserEmail, recipientEmail, handleModifiedMessage}){
     const newDate = time.toDate().toLocaleTimeString('en-US')
     let messageHTML = "";
     let targetModal;
@@ -39,6 +39,10 @@ export default function ChatMessage({message,id, time, senderEmail, currentUserE
         })
     }
 
+    function modifyAMessage(event, deleteId, message, time){
+        handleModifiedMessage(time, deleteId, message, recipientEmail, currentUserEmail);
+    }
+
 
     if(senderEmail!=currentUserEmail){
         messageHTML = 
@@ -68,9 +72,11 @@ export default function ChatMessage({message,id, time, senderEmail, currentUserE
             <div className="flex justify-end">
                 <div class='custom-modal bg-white p-2 rounded-md hidden'>
                     <div class='hover:bg-slate-300 cursor-pointer p-2 rounded-md'   onClick={(event) => {
-            deleteAMessage(event, id, message, time);
-          }}> Delete</div>
-                    <div class='hover:bg-slate-300 cursor-pointer p-2 rounded-md'>Modify</div>
+                         deleteAMessage(event, id, message, time);
+                         }}> Delete</div>
+                    <div class='hover:bg-slate-300 cursor-pointer p-2 rounded-md'   onClick={(event) => {
+                         modifyAMessage(event, id, message, time);
+                         }}>Modify</div>
                 </div>
                 <div id="vertical-dot" class='cursor-pointer'>
             

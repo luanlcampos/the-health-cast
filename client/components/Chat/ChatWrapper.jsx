@@ -3,9 +3,10 @@ import { FiSend } from 'react-icons/fi';
 import {GrEmoji} from 'react-icons/gr';
 import dynamic from "next/dynamic";
 import {db} from '../../firebase/clientApp';
-import { collection, doc, Timestamp, setDoc,getDoc, addDoc, onSnapshot,  getDocs, query, orderBy } from "firebase/firestore";
+import { collection, doc, Timestamp, updateDoc,where, addDoc, onSnapshot,  getDocs, query, orderBy } from "firebase/firestore";
 import InfoSender from './InfoSender';
 import ChatMessage from "./ChatMessage";
+import { setUserId } from 'firebase/analytics';
 
 const Picker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
@@ -13,9 +14,16 @@ export default function ChatWrapper({currentUser, selectedProfile}){
     const [openEmojiBox, setOpenEmojiBox] = useState(false);
     const [message, setMessage] = useState("");
     const [chatMessages, setChatMessages] = useState([]);
+    const [recipientEmail, setRecipientEmail] = useState();
+    const [currentUserEmail, setCurrentUserEmail] = useState();
+    const [oldMessage, setOldMessage] = useState();
+    const [id, setMessageID] = useState();
+    const [timestamp, setTimeStamp] = useState();
     const chatBox = useRef(null);
+    const [isModifying, setModifying] = useState();
 
 
+    
     const emojiPicker = useRef(handleClick);
     const handleClick = (event) =>{
         let emojiPicker = document.querySelector('.emoji-picker-react');
@@ -31,6 +39,16 @@ export default function ChatWrapper({currentUser, selectedProfile}){
         }
 
     }
+
+    const handleModifiedMessage = (time, id, message, recipientEmail, currentUserEmail)=>{
+        setModifying(true);
+        setRecipientEmail(recipientEmail);
+        setCurrentUserEmail(currentUserEmail);
+        setMessageID(id);
+        setMessage(message);
+        setTimeStamp(time);
+        setOldMessage(message);
+      }
 
     useEffect(()=>{
         if(selectedProfile?.email!=null){
@@ -78,7 +96,7 @@ export default function ChatWrapper({currentUser, selectedProfile}){
 
     const sendMessage = (e) =>{
         e.preventDefault();
-        if(currentUser){
+        if(!isModifying && currentUser && message!=""){
             let payload = {
                 text: message,
                 senderEmail: currentUser.email,
@@ -96,8 +114,33 @@ export default function ChatWrapper({currentUser, selectedProfile}){
             addDoc(recipientMessageRef, payload);
 
             chatMessages.push(payload);
-            setMessage("");
+
         }
+        if(isModifying){
+            const senderDocRef = doc(db, "chats", recipientEmail,"messages",id);
+            updateDoc(senderDocRef, {text: message});
+            setModifying(false);
+
+            // recipient
+            const recipientDocRef = doc(db, "chats", currentUserEmail);
+            const recipientMessageRef = collection(recipientDocRef, "messages");
+            const qSnap = query(recipientMessageRef, where("text","==",oldMessage), where("timestamp","==", timestamp))
+            const querySnapshot = getDocs(qSnap);
+            let deletedRecipientId;
+            querySnapshot.then(q=>{
+                if(q.docs[0]!=undefined){
+                    deletedRecipientId = q.docs[0].id;
+                    const recipientDocRef = doc(db, "chats", currentUserEmail,"messages",deletedRecipientId);
+                    updateDoc(recipientDocRef, {
+                        text:message
+                    })
+                }
+            })
+
+
+        }
+        setMessage("");
+
     }
 
     return (
@@ -114,7 +157,15 @@ export default function ChatWrapper({currentUser, selectedProfile}){
                     {
                         chatMessages.map(({text,id, timestamp, senderEmail, recipientEmail})=>
                         (
-                            <ChatMessage message = {text} id = {id} time={timestamp} senderEmail = {senderEmail} currentUserEmail = {currentUser.email} recipientEmail = {recipientEmail}/>
+                            <ChatMessage 
+                                message = {text} 
+                                id = {id} 
+                                time={timestamp} 
+                                senderEmail = {senderEmail} 
+                                currentUserEmail = {currentUser.email} 
+                                recipientEmail = {recipientEmail}
+                                handleModifiedMessage = {handleModifiedMessage}
+                            />
                         ))
                     }
 

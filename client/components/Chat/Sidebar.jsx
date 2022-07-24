@@ -105,14 +105,21 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
 
       const filterFollowersFollowings = (followers, followings) => {
         if(followers!=undefined && followings!=undefined){
-          if(followers.length == 0 && followings.length == 0) return [];
-          if(followers.length > 0 && followings.length == 0) return followers;
-          if(followers.length == 0 && followings.length > 0) return followings; 
+          if(followers.length == 0 && followings.length == 0){
+            return []
+          };
+          if(followers.length > 0 && followings.length == 0){
+            return followers;
+          };
           if(followers.length == 0 && followings.length > 0){
+            return followings;
+          }; 
+          if(followers.length > 0 && followings.length > 0){
             let mergeArr = [...followers, ...followings];
             let uniqueArray = mergeArr.filter(function(item, pos, self) {
               return self.indexOf(item) == pos;
           })
+          return uniqueArray;
           }
         }
         return [];
