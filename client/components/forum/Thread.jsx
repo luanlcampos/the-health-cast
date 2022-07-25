@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import { AiFillEdit } from "react-icons/ai";
+import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { useAuth } from "@/firebase/auth";
 import EditThreadModal from "./EditThreadModal";
+import DeleteThreadModal from "./DeleteThreadModal";
 
 const Thread = ({ thread, threadId, userName }) => {
-  const [isOpen, setIsOpen] = useState();
+  const [isEditOpen, setIsEditOpen] = useState();
+  const [isDeleteOpen, setIsDeleteOpen] = useState();
   const [threadContent, setThreadContent] = useState();
   const { user } = useAuth();
 
   useEffect(() => {
-    setIsOpen(false);
+    setIsEditOpen(false);
+    setIsDeleteOpen(false);
     setThreadContent(thread.content);
   }, []);
 
@@ -37,23 +40,41 @@ const Thread = ({ thread, threadId, userName }) => {
               <div>{threadContent}</div>
             </div>
             {thread.authorId === user.uid && (
-              <div className="p-4">
-                <AiFillEdit
-                  onClick={() => setIsOpen(true)}
-                  className="hover:cursor-pointer"
-                />
+              <div className="flex">
+                <div className="p-4">
+                  <AiFillEdit
+                    onClick={() => setIsEditOpen(true)}
+                    className="hover:cursor-pointer"
+                  />
+                </div>
+                <div className="p-4">
+                  <AiFillDelete
+                    onClick={() => setIsDeleteOpen(true)}
+                    className="hover:cursor-pointer"
+                  />
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
-      {isOpen && (
+      {isEditOpen && (
         <EditThreadModal
-          isOpen={isOpen}
+          isOpen={isEditOpen}
           origContent={thread.content}
           threadId={threadId}
           thread={thread}
-          handleClose={() => setIsOpen(false)}
+          handleClose={() => setIsEditOpen(false)}
+          setThreadContent={setThreadContent}
+        />
+      )}
+      {isDeleteOpen && (
+        <DeleteThreadModal
+          isOpen={isDeleteOpen}
+          origContent={thread.content}
+          threadId={threadId}
+          thread={thread}
+          handleClose={() => setIsDeleteOpen(false)}
           setThreadContent={setThreadContent}
         />
       )}
