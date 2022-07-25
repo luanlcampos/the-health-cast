@@ -18,7 +18,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 
 const CreateLiveSessionForm = () => {
   // obtain HCP data from Auth
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
   // Obtain the Router
   const router = useRouter();
   // loading message state
@@ -117,7 +117,16 @@ const CreateLiveSessionForm = () => {
     saveLiveSessionData(givenData, e);
 
     if (givenData.isScheduled) router.push(`/dashboard`);
-    else router.push(`/livesession/${givenData.id}`);
+    else {
+      // send notification to all followers
+      const currentUser = new UserData(userData);
+      currentUser.sendNotification(
+        "live",
+        `liveSession/${createdThread.id}`,
+        user.accessToken
+      );
+      router.push(`/livesession/${givenData.id}`);
+    }
   };
 
   return (
