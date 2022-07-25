@@ -12,7 +12,7 @@ import { db } from "@/firebase/clientApp";
 import LiveSessionPreview from "@/components/liveSession/LiveSessionPreview";
 
 export default function Recordings() {
-  const { user, userData } = useAuth();
+  const { user, userData, adminData } = useAuth();
   const [recordings, setRecordings] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,6 +56,10 @@ export default function Recordings() {
     loadRecordings();
   }, []);
 
+  if (user && !userData && !adminData) {
+    return <Loading />;
+  }
+
   if (isLoading) {
     return <Loading />;
   }
@@ -76,11 +80,14 @@ export default function Recordings() {
                 <Loading />
               ) : (
                 recordings
-                  .filter(
-                    (givenLiveSession) =>
-                      userData.following.includes(
-                        givenLiveSession.createdByHcpId
-                      ) && givenLiveSession.isARecording
+                  .filter((givenLiveSession) =>
+                    adminData
+                      ? adminData.following.includes(
+                          givenLiveSession.createdByHcpId
+                        ) && givenLiveSession.isARecording
+                      : userData.following.includes(
+                          givenLiveSession.createdByHcpId
+                        ) && givenLiveSession.isARecording
                   )
                   .map((givenLiveSession) => {
                     return (
@@ -103,11 +110,14 @@ export default function Recordings() {
                 <Loading />
               ) : (
                 recordings
-                  .filter(
-                    (givenLiveSession) =>
-                      !userData.following.includes(
-                        givenLiveSession.createdByHcpId
-                      ) && givenLiveSession.isARecording
+                  .filter((givenLiveSession) =>
+                    adminData
+                      ? !adminData.following.includes(
+                          givenLiveSession.createdByHcpId
+                        ) && givenLiveSession.isARecording
+                      : !userData.following.includes(
+                          givenLiveSession.createdByHcpId
+                        ) && givenLiveSession.isARecording
                   )
                   .map((givenLiveSession) => {
                     return (
