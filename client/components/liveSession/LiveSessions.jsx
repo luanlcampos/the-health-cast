@@ -217,12 +217,14 @@ const LiveSessions = ({ userData }) => {
                       ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
-                  return (
-                    <LiveSessionPreview
-                      liveSession={givenLiveSession}
-                      key={givenLiveSession.id}
-                    ></LiveSessionPreview>
-                  );
+                  if (!givenLiveSession.isARecording) {
+                    return (
+                      <LiveSessionPreview
+                        liveSession={givenLiveSession}
+                        key={givenLiveSession.id}
+                      ></LiveSessionPreview>
+                    );
+                  }
                 })
             ) : (
               LiveSessions.filter((givenLiveSession) =>
@@ -234,12 +236,14 @@ const LiveSessions = ({ userData }) => {
                       givenLiveSession.createdByHcpId
                     ) && givenLiveSession.isOngoing
               ).map((givenLiveSession) => {
-                return (
-                  <LiveSessionPreview
-                    liveSession={givenLiveSession}
-                    key={givenLiveSession.id}
-                  ></LiveSessionPreview>
-                );
+                if (!givenLiveSession.isARecording) {
+                  return (
+                    <LiveSessionPreview
+                      liveSession={givenLiveSession}
+                      key={givenLiveSession.id}
+                    ></LiveSessionPreview>
+                  );
+                }
               })
             )}
           </div>
