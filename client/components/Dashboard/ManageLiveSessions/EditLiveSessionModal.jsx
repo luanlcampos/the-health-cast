@@ -17,7 +17,10 @@ const style = {
   p: 4,
 };
 
-export default function EditLiveSessionModal() {
+export default function EditLiveSessionModal({
+  setAlertMessage,
+  givenLiveSessionID,
+}) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -37,7 +40,7 @@ export default function EditLiveSessionModal() {
         }}
       >
         {" "}
-        <AiFillEdit></AiFillEdit>
+        <AiFillEdit size={20}></AiFillEdit>
         <span className="px-8">Edit</span>
       </Button>
       <Modal
@@ -47,7 +50,11 @@ export default function EditLiveSessionModal() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-        <EditLiveSessionForm></EditLiveSessionForm>
+          <EditLiveSessionForm
+            setAlertMessage={setAlertMessage}
+            givenLiveSessionID={givenLiveSessionID}
+            handleClose={handleClose}
+          ></EditLiveSessionForm>
         </Box>
       </Modal>
     </div>

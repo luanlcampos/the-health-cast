@@ -16,13 +16,12 @@ import { db } from "@/firebase/clientApp";
 import { RiUserFollowLine, RiUserUnfollowLine } from "react-icons/ri";
 import { AiOutlineLoading, AiOutlineClose } from "react-icons/ai";
 import { HiOutlineRefresh } from "react-icons/hi";
-import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from "react-icons/md";
 import list from "@/data/listOfConsumerHealthInfoTopic";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import EditBioModal from "@/components/Profile/EditBioModal";
 import ReportModal from "@/components/Profile/ReportModal";
-import { AdminData, getAdminData } from "@/model/users/AdminData";
+import { getAdminData } from "@/model/users/AdminData";
 
 // shuffle function to shuffle a list
 function shuffle(array) {
@@ -466,14 +465,8 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                     </div>
                   )}
                 </div>
-                <hr />
               </div>
             )}
-            <div className="user-activities">
-              <div className="user-activities-header">
-                <h2 className="pr-4 text-3xl">Recent Activities</h2>
-              </div>
-            </div>
           </div>
         ) : (
           <div className="user-not-found flex items-center justify-center m-0 h-[calc(100%-70px)]">

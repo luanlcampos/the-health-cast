@@ -21,7 +21,7 @@ import HCPAndLiveSessionMetaData from "@/components/liveSession/CommonComponents
 import LiveSessionChatWindow from "@/components/liveSession/CommonComponents/LiveSessionChatWindow/LiveSessionChatWindow";
 
 import SignedLayout from "@/components/Layout/SignedLayout";
-import { modifyLiveSessionLife } from "@/components/liveSession/HCPControls/modifyLiveSession";
+import { modifyLiveSessionLife } from "@/model/LiveSessions/modifyLiveSession";
 const HCPControls = dynamic(
   () => import("@/components/liveSession/HCPControls/HCPControls"),
   { ssr: false }
@@ -129,6 +129,9 @@ const livesession = ({ currentLiveSession }) => {
                     liveSessionRoomID={givenLiveSessionID}
                     liveSessionDocReference={liveSessionDocReference}
                     liveSessionDocument={liveSessionDocument}
+                    createdByHcpId={
+                      currentLiveSession.liveSessionData.createdByHcpId
+                    }
                   ></HCPControls>
                 </>
               ) : (

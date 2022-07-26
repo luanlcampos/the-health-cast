@@ -106,6 +106,19 @@ export default function RecordingSettingsModal({
             />
           </RadioGroup>
           <Button
+            onClick={handleClose}
+            variant="contained"
+            sx={{
+              bgcolor: "#86a819",
+              "&:hover": {
+                color: "white",
+                backgroundColor: "#a9de09",
+              },
+            }}
+          >
+            Submit
+          </Button>
+          <Button
             onClick={handleCancel}
             variant="contained"
             sx={{

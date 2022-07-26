@@ -9,6 +9,8 @@ import {
   onSnapshot,
   query,
   orderBy,
+  updateDoc,
+  increment,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "@/firebase/auth";
@@ -103,6 +105,9 @@ const ThreadById = () => {
       replyConverter
     );
     await addDoc(replyRef, rep);
+    await updateDoc(threadRef, {
+      replies: increment(1),
+    });
   };
 
   if (!user) {

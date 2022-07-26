@@ -156,7 +156,9 @@ export default function Requests({ user }) {
                 <AiOutlineClose className="text-xl text-red-700" />
               </div>
               <div className="action">
-                <RiShareForwardLine className="text-xl text-gray-700" />
+                <Link href={`/profile/${request.userId}`}>
+                  <RiShareForwardLine className="text-xl text-gray-700" />
+                </Link>
               </div>
             </div>
           )}

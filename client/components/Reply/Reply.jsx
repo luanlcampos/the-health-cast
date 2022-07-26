@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { AiFillEdit } from "react-icons/ai";
+import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
 import EditReplyModal from "./EditReplyModal";
+import DeleteReplyModal from "./DeleteReplyModal";
 
 const Reply = ({ data, threadID, replyID }) => {
   const [author, setAuthor] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState();
+  const [isEditOpen, setIsEditOpen] = useState();
+  const [isDeleteOpen, setIsDeleteOpen] = useState();
   const [replyContent, setReplyContent] = useState();
 
   const { user } = useAuth();
 
   useEffect(() => {
-    setIsOpen(false);
+    setIsEditOpen(false);
+    setIsDeleteOpen(false);
     setReplyContent(data.content);
   }, []);
 
@@ -60,26 +63,42 @@ const Reply = ({ data, threadID, replyID }) => {
                 </div>
               </div>
               {data.authorId === user.uid && (
-                <div className="p-4">
-                  <AiFillEdit
-                    onClick={() => setIsOpen(true)}
-                    className="hover:cursor-pointer"
-                  />
+                <div className="flex">
+                  <div className="p-4">
+                    <AiFillEdit
+                      onClick={() => setIsEditOpen(true)}
+                      className="hover:cursor-pointer"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <AiFillDelete
+                      onClick={() => setIsDeleteOpen(true)}
+                      className="hover:cursor-pointer"
+                    />
+                  </div>
                 </div>
               )}
             </div>
           </div>
         )}
       </div>
-      {isOpen && (
+      {isEditOpen && (
         <EditReplyModal
-          isOpen={isOpen}
+          isOpen={isEditOpen}
           origContent={data.content}
           replyId={replyID}
           threadID={threadID}
           reply={data}
-          handleClose={() => setIsOpen(false)}
+          handleClose={() => setIsEditOpen(false)}
           setReplyContent={setReplyContent}
+        />
+      )}
+      {isDeleteOpen && (
+        <DeleteReplyModal
+          isOpen={isDeleteOpen}
+          replyId={replyID}
+          threadID={threadID}
+          handleClose={() => setIsDeleteOpen(false)}
         />
       )}
     </>

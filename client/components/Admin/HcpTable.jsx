@@ -7,6 +7,7 @@ import { doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
 import "../../styles/Admin.module.scss";
 import { db } from "../../firebase/clientApp";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 const options = [
   { value: "stream", label: "Stream" },
@@ -237,7 +238,9 @@ export default function HcpTable({ user, hcpListTabSelected }) {
                           />
                         </div>
                         <div className="hover:cursor-pointer">
-                          <FaRegShareSquare />
+                          <Link href={`/profile/${hcp.hcpId}`}>
+                            <FaRegShareSquare />
+                          </Link>
                         </div>
                       </div>
                     </td>
