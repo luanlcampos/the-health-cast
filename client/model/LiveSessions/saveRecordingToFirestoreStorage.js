@@ -1,17 +1,13 @@
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db } from "@/firebase/clientApp";
+import { storage } from "@/firebase/clientApp";
 
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
-export const saveToFirestore = async (
+export const saveRecordingToFirestoreStorage = async (
   url,
   liveSessionRoomID,
+  createdByHcpId,
   videoRecordingStatus,
   audioRecordingStatus,
   shareScreenRecordingStatus
@@ -21,50 +17,28 @@ export const saveToFirestore = async (
     return;
   }
 
-  const storage = getStorage();
   let storageRef;
-  let videoFile;
-  let audioFile;
-  let shareScreenFile;
-
+  let storagePath;
   let metaData;
 
   console.log("url is:", url);
   var matches = url.match(/\bhttps?:\/\/\S+/gi);
   console.log("url2 is: ", matches);
   let givenBlob = await fetch(url).then((r) => r.blob());
-  var date = new Date();
   console.log("file_name is:", url, "b64 is: ", givenBlob);
 
   try {
     if (videoRecordingStatus) {
-      storageRef = ref(
-        storage,
-        `recordings/${liveSessionRoomID}/${liveSessionRoomID}.mp4`
-      );
-      videoFile = new File([givenBlob], `${liveSessionRoomID}.mp4`, {
-        type: "video/mp4",
-      });
+      storagePath = `recordings/${createdByHcpId}/${liveSessionRoomID}.mp4`;
       metaData = { contentType: "video/mp4" };
     } else if (audioRecordingStatus) {
-      storageRef = ref(
-        storage,
-        `recordings/${liveSessionRoomID}/${liveSessionRoomID}.wav`
-      );
-      audioFile = new File([givenBlob], `${liveSessionRoomID}.wav`, {
-        type: "audio/wav",
-      });
+      storagePath = `recordings/${createdByHcpId}/${liveSessionRoomID}.wav`;
       metaData = { contentType: "audio/wav" };
     } else if (shareScreenRecordingStatus) {
-      storageRef = ref(
-        storage,
-        `recordings/${liveSessionRoomID}/${liveSessionRoomID}.webm`
-      );
-      shareScreenFile = new File([givenBlob], `${liveSessionRoomID}.webm`, {
-        type: "video/webm",
-      });
+      storagePath = `recordings/${createdByHcpId}/${liveSessionRoomID}.webm`;
       metaData = { contentType: "video/webm" };
     }
+    storageRef = ref(storage, storagePath);
 
     // Upload the file and metadata
     const uploadTask = uploadBytesResumable(storageRef, givenBlob, metaData);
@@ -107,11 +81,16 @@ export const saveToFirestore = async (
               `${liveSessionRoomID}`
             );
 
-            // Set the "capital" field of the city 'DC'
+            // Set the "isARecording" field of the liveSessionRef 'true' and recordingURL to the download URL
             updateDoc(liveSessionRef, {
               isARecording: true,
               recordingURL: `${givenURL}`,
-            }).then((success) => console.log("Successfully Updated the doc"));
+              recordingStoragePath: `${storagePath}`,
+            })
+              .then((success) => console.log("Successfully Updated the doc"))
+              .catch((e) => {
+                throw Error("Unable to store document", e);
+              });
           });
       }
     );

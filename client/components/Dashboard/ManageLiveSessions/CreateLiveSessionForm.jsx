@@ -10,6 +10,7 @@ import { LiveSession } from "../../../model/LiveSessions/LiveSession";
 import mediaIDList from "../../../data/mediaIDList";
 // import { v4 as uuidv4 } from "uuid";
 import { nanoid } from "nanoid";
+import { UserData } from "@/model/users/UserData";
 
 import AddInterestTagsFormInput from "../HelperComponents/AddInterestTagsFormInput";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -122,7 +123,7 @@ const CreateLiveSessionForm = () => {
       const currentUser = new UserData(userData);
       currentUser.sendNotification(
         "live",
-        `liveSession/${createdThread.id}`,
+        `liveSession/${givenData.id}`,
         user.accessToken
       );
       router.push(`/livesession/${givenData.id}`);

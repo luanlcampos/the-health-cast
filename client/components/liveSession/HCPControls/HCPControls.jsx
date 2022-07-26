@@ -12,8 +12,8 @@ import RecordingSettingsModal from "./RecordingStreamSettings/RecordingSettingsM
 import {
   modifyLiveSessionLife,
   modifyLiveSessionRecordingStatus,
-} from "./modifyLiveSession";
-import { saveToFirestore } from "./saveToFirestore";
+} from "@/model/LiveSessions/modifyLiveSession";
+import { saveRecordingToFirestoreStorage } from "@/model/LiveSessions/saveRecordingToFirestoreStorage";
 
 import EditLiveSessionModal from "@/components/Dashboard/ManageLiveSessions/EditLiveSessionModal";
 import Card from "@mui/material/Card";
@@ -26,6 +26,7 @@ const HCPControls = ({
   liveSessionRoomID,
   liveSessionDocument,
   liveSessionDocReference,
+  createdByHcpId,
 }) => {
   const router = useRouter();
 
@@ -57,9 +58,10 @@ const HCPControls = ({
       audio: audioRecordingStatus,
       screen: shareScreenRecordingStatus,
       onStop: (blobUrl, blob) => {
-        saveToFirestore(
+        saveRecordingToFirestoreStorage(
           blobUrl,
           liveSessionRoomID,
+          createdByHcpId,
           videoRecordingStatus,
           audioRecordingStatus,
           shareScreenRecordingStatus
