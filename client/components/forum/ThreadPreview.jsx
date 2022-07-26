@@ -71,7 +71,7 @@ const ThreadPreview = ({ thread }) => {
               <div className="grow flex pb-4">
                 <div className="mr-7">
                   <h4 className="text-gray-400">Replies</h4>
-                  <div className="text-center">{thread.replies.length}</div>
+                  <div className="text-center">{thread.replies}</div>
                 </div>
               </div>
               <h4 className="text-gray-400">Activity</h4>

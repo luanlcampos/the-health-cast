@@ -1,4 +1,10 @@
-import { collection, doc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  deleteDoc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 import { useState } from "react";
 import { Modal } from "@mui/material";
 import { db } from "@/firebase/clientApp";
@@ -19,6 +25,11 @@ export default function DeleteReplyModal({
     const replyColRef = collection(db, "threads", threadID, "replies");
     const replyRef = doc(replyColRef, replyId);
     await deleteDoc(replyRef);
+
+    const threadRef = doc(db, "threads", threadID);
+    await updateDoc(threadRef, {
+      replies: increment(-1),
+    });
 
     handleClose(false);
   };
@@ -48,7 +59,7 @@ export default function DeleteReplyModal({
           </button>
           <button
             className="btn border py-2 px-3 bg-red-700 text-white font-semi-bold rounded-md"
-            onClick={() => setOpen(false)}
+            onClick={() => handleClose(false)}
           >
             cancel
           </button>

@@ -39,7 +39,7 @@ export default function DeleteThreadModal({ isOpen, threadId, handleClose }) {
           </button>
           <button
             className="btn border py-2 px-3 bg-red-700 text-white font-semi-bold rounded-md"
-            onClick={() => setOpen(false)}
+            onClick={() => handleClose(false)}
           >
             cancel
           </button>

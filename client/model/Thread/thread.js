@@ -38,7 +38,7 @@ class Thread {
         title: this.title,
         description: this.description,
         content: this.description,
-        replies: this.replies || [],
+        replies: this.replies || 0,
         interests: this.interests,
         createdAt: this.createdAt,
         activityDate: this.activityDate,
