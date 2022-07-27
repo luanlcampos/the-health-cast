@@ -20,9 +20,12 @@ const Forum = () => {
   const [searchedThreads, setSearchedThreads] = useState(null);
   const [useSearch, setUseSearch] = useState(false);
 
-  const PageSize = 3;
+  const PageSize = 2;
   const [currentFollowedPage, setCurrentFollowedPage] = useState(1);
   const [currentRecPage, setCurrentRecPage] = useState(1);
+
+  const [followingThreads, setFollowingThreads] = useState([]);
+  const [recThreads, setRecThreads] = useState([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -33,9 +36,7 @@ const Forum = () => {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-          const data = userSnap.data();
-          setUserData(data);
-          return data;
+          return userSnap.data();
         }
       } catch (err) {
         console.log(err);
@@ -64,13 +65,14 @@ const Forum = () => {
       }
     };
 
+    loadUser(user.uid).then((user) => setUserData(user));
     loadThreads();
   }, []);
 
   // search Thread useEffect
   useEffect(() => {
     let matchingThreads = [];
-    const filterThreads = async () => {
+    const filterSearchedThreads = async () => {
       try {
         //e.preventDefault();
         setSearchedThreads(null);
@@ -97,34 +99,58 @@ const Forum = () => {
         console.error(err);
       }
     };
-    filterThreads();
+    filterSearchedThreads();
 
     console.log(
-      `state (searchedThreads): ${
-        !searchedThreads ? 0 : searchedThreads.length
+      `state (searchedThreads): ${!searchedThreads ? 0 : searchedThreads.length
       }`
     );
   }, [searchThreadField]);
+
+  useEffect(() => {
+    const filterThreads = async () => {
+      if (threads && userData) {
+        const followingData = threads.filter(
+          (thread) =>
+            userData.following.includes(thread.authorId) ||
+            user.uid === thread.authorId
+        );
+
+        console.log(followingData);
+
+        setFollowingThreads(followingData);
+
+        const recData = threads.filter(
+          (thread) =>
+            !userData.following.includes(thread.authorId) &&
+            user.uid !== thread.authorId
+        );
+        console.log(recData);
+        setRecThreads(recData);
+      }
+    };
+    filterThreads();
+  }, [threads]);
 
   let currentFollowedThreadData = useMemo(() => {
     const firstPageIndex = (currentFollowedPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
 
-    if (searchThreadField.length == 0 && threads) {
-      return threads.slice(firstPageIndex, lastPageIndex);
+    if (searchThreadField.length == 0 && followingThreads) {
+      return followingThreads.slice(firstPageIndex, lastPageIndex);
     } else if (searchThreadField.length > 0 && searchedThreads)
       return searchedThreads.slice(firstPageIndex, lastPageIndex);
-  }, [currentFollowedPage, threads, searchedThreads]);
+  }, [currentFollowedPage, followingThreads, searchedThreads]);
 
   let currentRecThreadData = useMemo(() => {
     const firstPageIndex = (currentRecPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
 
-    if (searchThreadField.length == 0 && threads) {
-      return threads.slice(firstPageIndex, lastPageIndex);
+    if (searchThreadField.length == 0 && recThreads) {
+      return recThreads.slice(firstPageIndex, lastPageIndex);
     } else if (searchThreadField.length > 0 && searchedThreads)
       return searchedThreads.slice(firstPageIndex, lastPageIndex);
-  }, [currentRecPage, threads, searchedThreads]);
+  }, [currentRecPage, recThreads, searchedThreads]);
 
   if (!user) {
     router.push("/login");
@@ -181,7 +207,9 @@ const Forum = () => {
                 className="pagination-bar pt-3"
                 currentPage={currentFollowedPage}
                 totalCount={
-                  searchedThreads ? searchedThreads.length : threads.length
+                  searchedThreads
+                    ? searchedThreads.length
+                    : followingThreads.length
                 }
                 pageSize={PageSize}
                 onPageChange={(page) => setCurrentFollowedPage(page)}
@@ -213,7 +241,7 @@ const Forum = () => {
               <Pagination
                 className="pagination-bar pt-3"
                 currentPage={currentRecPage}
-                totalCount={currentRecThreadData.length}
+                totalCount={recThreads.length}
                 pageSize={PageSize}
                 onPageChange={(page) => setCurrentRecPage(page)}
               />
