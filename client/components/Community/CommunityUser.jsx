@@ -56,7 +56,7 @@ const UpcomingLiveSession = ({ account }) => {
                         height: "135px", 
                         bgcolor: "#9FC131",
                         '&:hover': {
-                          borderColor: '#618833',
+                          borderColor: '#65a30d',
                   }, }}
                   className="w-32 mx-auto rounded-full border-8 border-white cursor-pointer" 
                 >
@@ -73,7 +73,7 @@ const UpcomingLiveSession = ({ account }) => {
              }}
              as={`/profile/${account.id}`}
            >    
-            <div className="text-center mt-2 text-3xl font-medium hover:text-[#bada55] cursor-pointer">{account.firstName} {account.lastName}</div>
+            <div className="text-center mt-2 text-3xl font-medium hover:text-[#65a30d] cursor-pointer">{account.firstName} {account.lastName}</div>
            </Link>
            <div className="text-center mt-2 font-light text-sm">{/*@devpenzil*/}</div>
            <div className="text-center font-normal text-lg">
