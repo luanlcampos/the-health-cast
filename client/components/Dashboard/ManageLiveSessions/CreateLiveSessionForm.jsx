@@ -17,7 +17,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { AiOutlineLoading } from "react-icons/ai";
 
-const CreateLiveSessionForm = () => {
+const CreateLiveSessionForm = ({ setAlertMessage, handleClose }) => {
   // obtain HCP data from Auth
   const { user, userData } = useAuth();
   // Obtain the Router
@@ -116,7 +116,10 @@ const CreateLiveSessionForm = () => {
     }
 
     saveLiveSessionData(givenData, e);
-
+    setAlertMessage(
+      "Live Session Successfully created. Please wait to be redirected or refresh the dashboard page"
+    );
+    handleClose();
     if (givenData.isScheduled) router.push(`/dashboard`);
     else {
       // send notification to all followers

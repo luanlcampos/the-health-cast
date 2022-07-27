@@ -7,6 +7,7 @@
         "@/firebase/*": ["firebase/*"],
         "@/model/*": ["model/*"],
         "@/data/*": ["data/*"],
+        "@/styles/*": ["styles/*"],
       }
     }
   }

@@ -1,10 +1,11 @@
 import * as React from "react";
-import { AiFillEdit } from "react-icons/ai";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-
+import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import EditLiveSessionForm from "@/components/Dashboard/ManageLiveSessions/EditLiveSessionForm";
+
+import CreateLiveSessionForm from "./CreateLiveSessionForm";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -17,10 +18,7 @@ const style = {
   p: 4,
 };
 
-export default function EditLiveSessionModal({
-  setAlertMessage,
-  givenLiveSessionID,
-}) {
+export default function CreateLiveSessionModal({ setAlertMessage }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -28,20 +26,19 @@ export default function EditLiveSessionModal({
   return (
     <div>
       <Button
-        className="flex-1"
-        variant="contained"
-        onClick={handleOpen}
         sx={{
-          bgcolor: "#86a819",
+          bgcolor: "#a9de09",
+          color: "black",
+          fontWeight: "bold",
+          padding: "1rem",
           "&:hover": {
-            color: "white",
+            color: "black",
             backgroundColor: "#a9de09",
           },
         }}
+        onClick={handleOpen}
       >
-        {" "}
-        <AiFillEdit size={20}></AiFillEdit>
-        <span className="px-8">Edit</span>
+        Go Live
       </Button>
       <Modal
         open={open}
@@ -50,11 +47,10 @@ export default function EditLiveSessionModal({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <EditLiveSessionForm
+          <CreateLiveSessionForm
             setAlertMessage={setAlertMessage}
-            givenLiveSessionID={givenLiveSessionID}
             handleClose={handleClose}
-          ></EditLiveSessionForm>
+          ></CreateLiveSessionForm>
         </Box>
       </Modal>
     </div>

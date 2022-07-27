@@ -48,7 +48,7 @@ export default function EditLiveSessionForm({
   return (
     <div>
       <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
-        <Grid spacing={3}>
+        <Grid>
           <Grid
             className="m-8"
             item

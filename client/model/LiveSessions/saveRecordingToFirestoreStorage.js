@@ -31,12 +31,12 @@ export const saveRecordingToFirestoreStorage = async (
     if (videoRecordingStatus) {
       storagePath = `recordings/${createdByHcpId}/${liveSessionRoomID}.mp4`;
       metaData = { contentType: "video/mp4" };
-    } else if (audioRecordingStatus) {
-      storagePath = `recordings/${createdByHcpId}/${liveSessionRoomID}.wav`;
-      metaData = { contentType: "audio/wav" };
     } else if (shareScreenRecordingStatus) {
       storagePath = `recordings/${createdByHcpId}/${liveSessionRoomID}.webm`;
       metaData = { contentType: "video/webm" };
+    } else if (audioRecordingStatus) {
+      storagePath = `recordings/${createdByHcpId}/${liveSessionRoomID}.wav`;
+      metaData = { contentType: "audio/wav" };
     }
     storageRef = ref(storage, storagePath);
 
@@ -65,6 +65,7 @@ export const saveRecordingToFirestoreStorage = async (
       },
       (error) => {
         // Handle unsuccessful uploads
+        throw Error("Could not successfully upload", error);
       },
       () => {
         // Handle successful uploads on complete

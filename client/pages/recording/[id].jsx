@@ -86,29 +86,11 @@ const RecordingById = () => {
         recordingMetaData &&
         recordingMetaData.isARecording &&
         recordingMetaData.recordingURL ? (
-          <div className="w-full">
-            <h1>{recordingMetaData.title}</h1>
-            <p>{recordingMetaData.description}</p>
-            <p>
-              {" "}
-              {new Timestamp(
-                recordingMetaData.sessionScheduleDate.seconds,
-                recordingMetaData.sessionScheduleDate.nanoseconds
-              )
-                .toDate()
-                .toLocaleString("en-us", {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                })
-                .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$1-$2")}
-            </p>
-            <ReactPlayer
-              url={recordingMetaData.recordingURL}
-              controls={true}
-              playing={true}
-            />
-            ;
+          <div className="w-full container flex">
+           <div>
+
+           </div>
+           
           </div>
         ) : (
           <>

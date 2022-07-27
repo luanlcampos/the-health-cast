@@ -11,6 +11,8 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { BiCommentDots } from "react-icons/bi";
+import { Timestamp } from "firebase/firestore";
 
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
@@ -49,8 +51,19 @@ const LiveSessionChatWindow = ({ liveSessionRoomID }) => {
   };
 
   return (
-    <div id={styles.mainMessagesContainer} className="">
-      <div id={styles.mainMessages} className="">
+    <div
+      style={{
+        backgroundImage: `url(https://image.flaticon.com/icons/svg/327/327779.svg)`,
+      }}
+      className="msger"
+    >
+      <header className="msger-header ">
+        <div className="msger-header-title flex gap-x-4 content-center">
+          <BiCommentDots size={25}></BiCommentDots>
+          <span className="mx-2">Chat Window</span>
+        </div>
+      </header>
+      <div className={`${styles.msgerChat} .msgerChat`}>
         {messages &&
           messages.map((msg) => (
             <ChatMessage key={`${msg.id}`} currentUser={user} message={msg} />
@@ -61,23 +74,23 @@ const LiveSessionChatWindow = ({ liveSessionRoomID }) => {
       <form
         onSubmit={sendMessage}
         id={styles.formSendMessage}
-        className="fixed bottom-0 bg-gray-900  flex text-2xl w-fit"
+        className="msger-inputarea"
       >
         <input
           value={formValue}
           onChange={(e) => setFormValue(e.target.value)}
           placeholder="say something nice"
-          className="leading-normal  text-2xl bg-gray-800 text-white pt-0 pb-0 pl-2 pr-2"
+          className="msger-input"
           id={styles.inputSendMessage}
         />
 
         <button
           id={styles.btnSendMessage}
-          className="w-1/5 bg-indigo-800"
+          className="msger-send-btn"
           type="submit"
           disabled={!formValue}
         >
-          🕊️
+          Send
         </button>
       </form>
     </div>
@@ -85,7 +98,9 @@ const LiveSessionChatWindow = ({ liveSessionRoomID }) => {
 };
 
 function ChatMessage({ message, currentUser }) {
-  const { text, senderUID } = message;
+  const { text, senderUID, senderFirstName, senderLastName, createdAt } =
+    message;
+
   return (
     <>
       <div
@@ -93,7 +108,30 @@ function ChatMessage({ message, currentUser }) {
           senderUID === currentUser.uid ? styles.sent : styles.received
         }`}
       >
-        <p id={styles.textContent}>{text}</p>
+        <div
+          className={`msg-img ${styles.msgImg}`}
+          style={{
+            backgroundImage: `url(https://cdn-icons-png.flaticon.com/512/1077/1077063.png)`,
+          }}
+        ></div>
+        <div className={`msg-bubble ${styles.msgBubble}`}>
+          <div className="msg-info">
+            <div className="msg-info-name">{`${senderFirstName} ${senderLastName}`}</div>
+            <div className="msg-info-time">
+              {createdAt &&
+                new Timestamp(createdAt.seconds, createdAt.nanoseconds)
+                  .toDate()
+                  .toLocaleString("en-us", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+            </div>
+          </div>
+
+          <div className="msg-text">
+            <p>{text}</p>
+          </div>
+        </div>
       </div>
     </>
   );

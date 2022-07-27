@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
 import FormGroup from "@mui/material/FormGroup";
@@ -114,6 +114,7 @@ export default function RecordingSettingsModal({
                 color: "white",
                 backgroundColor: "#a9de09",
               },
+              m: 1,
             }}
           >
             Submit
@@ -127,17 +128,12 @@ export default function RecordingSettingsModal({
                 color: "white",
                 backgroundColor: "#a9de09",
               },
+              m: 1,
             }}
           >
             Cancel
           </Button>
         </FormGroup>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Text in a modal
-        </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-        </Typography>
       </Box>
     </Modal>
   );

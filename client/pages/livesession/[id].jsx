@@ -20,7 +20,7 @@ import LiveSessionStage from "@/components/liveSession/CommonComponents/LiveSess
 import HCPAndLiveSessionMetaData from "@/components/liveSession/CommonComponents/HCPAndLiveSessionMetaData/HCPAndLiveSessionMetaData";
 import LiveSessionChatWindow from "@/components/liveSession/CommonComponents/LiveSessionChatWindow/LiveSessionChatWindow";
 
-import SignedLayout from "@/components/Layout/SignedLayout";
+import SignedLiveSessionLayout from "@/components/Layout/SignedLiveSessionLayout";
 import { modifyLiveSessionLife } from "@/model/LiveSessions/modifyLiveSession";
 const HCPControls = dynamic(
   () => import("@/components/liveSession/HCPControls/HCPControls"),
@@ -46,13 +46,17 @@ const livesession = ({ currentLiveSession }) => {
     router.push("/login");
     return;
   } else {
-
   }
 
   useEffect(() => {
-    console.log("Rendering out the page", currentLiveSession.liveSessionData.createdByHcpId);
-    console.log(user.uid)
-    setCreatorStatus(currentLiveSession.liveSessionData.createdByHcpId == user.uid);
+    console.log(
+      "Rendering out the page",
+      currentLiveSession.liveSessionData.createdByHcpId
+    );
+    console.log(user.uid);
+    setCreatorStatus(
+      currentLiveSession.liveSessionData.createdByHcpId == user.uid
+    );
     console.log(
       "Setting the creator status as: ",
       currentLiveSession.liveSessionData.createdByHcpId == user.uid
@@ -101,40 +105,41 @@ const livesession = ({ currentLiveSession }) => {
   };
 
   return (
-    <SignedLayout>
+    <SignedLiveSessionLayout>
       {!user && !userData ? (
         <Loading />
       ) : (
         <div className="w-full my-8">
-          <div className="container flex lg:flex-row sm:flex-col md:flex-col h-full">
-            <div className="w-3/4">
-              <div className="flex justify-center h-[76vh]">
+          <div className="flex lg:flex-row sm:flex-col md:flex-col h-full">
+            <div className="w-8/12 m-3">
+              <div className="flex flex-col justify-center gap-x-2">
                 <LiveSessionStage
                   liveSessionRoomID={givenLiveSessionID}
                   currentUserData={userData}
                   creatorStatus={creatorStatus}
                 ></LiveSessionStage>
+                {creatorStatus && (
+                  <>
+                    <HCPControls
+                      liveSessionMetaData={currentLiveSession.liveSessionData}
+                      liveSessionRoomID={givenLiveSessionID}
+                      liveSessionDocReference={liveSessionDocReference}
+                      liveSessionDocument={liveSessionDocument}
+                      createdByHcpId={
+                        currentLiveSession.liveSessionData.createdByHcpId
+                      }
+                    ></HCPControls>
+                  </>
+                )}
               </div>
             </div>
-            <div className="shrink flex flex-col lg:w-1/4 sm:w-fit md:fit">
+            <div className="shrink m-3 flex flex-col lg:w-1/4 sm:w-fit md:fit">
               <HCPAndLiveSessionMetaData
                 hcpCreatorInfo={currentLiveSession.hcpCreatorProfileData}
                 liveSessionRoomID={givenLiveSessionID}
                 liveSessionMetaData={currentLiveSession.liveSessionData}
               ></HCPAndLiveSessionMetaData>
-              {creatorStatus ? (
-                <>
-                  <HCPControls
-                    liveSessionMetaData={currentLiveSession.liveSessionData}
-                    liveSessionRoomID={givenLiveSessionID}
-                    liveSessionDocReference={liveSessionDocReference}
-                    liveSessionDocument={liveSessionDocument}
-                    createdByHcpId={
-                      currentLiveSession.liveSessionData.createdByHcpId
-                    }
-                  ></HCPControls>
-                </>
-              ) : (
+              {!creatorStatus && (
                 <>
                   <Button
                     onClick={handleLeaveRoom}
@@ -159,7 +164,7 @@ const livesession = ({ currentLiveSession }) => {
           </div>
         </div>
       )}
-    </SignedLayout>
+    </SignedLiveSessionLayout>
   );
 };
 
