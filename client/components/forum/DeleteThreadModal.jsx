@@ -1,10 +1,12 @@
 import { doc, deleteDoc } from "firebase/firestore";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { Modal } from "@mui/material";
 import { db } from "@/firebase/clientApp";
 
 export default function DeleteThreadModal({ isOpen, threadId, handleClose }) {
   const [open, setOpen] = useState(isOpen);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,6 +14,8 @@ export default function DeleteThreadModal({ isOpen, threadId, handleClose }) {
     setOpen(false);
     await deleteDoc(doc(db, "threads", threadId));
     handleClose(false);
+
+    router.push("/forum");
   };
 
   return (
