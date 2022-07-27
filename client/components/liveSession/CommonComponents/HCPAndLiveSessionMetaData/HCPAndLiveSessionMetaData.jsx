@@ -1,5 +1,6 @@
 import React from "react";
 import { Timestamp } from "firebase/firestore";
+import { Avatar } from "@mui/material";
 
 const HCPAndLiveSessionMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
   
@@ -9,13 +10,20 @@ const HCPAndLiveSessionMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
     <div className="bg-white mb-8 rounded-xl drop-shadow-lg">
       <div className="flex flex-col rounded-xl p-2">
         <div className="min-w-[150px] flex content-center">
-          <img
-            src="https://via.placeholder.com/125"
-            width="150px"
-            height="150px"
-            className="p-4"
-          />
-          <div className="text-center self-center ">
+          <div className="user-avatar pt-1">
+            <Avatar
+              sx={{ width: "120px", 
+                    height: "120px", 
+                    bgcolor: "#9FC131",
+                 }}
+              className="w-32 mx-auto rounded-full border-8 border-white" 
+            >
+              <span className="text-4xl">
+                {hcpCreatorInfo.firstName.toUpperCase().at(0) + " " + hcpCreatorInfo.lastName.toUpperCase().at(0)}
+              </span>                  
+            </Avatar>
+          </div>
+          <div className="text-center self-center text-4xl ml-3">
             {hcpCreatorInfo.firstName ? (
               hcpCreatorInfo.firstName + " " + hcpCreatorInfo.lastName
             ) : (
