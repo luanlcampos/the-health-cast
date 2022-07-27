@@ -14,7 +14,8 @@ const Thread = ({ thread, threadId, userName }) => {
     setIsEditOpen(false);
     setIsDeleteOpen(false);
     setThreadContent(thread.content);
-  }, []);
+    console.log("UseEffect called at Thread.jsx");
+  }, [thread]);
 
   return (
     <>

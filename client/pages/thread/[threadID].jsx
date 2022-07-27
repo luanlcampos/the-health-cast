@@ -90,8 +90,9 @@ const ThreadById = () => {
       reset({ content: "" });
     }
 
+    console.log("UseEffect called at threadID.jsx");
     setIsLoading(false);
-  }, [reply]);
+  }, [reply, threadID]);
 
   const handleReplySubmit = async (data) => {
     const { content } = data;
