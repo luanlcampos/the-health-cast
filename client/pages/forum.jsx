@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { collection, doc, getDocs, getDoc } from "firebase/firestore";
 import { useAuth } from "@/firebase/auth";
@@ -8,16 +8,21 @@ import Header from "@/components/Layout/Header";
 import SideMenu from "@/components/Layout/SideMenu";
 import Loading from "@/components/Loading";
 import SignedLayout from "@/components/Layout/SignedLayout";
-
+import Pagination from "@/components/Pagination/Pagination";
 
 const Forum = () => {
   const router = useRouter();
   const { user } = useAuth();
   const [threads, setThreads] = useState();
+  const [userData, setUserData] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [searchThreadField, setSearchThreadField] = useState("");
   const [searchedThreads, setSearchedThreads] = useState(null);
   const [useSearch, setUseSearch] = useState(false);
+
+  const PageSize = 3;
+  const [currentFollowedPage, setCurrentFollowedPage] = useState(1);
+  const [currentRecPage, setCurrentRecPage] = useState(1);
 
   useEffect(() => {
     setIsLoading(true);
@@ -28,7 +33,9 @@ const Forum = () => {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-          return userSnap.data();
+          const data = userSnap.data();
+          setUserData(data);
+          return data;
         }
       } catch (err) {
         console.log(err);
@@ -59,9 +66,9 @@ const Forum = () => {
 
     loadThreads();
   }, []);
-  
+
   // search Thread useEffect
-  useEffect(()=>{
+  useEffect(() => {
     let matchingThreads = [];
     const filterThreads = async () => {
       try {
@@ -71,23 +78,53 @@ const Forum = () => {
 
         //if (!LiveSessions)
         //  console.log(`length: ${threads.length}`);
-        
+
         console.log(`threads is ${threads.length}`);
-        if (threads){
-          matchingThreads = threads.filter(thread => thread.title.toLowerCase().includes(searchThreadField.toLowerCase()));
-          console.log(`searched threads (matchingThreads): ${JSON.stringify(matchingThreads)}`);
+        if (threads) {
+          matchingThreads = threads.filter((thread) =>
+            thread.title.toLowerCase().includes(searchThreadField.toLowerCase())
+          );
+          console.log(
+            `searched threads (matchingThreads): ${JSON.stringify(
+              matchingThreads
+            )}`
+          );
           console.log(`matchingLS.length: ${matchingThreads.length}`);
           setSearchedThreads(matchingThreads);
           setUseSearch(true);
         }
-      } catch (err){
+      } catch (err) {
         console.error(err);
       }
-    }
+    };
     filterThreads();
 
-    console.log(`state (searchedThreads): ${!searchedThreads? 0: searchedThreads.length}`);
-  }, [searchThreadField]);  
+    console.log(
+      `state (searchedThreads): ${
+        !searchedThreads ? 0 : searchedThreads.length
+      }`
+    );
+  }, [searchThreadField]);
+
+  let currentFollowedThreadData = useMemo(() => {
+    const firstPageIndex = (currentFollowedPage - 1) * PageSize;
+    const lastPageIndex = firstPageIndex + PageSize;
+
+    if (searchThreadField.length == 0 && threads) {
+      return threads.slice(firstPageIndex, lastPageIndex);
+    } else if (searchThreadField.length > 0 && searchedThreads)
+      return searchedThreads.slice(firstPageIndex, lastPageIndex);
+  }, [currentFollowedPage, threads, searchedThreads]);
+
+  let currentRecThreadData = useMemo(() => {
+    const firstPageIndex = (currentRecPage - 1) * PageSize;
+    const lastPageIndex = firstPageIndex + PageSize;
+
+    if (searchThreadField.length == 0 && threads) {
+      return threads.slice(firstPageIndex, lastPageIndex);
+    } else if (searchThreadField.length > 0 && searchedThreads)
+      return searchedThreads.slice(firstPageIndex, lastPageIndex);
+  }, [currentRecPage, threads, searchedThreads]);
 
   if (!user) {
     router.push("/login");
@@ -105,44 +142,87 @@ const Forum = () => {
                 type="search"
                 className="w-1/3 bg-gray-200 rounded px-3 py-1 my-5 focus:outline-none focus:shadow-outline appearance-none leading-normal"
                 placeholder="Search By Forum Thread Title ..."
-        onChange={e=>setSearchThreadField(e.target.value)}
+                onChange={(e) => setSearchThreadField(e.target.value)}
                 id="onChange={e=>{setSearchLSField(e.target.value); filterLiveSessions(e);}}"
               />
             </span>
-          )}          
+          )}
           <h2 className="text-2xl font">Followed HCP's</h2>
           <div className="border-b border-black mb-5"></div>
 
           <div className="pb-10">
-            {isLoading && !threads ? (
+            {isLoading && !threads && !userData ? (
               <Loading />
+            ) : useSearch && searchThreadField.length > 0 ? (
+              currentFollowedThreadData
+                .filter(
+                  (givenThread) =>
+                    userData.following.includes(givenThread.authorId) ||
+                    user.uid === givenThread.authorId
+                )
+                .map((thread) => {
+                  return <ThreadPreview thread={thread} key={thread.id} />;
+                })
+            ) : !isLoading && userData ? (
+              currentFollowedThreadData
+                .filter(
+                  (givenThread) =>
+                    userData.following.includes(givenThread.authorId) ||
+                    user.uid === givenThread.authorId
+                )
+                .map((thread) => {
+                  return <ThreadPreview thread={thread} key={thread.id} />;
+                })
             ) : (
-              useSearch && searchThreadField.length > 0? 
-              (searchedThreads.map((thread) => {
-                return <ThreadPreview thread={thread} key={thread.id} />;
-              })) : (threads.map((thread) => {
-                return <ThreadPreview thread={thread} key={thread.id} />;
-              }))
+              <Loading />
+            )}
+            {currentFollowedThreadData ? (
+              <Pagination
+                className="pagination-bar pt-3"
+                currentPage={currentFollowedPage}
+                totalCount={
+                  searchedThreads ? searchedThreads.length : threads.length
+                }
+                pageSize={PageSize}
+                onPageChange={(page) => setCurrentFollowedPage(page)}
+              />
+            ) : (
+              <Loading />
             )}
           </div>
 
-          <div className="flex pb-10">
-            <div className="border-b border-gray-400 grow"></div>
-            <div className="text-my-green hover:cursor-pointer relative">
-              <div className="absolute w-max -top-3 bg-white px-5">
-                Load more
-              </div>
-            </div>
-            <div className="border-b border-gray-400 grow"></div>
-          </div>
           <h2 className="text-2xl font">Recommended HCP's</h2>
           <div className="border-b border-black mb-5"></div>
 
           {/* TODO: Recommended threads will be popluated here */}
-          <div></div>
+          <div>
+            {!isLoading && threads && userData ? (
+              currentRecThreadData
+                .filter(
+                  (givenThread) =>
+                    !userData.following.includes(givenThread.authorId) &&
+                    user.uid !== givenThread.authorId
+                )
+                .map((thread) => {
+                  return <ThreadPreview thread={thread} key={thread.id} />;
+                })
+            ) : (
+              <Loading />
+            )}
+            {currentRecThreadData ? (
+              <Pagination
+                className="pagination-bar pt-3"
+                currentPage={currentRecPage}
+                totalCount={currentRecThreadData.length}
+                pageSize={PageSize}
+                onPageChange={(page) => setCurrentRecPage(page)}
+              />
+            ) : (
+              <Loading />
+            )}
+          </div>
         </div>
       </SignedLayout>
-      
     </div>
   );
 };
