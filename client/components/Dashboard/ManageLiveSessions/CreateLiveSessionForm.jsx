@@ -126,7 +126,7 @@ const CreateLiveSessionForm = ({ setAlertMessage, handleClose }) => {
       const currentUser = new UserData(userData);
       currentUser.sendNotification(
         "live",
-        `liveSession/${givenData.id}`,
+        `livesession/${givenData.id}`,
         user.accessToken
       );
       router.push(`/livesession/${givenData.id}`);

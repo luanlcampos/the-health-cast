@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player/lazy";
-
+import RecordingMetaData from "@/components/liveSession/RecordingMetaData"
 import { useRouter } from "next/router";
 import Button from "@mui/material/Button";
 import Link from "next/link";
@@ -13,13 +13,8 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
-
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
-import Loading from "@/components/Loading";
 
 import SignedLayout from "@/components/Layout/SignedLayout";
 
@@ -28,7 +23,6 @@ const RecordingById = () => {
   const { user } = useAuth();
   const { id } = router.query;
   const liveSessionRoomId = id;
-  const recording = useRef();
   const [recordingMetaData, setRecordingMetaData] = useState();
   const [recordingHCPCreatorMetaData, setRecordingHCPCreatorMetaData] =
     useState();
@@ -84,13 +78,25 @@ const RecordingById = () => {
       <SignedLayout>
         {!isLoading &&
         recordingMetaData &&
+        recordingHCPCreatorMetaData &&
         recordingMetaData.isARecording &&
         recordingMetaData.recordingURL ? (
           <div className="w-full container flex">
-           <div>
-
-           </div>
-           
+            <div className="w-2/3 m-3 flex-1">
+              <ReactPlayer
+                url={recordingMetaData.recordingURL}
+                controls={true}
+                playing={true}
+                width="100%"
+                height="100%"
+              />
+            </div>
+            <div className="w-1/3">
+              <RecordingMetaData
+                liveSessionMetaData={recordingMetaData}
+                hcpCreatorInfo={recordingHCPCreatorMetaData}
+              ></RecordingMetaData>
+            </div>
           </div>
         ) : (
           <>
