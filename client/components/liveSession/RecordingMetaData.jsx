@@ -15,8 +15,8 @@ const RecordingMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
         <div className="min-w-[150px] flex content-center">
           <div className="user-avatar pt-1">
             <Avatar
-              sx={{ width: "135px", 
-                    height: "135px", 
+              sx={{ width: "120px", 
+                    height: "120px", 
                     bgcolor: "#9FC131",
                  }}
               className="w-32 mx-auto rounded-full border-8 border-white" 
@@ -26,7 +26,7 @@ const RecordingMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
               </span>                  
             </Avatar>
           </div>
-          <div className="text-center self-center ">
+          <div className="text-center self-center text-4xl ml-3">
             {hcpCreatorInfo.firstName ? (
               hcpCreatorInfo.firstName + " " + hcpCreatorInfo.lastName
             ) : (
