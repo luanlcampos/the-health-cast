@@ -4,8 +4,6 @@ import { collection, doc, getDocs, getDoc } from "firebase/firestore";
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
 import ThreadPreview from "@/components/forum/ThreadPreview";
-import Header from "@/components/Layout/Header";
-import SideMenu from "@/components/Layout/SideMenu";
 import Loading from "@/components/Loading";
 import SignedLayout from "@/components/Layout/SignedLayout";
 import Pagination from "@/components/Pagination/Pagination";
@@ -102,7 +100,8 @@ const Forum = () => {
     filterSearchedThreads();
 
     console.log(
-      `state (searchedThreads): ${!searchedThreads ? 0 : searchedThreads.length
+      `state (searchedThreads): ${
+        !searchedThreads ? 0 : searchedThreads.length
       }`
     );
   }, [searchThreadField]);
@@ -160,7 +159,7 @@ const Forum = () => {
   return (
     <div>
       <SignedLayout>
-        <div className="w-full px-10 py-5">
+        <div className="w-full px-10 py-5 overflow-y-auto max-h-full container-snap">
           <h1 className="text-3xl font-bold pb-3">Latest Posts</h1>
           {user && (
             <span className="relative w-full">
