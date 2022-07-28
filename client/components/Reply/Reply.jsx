@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import { Avatar } from "@mui/material";
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
 import EditReplyModal from "./EditReplyModal";
@@ -12,6 +13,7 @@ const Reply = ({ data, threadID, replyID }) => {
   const [isEditOpen, setIsEditOpen] = useState();
   const [isDeleteOpen, setIsDeleteOpen] = useState();
   const [replyContent, setReplyContent] = useState();
+  const [initial, setInitial] = useState();
 
   const { user } = useAuth();
 
@@ -28,7 +30,11 @@ const Reply = ({ data, threadID, replyID }) => {
     if (userSnap.exists()) {
       const user = userSnap.data();
 
-      setAuthor(user.firstName + " " + user.lastName);
+      const fName = user.firstName;
+      const lName = user.lastName;
+
+      setAuthor(fName + " " + lName);
+      setInitial(fName.split("")[0] + lName.split("")[0]);
     }
   };
 
@@ -47,14 +53,17 @@ const Reply = ({ data, threadID, replyID }) => {
           <div className="px-10 py-5">
             {/* Content */}
             <div className="flex bg-gray-400 rounded-xl shadow-lg">
-              <div className="w-[150px] h-[150px]">
-                <img
-                  src="https://via.placeholder.com/150"
-                  width="150px"
-                  height="150px"
-                  className="p-4 rounded-full w-[150px] h-[150px]"
-                  alt="profile"
-                />
+              <div className="w-[150px] h-[150px] flex">
+                <Avatar
+                  sx={{
+                    width: "135px",
+                    height: "135px",
+                    bgcolor: "#444444",
+                  }}
+                  className="w-32 my-auto mx-auto rounded-full border-8 border-white"
+                >
+                  <span className="text-4xl">{initial}</span>
+                </Avatar>
               </div>
               <div className="flex-1">
                 <div className="p-5">
