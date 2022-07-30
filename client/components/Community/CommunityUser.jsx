@@ -52,7 +52,12 @@ const UpcomingLiveSession = ({ account }) => {
            >        
               <div className="user-avatar pt-1">
                 <Avatar
-                  sx={{ width: "135px", height: "135px", bgcolor: "#9FC131" }}
+                  sx={{ width: "135px", 
+                        height: "135px", 
+                        bgcolor: "#9FC131",
+                        '&:hover': {
+                          borderColor: '#65a30d',
+                  }, }}
                   className="w-32 mx-auto rounded-full border-8 border-white cursor-pointer" 
                 >
                   <span className="text-4xl">
@@ -61,8 +66,15 @@ const UpcomingLiveSession = ({ account }) => {
                 </Avatar>
               </div>
            </Link>           
-
-           <div className="text-center mt-2 text-3xl font-medium">{account.firstName} {account.lastName}</div>
+           <Link
+             href={{
+               pathname: `/profile/${account.id}`,
+               query: { accountId: account.id },
+             }}
+             as={`/profile/${account.id}`}
+           >    
+            <div className="text-center mt-2 text-3xl font-medium hover:text-[#65a30d] cursor-pointer">{account.firstName} {account.lastName}</div>
+           </Link>
            <div className="text-center mt-2 font-light text-sm">{/*@devpenzil*/}</div>
            <div className="text-center font-normal text-lg">
               {account.hcpOrg ? (

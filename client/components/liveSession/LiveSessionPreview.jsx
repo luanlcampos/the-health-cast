@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/firebase/auth";
 import LiveSessionPreviewHyperLink from "./LiveSessionPreviewHyperLink";
 import RecordingPreviewHyperLink from "./RecordingPreviewHyperLink";
+import thumbnail from "../../public/images/general-thumbnail.png";
+import liveThumbnail from "../../public/images/live-thumbnail.png";
 
 const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
@@ -35,11 +37,11 @@ const LiveSessionPreview = ({ liveSession }) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
+      <div className="bg-white rounded-lg drop-shadow-xl max-w-xs md:max-w-none overflow-hidden">
         <img
-          src="https://via.placeholder.com/315x180"
+          src={liveSession.isARecording ? thumbnail.src : liveThumbnail.src}
           alt="thumbnail"
-          className="rounded-t-xl w-full"
+          className=" w-full"
         />
         <div className="p-3">
           <span className="text-sm text-primary">
@@ -70,7 +72,7 @@ const LiveSessionPreview = ({ liveSession }) => {
               ></LiveSessionPreviewHyperLink>
             )}
           </div>
-          <p className="paragraph-normal text-gray-600">
+          <p className="paragraph-normal leading-6 text-gray-600 max-h-[50px] overflow-auto">
             {liveSession.description}
           </p>
           <div className="mt-3 block" href="#">

@@ -1,10 +1,13 @@
 import React from "react";
 import { Timestamp } from "firebase/firestore";
+import Loading from "@/components/Loading"
 import { Avatar } from "@mui/material";
 
-const HCPAndLiveSessionMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
+const RecordingMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
+
+  console.log("hcpCreator", hcpCreatorInfo)
+  console.log("liveSessionMetaData", liveSessionMetaData);
   
-  const liveSessionDate = JSON.parse(liveSessionMetaData.sessionScheduleDate);
 
   return (
     <div className="bg-white mb-8 rounded-xl drop-shadow-lg">
@@ -27,16 +30,17 @@ const HCPAndLiveSessionMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
             {hcpCreatorInfo.firstName ? (
               hcpCreatorInfo.firstName + " " + hcpCreatorInfo.lastName
             ) : (
-              <div>Loading...</div>
+              <Loading></Loading>
             )}
           </div>
         </div>
         <div className=" border-r border-gray-400 p-4">
-          <h2 className="m-2 text-2xl pb-2">
-            {liveSessionMetaData.title}
-          </h2>
+          <h2 className="m-2 text-2xl pb-2">{liveSessionMetaData.title}</h2>
           <p className="m-2 text-lg">
-            {new Timestamp(liveSessionDate.seconds, liveSessionDate.nanoseconds)
+            {new Timestamp(
+              liveSessionMetaData.sessionScheduleDate.seconds,
+              liveSessionMetaData.sessionScheduleDate.nanoseconds
+            )
               .toDate()
               .toLocaleString("en-us", {
                 year: "numeric",
@@ -52,4 +56,4 @@ const HCPAndLiveSessionMetaData = ({ hcpCreatorInfo, liveSessionMetaData }) => {
   );
 };
 
-export default HCPAndLiveSessionMetaData;
+export default RecordingMetaData;

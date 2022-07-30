@@ -6,6 +6,17 @@
 @import "./Chat.module.scss";
 @import "../styles/UserProfile.module.scss";
 @import "./Pagination.module.scss";
+@import "./LiveSessionChatWindow.scss";
+@import "./Recording.module.scss";
+
+/*Live chat window css variables*/
+:root {
+  --body-msg-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --msger-bg: #fff;
+  --border: 2px solid #ddd;
+  --left-msg-bg: #ececec;
+  --right-msg-bg: #579ffb;
+}
 
 html,
 body {
@@ -66,7 +77,9 @@ a {
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration { display: none; }
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
 
 .report-confirmation {
   z-index: 1400 !important;
@@ -76,4 +89,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration { display: none; }
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}

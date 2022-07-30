@@ -129,8 +129,7 @@ const LiveSessions = ({ userData }) => {
     filterLiveSessions();
 
     console.log(
-      `state (searchedLiveSessions): ${
-        !searchedLiveSessions ? 0 : searchedLiveSessions.length
+      `state (searchedLiveSessions): ${!searchedLiveSessions ? 0 : searchedLiveSessions.length
       }`
     );
   }, [searchLSField]);
@@ -187,12 +186,14 @@ const LiveSessions = ({ userData }) => {
                     givenLiveSession.createdByHcpId
                   ) && givenLiveSession.isOngoing
               ).map((givenLiveSession) => {
-                return (
-                  <LiveSessionPreview
-                    liveSession={givenLiveSession}
-                    key={givenLiveSession.id}
-                  ></LiveSessionPreview>
-                );
+                if (!givenLiveSession.isARecording) {
+                  return (
+                    <LiveSessionPreview
+                      liveSession={givenLiveSession}
+                      key={givenLiveSession.id}
+                    ></LiveSessionPreview>
+                  );
+                }
               })
             )}
           </div>
@@ -210,36 +211,40 @@ const LiveSessions = ({ userData }) => {
                 .filter((givenLiveSession) =>
                   adminData
                     ? !adminData.following.includes(
-                        givenLiveSession.createdByHcpId
-                      )
+                      givenLiveSession.createdByHcpId
+                    )
                     : !userData.following.includes(
-                        givenLiveSession.createdByHcpId
-                      ) && givenLiveSession.isOngoing
+                      givenLiveSession.createdByHcpId
+                    ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
+                  if (!givenLiveSession.isARecording) {
+                    return (
+                      <LiveSessionPreview
+                        liveSession={givenLiveSession}
+                        key={givenLiveSession.id}
+                      ></LiveSessionPreview>
+                    );
+                  }
+                })
+            ) : (
+              LiveSessions.filter((givenLiveSession) =>
+                adminData
+                  ? !adminData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  )
+                  : !userData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  ) && givenLiveSession.isOngoing
+              ).map((givenLiveSession) => {
+                if (!givenLiveSession.isARecording) {
                   return (
                     <LiveSessionPreview
                       liveSession={givenLiveSession}
                       key={givenLiveSession.id}
                     ></LiveSessionPreview>
                   );
-                })
-            ) : (
-              LiveSessions.filter((givenLiveSession) =>
-                adminData
-                  ? !adminData.following.includes(
-                      givenLiveSession.createdByHcpId
-                    )
-                  : !userData.following.includes(
-                      givenLiveSession.createdByHcpId
-                    ) && givenLiveSession.isOngoing
-              ).map((givenLiveSession) => {
-                return (
-                  <LiveSessionPreview
-                    liveSession={givenLiveSession}
-                    key={givenLiveSession.id}
-                  ></LiveSessionPreview>
-                );
+                }
               })
             )}
           </div>

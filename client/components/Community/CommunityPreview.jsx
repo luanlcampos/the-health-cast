@@ -12,14 +12,14 @@ const PageSize = 6;
 
 const CommunityPreview = ({ communityAccounts }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [searchAccountsField, setSearchAccountsField] = useState("");  
+  const [searchAccountsField, setSearchAccountsField] = useState("");
   const [searchedAccounts, setSearchedAccounts] = useState(null);
   const [useSearch, setUseSearch] = useState(false);
   const { user } = useAuth();
 
   const accounts = communityAccounts;
-//  console.log(`accounts: `, accounts);
-//  console.log(`accounts.length: `, accounts.length);
+  //  console.log(`accounts: `, accounts);
+  //  console.log(`accounts.length: `, accounts.length);
 
   // pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,11 +31,11 @@ const CommunityPreview = ({ communityAccounts }) => {
     if (searchAccountsField.length == 0)
       return accounts.slice(firstPageIndex, lastPageIndex);
     else if (searchAccountsField.length > 0 && searchedAccounts)
-      return searchedAccounts.slice(firstPageIndex, lastPageIndex);      
+      return searchedAccounts.slice(firstPageIndex, lastPageIndex);
   }, [currentPage, accounts, searchedAccounts]);
-//  console.log(`currentTableData.length: `, currentTableData.length);
+  //  console.log(`currentTableData.length: `, currentTableData.length);
 
-//  console.log(`searchAccountsField: ${searchAccountsField}`);
+  //  console.log(`searchAccountsField: ${searchAccountsField}`);
 
   useEffect(() => {
     let matchingAccts = [];
@@ -50,10 +50,10 @@ const CommunityPreview = ({ communityAccounts }) => {
             account.fullName.includes(searchAccountsField.toLowerCase()) ||
             account.initials.includes(searchAccountsField.toUpperCase())
           );
-//          console.log(
-//            `searched accounts (matchingAccts): ${JSON.stringify(matchingAccts)}`
-//          );
-//          console.log(`matchingAccts.length: ${matchingAccts.length}`);
+          //          console.log(
+          //            `searched accounts (matchingAccts): ${JSON.stringify(matchingAccts)}`
+          //          );
+          //          console.log(`matchingAccts.length: ${matchingAccts.length}`);
 
           setSearchedAccounts(matchingAccts);
           setCurrentPage(1);
@@ -69,8 +69,7 @@ const CommunityPreview = ({ communityAccounts }) => {
     filterAccounts();
 
     console.log(
-      `state (searchedAccounts): ${
-        !searchedAccounts ? 0 : searchedAccounts.length
+      `state (searchedAccounts): ${!searchedAccounts ? 0 : searchedAccounts.length
       }`
     );
   }, [searchAccountsField]);
@@ -92,26 +91,26 @@ const CommunityPreview = ({ communityAccounts }) => {
         <p>
           {/*!searchedLiveSessions? 0: searchedLiveSessions.length*/}
         </p>
-      </div>    
-      <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 mb-auto mt-2">          
-          {isLoading && !accounts ? (
-            <Loading />
-          ) : ( accounts.length > 0?
-            (currentTableData.map((account, index) => {
-              return (
-                //<div key={account.id}>{account.id}</div>
-                <CommunityUser key={account.id} account={account}/>
-              );
-            })) : (<div>No registered users on THCA.</div>)
-          )}
+      </div>
+      <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 mb-auto mt-2">
+        {isLoading && !accounts ? (
+          <Loading />
+        ) : (accounts.length > 0 ?
+          (currentTableData.map((account, index) => {
+            return (
+              //<div key={account.id}>{account.id}</div>
+              <CommunityUser key={account.id} account={account} />
+            );
+          })) : (<div>No registered users on THCA.</div>)
+        )}
       </div>
       <Pagination
         className="pagination-bar pt-3"
         currentPage={currentPage}
-        totalCount={searchedAccounts? searchedAccounts.length : accounts.length}
+        totalCount={searchedAccounts ? searchedAccounts.length : accounts.length}
         pageSize={PageSize}
         onPageChange={(page) => setCurrentPage(page)}
-      />      
+      />
     </div>
   );
 };

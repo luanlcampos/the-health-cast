@@ -50,7 +50,7 @@ export default function ReportModal({
   reportingThread,
   reportingLive,
 }) {
-  console.log(`reportedUserData: ${JSON.stringify(reportedUserData)}`);
+//  console.log(`reportedUserData: ${JSON.stringify(reportedUserData)}`);
   const [open, setOpen] = React.useState(false);
   const [formValues, setFormValues] = React.useState(defaultValues);
   const { user } = useAuth();

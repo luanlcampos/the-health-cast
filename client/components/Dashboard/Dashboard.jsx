@@ -4,11 +4,12 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 // --- REMOVE LINE 8
-import Test from "./ManageLiveSessions/test";
+
 // ------
 import SideMenu from "../Layout/SideMenu";
 import ManageLiveSessionsIndex from "./ManageLiveSessions/ManageLiveSessions";
 import CreateThread from "./ManageForums/CreateThread";
+import ViewRecordings from "./ManageLiveSessions/ViewRecordings"
 
 /**
  * Wrapper for a "Tab" -> Pass in the main component that you want to render.
@@ -86,7 +87,7 @@ export default function Dashboard() {
               <ManageLiveSessionsIndex></ManageLiveSessionsIndex>
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <Test></Test>
+              <ViewRecordings></ViewRecordings>
             </TabPanel>
             <TabPanel value={value} index={2}>
               <CreateThread />

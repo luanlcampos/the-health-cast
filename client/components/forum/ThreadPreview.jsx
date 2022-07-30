@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Avatar } from "@mui/material";
 import ReportModal from "@/components/Profile/ReportModal";
 import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
@@ -11,6 +12,7 @@ const ThreadPreview = ({ thread }) => {
   const { user } = useAuth();
   const [creatorData, setCreatorData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [initial, setInitial] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -21,12 +23,18 @@ const ThreadPreview = ({ thread }) => {
 
         setCreatorData(data);
         setIsLoading(false);
+        return data;
       } catch (err) {
         console.error(err);
       }
     };
 
-    loadCreatorData();
+    loadCreatorData().then((data) => {
+      let fName = data.firstName;
+      let lName = data.lastName;
+
+      setInitial(fName.split("")[0] + lName.split("")[0]);
+    });
   }, []);
   // console.log(`in ThreadPreview 2: ${JSON.stringify(creatorData)}`);
 
@@ -36,12 +44,16 @@ const ThreadPreview = ({ thread }) => {
         <div className="bg-white mb-8 rounded-xl drop-shadow-lg border-2 border-gray-100">
           <div className="flex rounded-xl p-2">
             <div className="min-w-[150px]">
-              <img
-                src="https://via.placeholder.com/125"
-                width="150px"
-                height="150px"
-                className="p-4"
-              />
+              <Avatar
+                sx={{
+                  width: "135px",
+                  height: "135px",
+                  bgcolor: "#9FC131",
+                }}
+                className="w-32 mx-auto rounded-full border-8 border-white"
+              >
+                <span className="text-4xl">{initial}</span>
+              </Avatar>
               <div className="text-center">
                 {creatorData.firstName ? (
                   creatorData.firstName + " " + creatorData.lastName
@@ -71,7 +83,7 @@ const ThreadPreview = ({ thread }) => {
               <div className="grow flex pb-4">
                 <div className="mr-7">
                   <h4 className="text-gray-400">Replies</h4>
-                  <div className="text-center">{thread.replies.length}</div>
+                  <div className="text-center">{thread.replies}</div>
                 </div>
               </div>
               <h4 className="text-gray-400">Activity</h4>

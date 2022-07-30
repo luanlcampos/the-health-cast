@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { AiFillDelete } from "react-icons/ai";
-
+import { deleteUpcomingSession } from "@/model/LiveSessions/deleteUpcomingSession";
 const style = {
   position: "absolute",
   top: "50%",
@@ -17,11 +17,21 @@ const style = {
   p: 4,
 };
 
-export default function DeleteUpcomingLiveSessionModal() {
+export default function DeleteUpcomingLiveSessionModal({
+  setAlertMessage,
+  givenLiveSessionID,
+}) {
+  console.log("The Row ID passed in is ", givenLiveSessionID);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const handleDeleteUpcomingSession = () => {
+    deleteUpcomingSession(givenLiveSessionID);
+    setAlertMessage(
+      "Upcoming Live Session Successfully Deleted. Please refresh the page to reflect the results"
+    );
+    handleClose();
+  };
   return (
     <div>
       <Button
@@ -37,7 +47,7 @@ export default function DeleteUpcomingLiveSessionModal() {
         }}
       >
         {" "}
-        <AiFillDelete></AiFillDelete>
+        <AiFillDelete size={20}></AiFillDelete>
         <span className="px-8">Delete</span>
       </Button>
       <Modal
@@ -50,12 +60,16 @@ export default function DeleteUpcomingLiveSessionModal() {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Delete Upcoming Live Session?
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Are you sure you want to delete this live session?
+          <Typography
+            className="m-8"
+            id="modal-modal-description"
+            sx={{ mt: 2, mb: 2 }}
+          >
+            Are you sure you want to delete this upcoming live session?
           </Typography>
           <Button
-            onClick={handleClose}
-            className="flex-1"
+            onClick={handleDeleteUpcomingSession}
+            className="flex-1 m-2"
             variant="contained"
             sx={{
               bgcolor: "#86a819",
@@ -63,13 +77,15 @@ export default function DeleteUpcomingLiveSessionModal() {
                 color: "white",
                 backgroundColor: "#a9de09",
               },
+              ml: 2,
+              mr: 2,
             }}
           >
             <span className="px-8">Yes</span>
           </Button>
           <Button
             onClick={handleClose}
-            className="flex-1"
+            className="flex-1 m-2"
             variant="contained"
             sx={{
               bgcolor: "#86a819",

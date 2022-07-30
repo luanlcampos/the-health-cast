@@ -9,8 +9,11 @@ import {
   onSnapshot,
   query,
   orderBy,
+  updateDoc,
+  increment,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import { Avatar } from "@mui/material";
 import { useAuth } from "@/firebase/auth";
 import { db } from "@/firebase/clientApp";
 import Thread from "@/components/forum/Thread";
@@ -21,13 +24,14 @@ import SignedLayout from "@/components/Layout/SignedLayout";
 
 const ThreadById = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
   const { threadID } = router.query;
   const [thread, setThread] = useState();
   const [thrAuthor, setThrAuthor] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [reply, setReply] = useState();
   const [replies, setReplies] = useState([]);
+  const [initial, setInitial] = useState();
 
   const { register, handleSubmit, reset, formState } = useForm();
 
@@ -88,8 +92,16 @@ const ThreadById = () => {
       reset({ content: "" });
     }
 
+    if (userData) {
+      const fName = userData.firstName;
+      const lName = userData.lastName;
+
+      setInitial(fName.split("")[0] + lName.split("")[0]);
+    }
+    console.log("UseEffect called at threadID.jsx");
+
     setIsLoading(false);
-  }, [reply]);
+  }, [reply, threadID, userData]);
 
   const handleReplySubmit = async (data) => {
     const { content } = data;
@@ -103,6 +115,9 @@ const ThreadById = () => {
       replyConverter
     );
     await addDoc(replyRef, rep);
+    await updateDoc(threadRef, {
+      replies: increment(1),
+    });
   };
 
   if (!user) {
@@ -114,19 +129,22 @@ const ThreadById = () => {
     <div>
       <SignedLayout>
         {!isLoading && thread ? (
-          <div className="w-full">
+          <div className="w-full max-h-full overflow-y-auto container-snap">
             <Thread thread={thread} threadId={threadID} userName={thrAuthor} />
             <div className="flex bg-gray-200 p-5 shadow-xl m-10 rounded-xl">
-              <div className="my-auto">
-                <img
-                  src="https://via.placeholder.com/80"
-                  width="80px"
-                  height="80px"
-                  className="rounded-full mr-5"
-                  alt="profile"
-                />
+              <div className="my-auto flex">
+                <Avatar
+                  sx={{
+                    width: "80px",
+                    height: "80px",
+                    bgcolor: "#335555",
+                  }}
+                  className="w-32 mx-auto rounded-full border-8 border-white"
+                >
+                  <span className="text-2xl">{initial}</span>
+                </Avatar>
               </div>
-              <div className="flex-1 h-full">
+              <div className="flex-1 h-full ml-5">
                 <form
                   onSubmit={handleSubmit(handleReplySubmit)}
                   className="flex"

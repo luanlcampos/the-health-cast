@@ -1,17 +1,30 @@
 import { useState, useEffect } from "react";
-import { AiFillEdit } from "react-icons/ai";
+import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import { Avatar } from "@mui/material";
 import { useAuth } from "@/firebase/auth";
 import EditThreadModal from "./EditThreadModal";
+import DeleteThreadModal from "./DeleteThreadModal";
 
 const Thread = ({ thread, threadId, userName }) => {
-  const [isOpen, setIsOpen] = useState();
+  const [isEditOpen, setIsEditOpen] = useState();
+  const [isDeleteOpen, setIsDeleteOpen] = useState();
   const [threadContent, setThreadContent] = useState();
+  const [initial, setInitial] = useState("");
   const { user } = useAuth();
 
   useEffect(() => {
-    setIsOpen(false);
+    setIsEditOpen(false);
+    setIsDeleteOpen(false);
     setThreadContent(thread.content);
-  }, []);
+    console.log("UseEffect called at Thread.jsx");
+
+    if (userName) {
+      const fName = userName.split(" ")[0];
+      const lName = userName.split(" ")[1];
+
+      setInitial(fName.split("")[0] + lName.split("")[0]);
+    }
+  }, [thread, userName]);
 
   return (
     <>
@@ -23,37 +36,58 @@ const Thread = ({ thread, threadId, userName }) => {
 
           {/* Content */}
           <div className="flex bg-my-green rounded-xl shadow-lg">
-            <div className="w-[150px] h-[150px]">
-              <img
-                src="https://via.placeholder.com/150"
-                width="150px"
-                height="150px"
-                className="p-4 rounded-full"
-                alt="profile"
-              />
+            <div className="w-[150px] h-[150px] flex">
+              <Avatar
+                sx={{
+                  width: "135px",
+                  height: "135px",
+                  bgcolor: "#115588",
+                }}
+                className="w-32 my-auto mx-auto rounded-full border-8 border-white"
+              >
+                <span className="text-4xl">{initial}</span>
+              </Avatar>
             </div>
             <div className="flex-1 p-5">
               <div className="text-xl">{userName}</div>
               <div>{threadContent}</div>
             </div>
             {thread.authorId === user.uid && (
-              <div className="p-4">
-                <AiFillEdit
-                  onClick={() => setIsOpen(true)}
-                  className="hover:cursor-pointer"
-                />
+              <div className="flex">
+                <div className="p-4">
+                  <AiFillEdit
+                    onClick={() => setIsEditOpen(true)}
+                    className="hover:cursor-pointer"
+                  />
+                </div>
+                <div className="p-4">
+                  <AiFillDelete
+                    onClick={() => setIsDeleteOpen(true)}
+                    className="hover:cursor-pointer"
+                  />
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
-      {isOpen && (
+      {isEditOpen && (
         <EditThreadModal
-          isOpen={isOpen}
+          isOpen={isEditOpen}
           origContent={thread.content}
           threadId={threadId}
           thread={thread}
-          handleClose={() => setIsOpen(false)}
+          handleClose={() => setIsEditOpen(false)}
+          setThreadContent={setThreadContent}
+        />
+      )}
+      {isDeleteOpen && (
+        <DeleteThreadModal
+          isOpen={isDeleteOpen}
+          origContent={thread.content}
+          threadId={threadId}
+          thread={thread}
+          handleClose={() => setIsDeleteOpen(false)}
           setThreadContent={setThreadContent}
         />
       )}

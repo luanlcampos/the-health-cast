@@ -3,8 +3,11 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { AiFillDelete } from "react-icons/ai";
+import { ref, deleteObject, getDownloadURL } from "firebase/storage";
 
+import { AiFillDelete } from "react-icons/ai";
+import { storage } from "@/firebase/clientApp";
+import { turnOffLiveSessionRecordingStatus } from "@/model/LiveSessions/modifyLiveSession";
 const style = {
   position: "absolute",
   top: "50%",
@@ -17,11 +20,32 @@ const style = {
   p: 4,
 };
 
-export default function DeleteRecordingModal() {
+export default function DeleteRecordingModal({
+  setAlertMessage,
+  liveSessionID,
+  recordingStoragePath,
+}) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  console.log("Recording URL", recordingStoragePath);
+  const handleDeleteAndClose = () => {
+    // Create a reference to the file to delete
+    const recordingRef = ref(storage, `${recordingStoragePath}`);
 
+    // Delete the file
+    deleteObject(recordingRef)
+      .then(() => {
+        // File deleted successfully
+        setAlertMessage("Recording successfully deleted. Please refresh the page to reflect the results");
+        turnOffLiveSessionRecordingStatus(liveSessionID);
+        handleClose();
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+        throw new Error("Recording was not deleted", error);
+      });
+  };
   return (
     <div>
       <Button
@@ -37,7 +61,7 @@ export default function DeleteRecordingModal() {
         }}
       >
         {" "}
-        <AiFillDelete></AiFillDelete>
+        <AiFillDelete size={20}></AiFillDelete>
         <span className="px-8">Delete</span>
       </Button>
       <Modal
@@ -48,13 +72,13 @@ export default function DeleteRecordingModal() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Delete Upcoming Live Session?
+            Delete Live Session Recording?
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Are you sure you want to delete this live session?
+            Are you sure you want to delete this recording?
           </Typography>
           <Button
-            onClick={handleClose}
+            onClick={handleDeleteAndClose}
             className="flex-1"
             variant="contained"
             sx={{
