@@ -7,7 +7,7 @@ const Footer = () => {
         <small className={styles.small}>
           &copy;2022 <strong>Health Cast App</strong>, All Rights Reserved
         </small>
-        <nav className="footeNav">
+        {/* <nav className="footeNav">
           <Link className={styles.a} href="/">
             Back to Top
           </Link>
@@ -17,7 +17,7 @@ const Footer = () => {
           <Link className={styles.a} href="/">
             Privacy
           </Link>
-        </nav>
+        </nav> */}
       </div>
     </footer>
   );
