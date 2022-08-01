@@ -15,17 +15,7 @@ At the height of the pandemic, many hospital staff were overwhelmed by the overc
 
 For a typical user, The Health CAST app facilitates quick web searches through past discussions according to their needs and interests. Much like HCPs on larger social media platforms, an ordinary user is typically overwhelmed by endless sources of unreliable health information that may have been unverified by a medical professional. In this case, our platform also becomes a gateway where concerned users can engage in secure, online conversations through forums and webinars with healthcare professionals to look for professional advice and assistance.
 
-## Running Server locally
-
-After cloning the repo, you should run the following commands:
-
-```
-cd server
-npm install
-npm start or npm run dev if you want to run the app in development mode using nodemon.
-```
-
-## Running UI locally
+## Running the client app locally
 
 After cloning the repo, you should run the following commands:
 
