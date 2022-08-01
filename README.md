@@ -2,7 +2,7 @@
 
 ## Final Submission Notes
 
-In order to run the app locally, a .env.local containing a list of API secrets is required. Please send a request to llima-campos@myseneca.ca to obtain this file. 
+In order to run the app locally, a .env.local containing a list of API secrets is required. Please send a request to llima-campos@myseneca.ca to obtain this file. After obtaining file, please place it within the client folder.  
 
 # Health Cast App
 
