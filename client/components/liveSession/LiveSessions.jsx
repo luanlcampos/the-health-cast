@@ -8,7 +8,7 @@ import { useAuth } from "@/firebase/auth";
 const LiveSessions = ({ userData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [LiveSessions, setLiveSessions] = useState(null);
-  const { user } = useAuth();
+  const { user, adminData } = useAuth();
   const [searchedLiveSessions, setSearchedLiveSessions] = useState(null);
   const [searchLSField, setSearchLSField] = useState("");
   const [useSearch, setUseSearch] = useState(false);
@@ -129,8 +129,7 @@ const LiveSessions = ({ userData }) => {
     filterLiveSessions();
 
     console.log(
-      `state (searchedLiveSessions): ${
-        !searchedLiveSessions ? 0 : searchedLiveSessions.length
+      `state (searchedLiveSessions): ${!searchedLiveSessions ? 0 : searchedLiveSessions.length
       }`
     );
   }, [searchLSField]);
@@ -158,15 +157,18 @@ const LiveSessions = ({ userData }) => {
             </p>
           </div>
           <div className="main-content-header flex flex-col gap-x-10">
-            <h2 className="text-3xl font-semibold pb-5">Live Now</h2>
+            <h2 className="text-3xl font-semibold pb-5">Followed HCP&#39;s</h2>
           </div>
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 my-10">
             {isLoading && !LiveSessions ? (
               <Loading />
             ) : useSearch && searchLSField.length > 0 ? (
               searchedLiveSessions
-                .filter((givenLiveSession) =>
-                  userData.following.includes(givenLiveSession.createdByHcpId)
+                .filter(
+                  (givenLiveSession) =>
+                    userData.following.includes(
+                      givenLiveSession.createdByHcpId
+                    ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
                   return (
@@ -177,15 +179,21 @@ const LiveSessions = ({ userData }) => {
                   );
                 })
             ) : (
-              LiveSessions.filter((givenLiveSession) =>
-                userData.following.includes(givenLiveSession.createdByHcpId)
+              !adminData &&
+              LiveSessions.filter(
+                (givenLiveSession) =>
+                  userData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  ) && givenLiveSession.isOngoing
               ).map((givenLiveSession) => {
-                return (
-                  <LiveSessionPreview
-                    liveSession={givenLiveSession}
-                    key={givenLiveSession.id}
-                  ></LiveSessionPreview>
-                );
+                if (!givenLiveSession.isARecording) {
+                  return (
+                    <LiveSessionPreview
+                      liveSession={givenLiveSession}
+                      key={givenLiveSession.id}
+                    ></LiveSessionPreview>
+                  );
+                }
               })
             )}
           </div>
@@ -200,31 +208,43 @@ const LiveSessions = ({ userData }) => {
               <Loading />
             ) : useSearch && searchLSField.length > 0 ? (
               searchedLiveSessions
-                .filter(
-                  (givenLiveSession) =>
-                    !userData.following.includes(
+                .filter((givenLiveSession) =>
+                  adminData
+                    ? !adminData.following.includes(
                       givenLiveSession.createdByHcpId
                     )
+                    : !userData.following.includes(
+                      givenLiveSession.createdByHcpId
+                    ) && givenLiveSession.isOngoing
                 )
                 .map((givenLiveSession) => {
+                  if (!givenLiveSession.isARecording) {
+                    return (
+                      <LiveSessionPreview
+                        liveSession={givenLiveSession}
+                        key={givenLiveSession.id}
+                      ></LiveSessionPreview>
+                    );
+                  }
+                })
+            ) : (
+              LiveSessions.filter((givenLiveSession) =>
+                adminData
+                  ? !adminData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  )
+                  : !userData.following.includes(
+                    givenLiveSession.createdByHcpId
+                  ) && givenLiveSession.isOngoing
+              ).map((givenLiveSession) => {
+                if (!givenLiveSession.isARecording) {
                   return (
                     <LiveSessionPreview
                       liveSession={givenLiveSession}
                       key={givenLiveSession.id}
                     ></LiveSessionPreview>
                   );
-                })
-            ) : (
-              LiveSessions.filter(
-                (givenLiveSession) =>
-                  !userData.following.includes(givenLiveSession.createdByHcpId)
-              ).map((givenLiveSession) => {
-                return (
-                  <LiveSessionPreview
-                    liveSession={givenLiveSession}
-                    key={givenLiveSession.id}
-                  ></LiveSessionPreview>
-                );
+                }
               })
             )}
           </div>

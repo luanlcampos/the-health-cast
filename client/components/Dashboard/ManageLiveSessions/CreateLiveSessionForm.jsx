@@ -10,15 +10,16 @@ import { LiveSession } from "../../../model/LiveSessions/LiveSession";
 import mediaIDList from "../../../data/mediaIDList";
 // import { v4 as uuidv4 } from "uuid";
 import { nanoid } from "nanoid";
+import { UserData } from "@/model/users/UserData";
 
 import AddInterestTagsFormInput from "../HelperComponents/AddInterestTagsFormInput";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { AiOutlineLoading } from "react-icons/ai";
 
-const CreateLiveSessionForm = () => {
+const CreateLiveSessionForm = ({ setAlertMessage, handleClose }) => {
   // obtain HCP data from Auth
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
   // Obtain the Router
   const router = useRouter();
   // loading message state
@@ -64,6 +65,8 @@ const CreateLiveSessionForm = () => {
         givenData.UpcomingLiveSessionDatePicker,
         givenData.createdByHcpId,
         givenData.interests,
+        givenData.isOngoing,
+        givenData.isScheduled,
         [] /*empty report set*/,
         givenData.mediaId
       );
@@ -101,17 +104,33 @@ const CreateLiveSessionForm = () => {
 
     givenData = {
       ...givenData,
-      id: nanoid(), //uuidv4(),
+      id: nanoid(),
       interests: interestTags,
       mediaId: mediaIDList.liveSession,
       createdByHcpId: user.uid,
+      isOngoing: false,
     };
-    if (givenData.isScheduled === false)
+    if (givenData.isScheduled === false) {
       givenData.UpcomingLiveSessionDatePicker = new Date();
+      givenData.isOngoing = true;
+    }
 
     saveLiveSessionData(givenData, e);
-    // redirect to live session page
-    router.push(`/livesession/${givenData.id}`);
+    setAlertMessage(
+      "Live Session Successfully created. Please wait to be redirected or refresh the dashboard page"
+    );
+    handleClose();
+    if (givenData.isScheduled) router.push(`/dashboard`);
+    else {
+      // send notification to all followers
+      const currentUser = new UserData(userData);
+      currentUser.sendNotification(
+        "live",
+        `livesession/${givenData.id}`,
+        user.accessToken
+      );
+      router.push(`/livesession/${givenData.id}`);
+    }
   };
 
   return (
@@ -175,6 +194,7 @@ const CreateLiveSessionForm = () => {
                     className="input"
                     placeholderText="Select date"
                     onChange={(e) => field.onChange(e)}
+                    minDate={new Date()}
                     disabled={!watch("isScheduled")}
                     selected={field.value}
                   />

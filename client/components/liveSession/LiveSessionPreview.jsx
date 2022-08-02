@@ -5,7 +5,10 @@ import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/firebase/auth";
-import { AiFillEdit } from "react-icons/ai";
+import LiveSessionPreviewHyperLink from "./LiveSessionPreviewHyperLink";
+import RecordingPreviewHyperLink from "./RecordingPreviewHyperLink";
+import thumbnail from "../../public/images/general-thumbnail.png";
+import liveThumbnail from "../../public/images/live-thumbnail.png";
 
 const LiveSessionPreview = ({ liveSession }) => {
   // const date = new Date(Date(liveSession.createdAt)).toDateString();
@@ -34,11 +37,11 @@ const LiveSessionPreview = ({ liveSession }) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
+      <div className="bg-white rounded-lg drop-shadow-xl max-w-xs md:max-w-none overflow-hidden">
         <img
-          src="https://via.placeholder.com/315x180"
+          src={liveSession.isARecording ? thumbnail.src : liveThumbnail.src}
           alt="thumbnail"
-          className="rounded-t-xl w-full"
+          className=" w-full"
         />
         <div className="p-3">
           <span className="text-sm text-primary">
@@ -58,23 +61,21 @@ const LiveSessionPreview = ({ liveSession }) => {
               </p>
             )}
           </span>
-          <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
-            <Link
-              href={{
-                pathname: `/livesession/${liveSession.id}`,
-                query: { liveSessionId: liveSession.id },
-              }}
-              as={`/livesession/${liveSession.id}`}
-            >
-              <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
-                {liveSession.title}
-              </h2>
-            </Link>
-          </h3>
-          <p className="paragraph-normal text-gray-600">
+          <div className="font-semibold text-xl leading-6 text-gray-700 my-2">
+            {liveSession.isARecording ? (
+              <RecordingPreviewHyperLink
+                liveSession={liveSession}
+              ></RecordingPreviewHyperLink>
+            ) : (
+              <LiveSessionPreviewHyperLink
+                liveSession={liveSession}
+              ></LiveSessionPreviewHyperLink>
+            )}
+          </div>
+          <p className="paragraph-normal leading-6 text-gray-600 max-h-[50px] overflow-auto">
             {liveSession.description}
           </p>
-          <p className="mt-3 block" href="#">
+          <div className="mt-3 block" href="#">
             {user.uid != liveSession.createdByHcpId && (
               <div className="follow-button inline-block align-middle">
                 <ReportModal
@@ -84,7 +85,7 @@ const LiveSessionPreview = ({ liveSession }) => {
                 ></ReportModal>
               </div>
             )}
-          </p>
+          </div>
         </div>
       </div>
     </>

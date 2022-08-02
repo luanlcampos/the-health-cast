@@ -50,6 +50,7 @@ export default function ReportModal({
   reportingThread,
   reportingLive,
 }) {
+//  console.log(`reportedUserData: ${JSON.stringify(reportedUserData)}`);
   const [open, setOpen] = React.useState(false);
   const [formValues, setFormValues] = React.useState(defaultValues);
   const { user } = useAuth();
@@ -75,10 +76,16 @@ export default function ReportModal({
       //check if live sess, thread, or user
       if (reportingThread && reportedUserData.threadId) {
         formValues.reportedSrc = `/thread/${reportedUserData.threadId}`;
-      } else if (reportingLive && reportedUserData.liveSessId) {
-        formValues.reportedSrc = `/livesession/${reportedUserData.liveSessId}`;
+      } else if (reportingLive && reportedUserData.liveSessId) { 
+        if (reportedUserData.userProfileData)
+          formValues.reportedSrc = `/livesession/${reportedUserData.id}`;
+        else
+          formValues.reportedSrc = `/livesession/${reportedUserData.liveSessId}`;
       } else {
-        formValues.reportedSrc = `/profile/${reportedUserId}`;
+        if (reportedUserData.userProfileData)
+          formValues.reportedSrc = `/profile/${reportedUserData.createdByHcpId}`;  
+        else
+          formValues.reportedSrc = `/profile/${reportedUserId}`;
       }
 
       const res = await Swal.fire({
@@ -94,15 +101,16 @@ export default function ReportModal({
         },
       });
 
+      console.log(`before res.isConfirmed`);
       if (res.isConfirmed) {
         formValues.reportedAccount = reportedUserId;
-        formValues.reportedAccountOrg = reportedUserData.isHcp
-          ? reportedUserData.hcpOrg.orgId
-          : "";
+        formValues.reportedAccountOrg = reportedUserData.userProfileData? 
+          (reportedUserData.userProfileData.isHcp? reportedUserData.userProfileData.hcpOrg.orgId: "") :
+          (reportedUserData.isHcp? reportedUserData.hcpOrg.orgId : "");
         formValues.reportingAccount = user.uid;
 
         // send reportedSrc data (if threads, live sessions, recordings ...)
-        console.log(formValues);
+        console.log(`formValues: ${JSON.stringify(formValues)}`);
 
         // submit report data to firebase
         // query user's number of reports and last report submission date (>5 reports and not over 1 week, failed to submit)
@@ -160,26 +168,18 @@ export default function ReportModal({
           );
           console.log("createReport:", createReport);
           await createReport.save(); // to add a report to the collection "reports"
-
-          if (
-            reportingUserProfileData.totalNumberReports > 5 &&
-            periodSinceLastReport > 7 * 24 * 60 * 60
-          ) {
-            console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
-            await updateDoc(doc(db, "users", String(user.uid)), {
-              totalNumberReports: 0 + 1,
-              firstMonthlyReportDate: new Date(),
-            });
-          } else {
-            console.log(
-              `totalNumberReports added (reportingUserProfileData.totalNumberReports + 1): ${
-                reportingUserProfileData.totalNumberReports + 1
-              }`
-            );
-            await updateDoc(doc(db, "users", String(user.uid)), {
-              totalNumberReports:
-                reportingUserProfileData.totalNumberReports + 1,
-            });
+          console.log(`periodSinceLastReport: ${periodSinceLastReport}`);
+          if (reportingUserProfileData.totalNumberReports < 5 && periodSinceLastReport < 7 * 24 * 60 * 60) {
+              console.log(`totalNumberReports added (reportingUserProfileData.totalNumberReports + 1): ${reportingUserProfileData.totalNumberReports + 1}`);
+              await updateDoc(doc(db, "users", String(user.uid)), {
+                  totalNumberReports: reportingUserProfileData.totalNumberReports + 1,
+              });
+          } else if (reportingUserProfileData.totalNumberReports >= 5 || periodSinceLastReport > 7 * 24 * 60 * 60) {
+              console.log(`totalNumberReports resetted (0 + 1): ${0 + 1}`);
+              await updateDoc(doc(db, "users", String(user.uid)), {
+                  totalNumberReports: 0 + 1,
+                  firstMonthlyReportDate: new Date(),
+              });
           }
         } else {
           console.log(
@@ -224,11 +224,10 @@ export default function ReportModal({
               // className="text-center"
             >
               {/* You are reporting {reportedUserId} belonging to {reportedUserData.isHcp? reportedUserData.hcpOrg.orgId : 'just a regular user'} */}
-              You are reporting {reportedUserData.firstName}{" "}
-              {reportedUserData.lastName}{" "}
-              {reportedUserData.isHcp
-                ? "from " + reportedUserData.hcpOrg.orgName
-                : ""}
+              You are reporting {reportedUserData.userProfileData? reportedUserData.userProfileData.firstName : reportedUserData.firstName}{" "}
+              {reportedUserData.userProfileData? reportedUserData.userProfileData.lastName : reportedUserData.lastName}{" "}
+              {!reportedUserData.userProfileData && (reportedUserData.isHcp?"from " + reportedUserData.hcpOrg.orgName: "")}  
+              {reportedUserData.userProfileData && (reportedUserData.userProfileData.isHcp?"from " + reportedUserData.userProfileData.hcpOrg.orgName: "")}  
             </Typography>
             <Typography
               id="modal-modal-description"

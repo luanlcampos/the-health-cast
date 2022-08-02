@@ -5,6 +5,7 @@ import { db } from "@/firebase/clientApp";
 import { getDoc, doc } from "firebase/firestore";
 import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/firebase/auth";
+import liveThumbnail from "../../public/images/live-thumbnail.png";
 import { set } from "react-hook-form";
 
 // pagination
@@ -21,6 +22,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
   const { user } = useAuth();
 
   const [loadingLiveSessions, setLoadingLiveSessions] = useState(false);
+  const [date, setDate] = useState("");
 
   const addUserDetailsToLiveSession = async (liveSessions) => {
     console.log(
@@ -34,18 +36,23 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
         doc(db, "users", String(liveSessions[i].createdByHcpId))
       );
       userProfileData = result.data();
-      let tmpDate = new Date(liveSessions[i].sessionScheduleDate.seconds * 1000); 
+      let tmpDate = new Date(
+        liveSessions[i].sessionScheduleDate.seconds * 1000
+      );
       console.log(`tmpDate: ${tmpDate}`);
 
       const dataWithLsId = {
         ...liveSessions[i],
         userProfileData,
-        liveSessId: upcomingLives.id,
-        upcomingTime: tmpDate.toLocaleTimeString().substr(0,5).concat(" " + tmpDate.toLocaleTimeString().substr(-2)),
+        liveSessId: liveSessions[i].id, //upcomingLives.id,
+        upcomingTime: tmpDate
+          .toLocaleTimeString()
+          .substr(0, 5)
+          .concat(" " + tmpDate.toLocaleTimeString().substr(-2)),
       };
       //console.log(`dataWithLSId: ${JSON.stringify(dataWithLsId)}`);
       liveSessionsByDateWithUserDetails.push(dataWithLsId);
-      setReportedHCP(userProfileData);
+      setReportedHCP(dataWithLsId);
     }
     // console.log(userProfileData);
 
@@ -69,6 +76,7 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
       let nextDate = new Date(currDate);
       nextDate.setDate(currDate.getDate() + 1);
 
+      setDate(currDate.toDateString());
       if (
         currDate <= liveSessionScheduledDate &&
         liveSessionScheduledDate < nextDate
@@ -105,76 +113,87 @@ const UpcomingLiveSession = ({ upcomingLives, upcomingDate }) => {
   console.log(`currentTableData.length: `, currentTableData.length);
 
   return (
-    <div className="container w-full lg:w-full mx-auto flex flex-col">          
-        {isLoading && !liveSessionsByDate ? (
-          <Loading />
-        ) : (
-          currentTableData.map((liveSession, index) => {
-            return (
-              // <div className="card-item shadow-lg rounded-xl grow mx-10">
-              <div className="grid flex flex-col md:flex-row bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2" key={index}>
-                <div className='relative m-0 flex bg-white'>
-                  <div className='flex-no-shrink'>
-                    <img alt='' className='inset-0 h-full w-full object-cover object-center' src='https://via.placeholder.com/315x180' />
-                  </div>
-                  <div className='flex-1 card-block relative grid grid-cols-3'>
-                    <div className="p-6 col-span-2">
-                      <Link
-                        href={{
-                          pathname: `/livesession/${liveSession.id}`,
-                          query: { liveSessionId: liveSession.id },
-                        }}
-                        as={`/livesession/${liveSession.id}`}
-                      >
-                        <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
-                          {liveSession.title}
-                        </h2>
-                      </Link>         
-                      <p className='leading-normal'>{liveSession.description}</p>
+    <div className="container w-full lg:w-full mx-auto flex flex-col">
+      {isLoading && !liveSessionsByDate ? (
+        <Loading />
+      ) : liveSessionsByDate.length > 0 ? (
+        currentTableData.map((liveSession, index) => {
+          return (
+            // <div className="card-item shadow-lg rounded-xl grow mx-10">
+            <div
+              className="grid flex flex-col md:flex-row bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2"
+              key={index}
+            >
+              <div className="relative m-0 flex bg-white rounded-lg">
+                <div className="flex-no-shrink max-w-xs">
+                  <img
+                    alt="thumbnail"
+                    className="rounded-l-lg inset-0 h-full w-full object-cover object-center"
+                    src={liveThumbnail.src}
+                  />
+                </div>
+                <div className="flex-1 card-block relative grid grid-cols-3">
+                  <div className="p-6 col-span-2">
+                    <Link
+                      href={{
+                        pathname: `/livesession/${liveSession.id}`,
+                        query: { liveSessionId: liveSession.id },
+                      }}
+                      as={`/livesession/${liveSession.id}`}
+                    >
+                      <h2 className="text-2xl pb-2 hover:cursor-pointer hover:underline">
+                        {liveSession.title}
+                      </h2>
+                    </Link>
+                    <p className="leading-normal">{liveSession.description}</p>
+                    <Link
+                      href={`/profile/${liveSession.createdByHcpId}`}
+                      as={`/profile/${liveSession.createdByHcpId}`}
+                    >
                       <p className="mt-2">
                         Hosted By:{" "}
-                        {isLoading ? (
-                          <Loading />
-                        ) : (
-                          <Link
-                            href={`/profile/${liveSession.createdByHcpId}`}
-                            as={`/profile/${liveSession.createdByHcpId}`}
-                          >                      
-                            <span className="hover:cursor-pointer hover:underline">
-
-                              {liveSession.userProfileData
-                                ? liveSession.userProfileData.firstName
-                                : ""}{" "}
-                              {liveSession.userProfileData
-                                ? liveSession.userProfileData.lastName
-                                : ""}
-                            </span>
-                          </Link>                        
-                        )}
+                        <span className="hover:cursor-pointer hover:underline">
+                          {liveSession.userProfileData
+                            ? liveSession.userProfileData.firstName
+                            : ""}{" "}
+                          {liveSession.userProfileData
+                            ? liveSession.userProfileData.lastName
+                            : ""}
+                        </span>
                       </p>
-                      {user.uid != liveSession.createdByHcpId && (
-                        <div className="follow-button inline-block align-middle pt-3 text-sm">
-                          <ReportModal
-                            reportingLive={true}
-                            reportedUserData={reportedHCP}
-                            reportedUserId={liveSession.createdByHcpId}
-                          ></ReportModal>
-                        </div>
-                      )}
-                      <a className='-m-4 w-12 h-12 bg-blue-dark flex items-center justify-center text-center no-underline rounded-full text-white hover:bg-blue-darker absolute pin-t pin-r' href='#'>
-                        <i className='text-xl fa fa-plus'></i>
-                      </a>
-                    </div>
-                    <div className="p-6">
-                      Live at:
-                      <p className="h-full text-2xl">{liveSession.upcomingTime}</p>
-                    </div>          
+                    </Link>
+                    {user.uid != liveSession.createdByHcpId && (
+                      <div className="follow-button inline-block align-middle pt-3 text-sm">
+                        <ReportModal
+                          reportingLive={true}
+                          reportedUserData={reportedHCP}
+                          reportedUserId={liveSession.createdByHcpId}
+                        ></ReportModal>
+                      </div>
+                    )}
+                    <a
+                      className="-m-4 w-12 h-12 bg-blue-dark flex items-center justify-center text-center no-underline rounded-full text-white hover:bg-blue-darker absolute pin-t pin-r"
+                      href="#"
+                    >
+                      <i className="text-xl fa fa-plus"></i>
+                    </a>
+                  </div>
+                  <div className="p-6">
+                    Live at:
+                    <p className="h-full text-2xl">
+                      {liveSession.upcomingTime}
+                    </p>
                   </div>
                 </div>
               </div>
-            );
-          })
-        )}
+            </div>
+          );
+        })
+      ) : (
+        <div className="text-[rgba(0,0,0,0.5)]">
+          No lives currently scheduled on {date}.
+        </div>
+      )}
       <Pagination
         className="pagination-bar pt-3"
         currentPage={currentPage}

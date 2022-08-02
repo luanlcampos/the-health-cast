@@ -11,17 +11,17 @@ import {
   arrayUnion,
   updateDoc,
 } from "firebase/firestore";
+import nookies from "nookies";
 import { db } from "@/firebase/clientApp";
 import { RiUserFollowLine, RiUserUnfollowLine } from "react-icons/ri";
 import { AiOutlineLoading, AiOutlineClose } from "react-icons/ai";
 import { HiOutlineRefresh } from "react-icons/hi";
-import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from "react-icons/md";
 import list from "@/data/listOfConsumerHealthInfoTopic";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import EditBioModal from "@/components/Profile/EditBioModal";
-
 import ReportModal from "@/components/Profile/ReportModal";
+import { getAdminData } from "@/model/users/AdminData";
 
 // shuffle function to shuffle a list
 function shuffle(array) {
@@ -114,7 +114,9 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
   }, [userId]);
 
   useEffect(() => {
-    setUserInterests(userProfileData.interests);
+    if (!isAdmin) {
+      setUserInterests(userProfileData.interests);
+    }
   }, [userInterests]);
 
   useEffect(() => {
@@ -441,7 +443,7 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                 <div className="user-interests-list">
                   {userInterests.length > 0 ? (
                     userInterests.map((interest, index) => (
-                      <div key={interest.value} className="interest-card pr-4">
+                      <div key={interest} className="interest-card pr-4">
                         {isProfileOwner && (
                           <div className="delete-interest">
                             <button
@@ -463,14 +465,8 @@ const Profile = ({ userProfileData, userId, isAdmin }) => {
                     </div>
                   )}
                 </div>
-                <hr />
               </div>
             )}
-            <div className="user-activities">
-              <div className="user-activities-header">
-                <h2 className="pr-4 text-3xl">Recent Activities</h2>
-              </div>
-            </div>
           </div>
         ) : (
           <div className="user-not-found flex items-center justify-center m-0 h-[calc(100%-70px)]">
@@ -488,17 +484,18 @@ export async function getServerSideProps(context) {
   let isAdmin = false;
   let userProfileData;
   try {
+    const cookies = nookies.get(context);
+    const token = cookies.token;
+
     const userResult = await getDoc(doc(db, "users", String(userId)));
     if (userResult && userResult.exists()) {
       userProfileData = userResult.data();
       isAdmin = false;
     } else {
-      const result = await getDoc(doc(db, "admin", String(userId)));
-      if (result && result.exists()) {
-        userProfileData = result.data();
+      const result = await getAdminData(userId, token);
+      if (result) {
+        userProfileData = result;
         isAdmin = true;
-      } else {
-        userProfileData = null;
       }
     }
     console.log("userProfileData", userProfileData);
