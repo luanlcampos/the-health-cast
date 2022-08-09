@@ -8,11 +8,11 @@ import { useEffect, useState } from "react";
 import Loading from "../Loading";
 
 const ThreadPreview = ({ thread }) => {
-  const date = new Date(Date(thread.activityDate)).toDateString();
   const { user } = useAuth();
   const [creatorData, setCreatorData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [initial, setInitial] = useState("");
+  const [date, setDate] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -35,6 +35,8 @@ const ThreadPreview = ({ thread }) => {
 
       setInitial(fName.split("")[0] + lName.split("")[0]);
     });
+
+    setDate(new Date(thread.activityDate.toDate()).toDateString());
   }, []);
   // console.log(`in ThreadPreview 2: ${JSON.stringify(creatorData)}`);
 
