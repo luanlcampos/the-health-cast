@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Loading from "../Loading";
 
 const ThreadPreview = ({ thread }) => {
-  const date = new Date(Date(thread.createdBy)).toDateString();
+  const date = new Date(Date(thread.activityDate)).toDateString();
   const { user } = useAuth();
   const [creatorData, setCreatorData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
