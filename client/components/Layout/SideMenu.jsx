@@ -18,7 +18,7 @@ export default function SideMenu() {
   return (
     <div className="side-menu flex bg-[#eee] h-full max-w-[200px]">
       <div className="side-menu-content pl-0 w-full pt-12">
-        <ul className="flex flex-col gap-y-10">
+        <ul className="flex flex-col gap-[0.8rem]">
           <li
             className={`p-0 w-[150px] py-3 px-8 mx-auto hover:bg-[#d4d4d4] hover:rounded-xl${
               router.pathname == "/"

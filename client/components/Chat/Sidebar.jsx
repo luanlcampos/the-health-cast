@@ -63,15 +63,11 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
             return userData;
           });
 
-            // await getDocs(collection(db, "users")).then(querySnapshot=>{
-            //   allUsers =  querySnapshot.docs.map((d)=>{
-            //     return d.data();
-            //   });  
 
-              allUsers = rearrangeArray(allUsers, firstUserSidebar);
-              setAllUsers(allUsers);
-              handleSetAllUsers(allUsers);
-              return null;;
+          allUsers = rearrangeArray(allUsers, firstUserSidebar);
+          setAllUsers(allUsers);
+          handleSetAllUsers(allUsers);
+          return null;
 
         };
         getAllUsers();
@@ -160,14 +156,15 @@ export default function Sidebar({currentUserFName, currentUserEmail, handleSetAl
                                             <AiOutlineSearch/>
                                         </button>
                                     </span>
-                                <input type="search" name="q"
+                                <input
                                        className="w-full py-2 text-sm text-white bg-gray-600 rounded-full pl-10 focus:outline-none focus:bg-white focus:text-gray-900"
-                                       placeholder="Search or start new chat" 
+                                       placeholder="Search" 
                                        value={searchInput}
                                        onChange={(e) => {
                                            setSearchInput(e.target.value);
                                        }}
-                                       autoComplete="off"/>
+                                       onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
+                                       />
                             </div>
                         </form>
                     </div>
