@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import nookies from "nookies";
+import Link from "next/link";
 
 import Loading from "@/components/Loading";
 
@@ -45,36 +46,12 @@ const livesession = ({ currentLiveSession }) => {
   if (!user) {
     router.push("/login");
     return;
-  } else {
   }
 
   useEffect(() => {
-    console.log(
-      "Rendering out the page",
-      currentLiveSession.liveSessionData.createdByHcpId
-    );
-    console.log(user.uid);
     setCreatorStatus(
       currentLiveSession.liveSessionData.createdByHcpId == user.uid
     );
-    console.log(
-      "Setting the creator status as: ",
-      currentLiveSession.liveSessionData.createdByHcpId == user.uid
-    );
-    router.beforePopState(({ url, as, options }) => {
-      // Analyze if health care professional is leaving the room admist them recording or leaving the session open.
-      if (
-        creatorStatus &&
-        currentLiveSession.liveSessionMetaData &&
-        currentLiveSession.liveSessionMetaData.isOngoing
-      ) {
-        // Have SSR render bad routes as a 404.
-        if (liveSessionDocument.isOngoing)
-          modifyLiveSessionLife(liveSessionDocReference);
-      }
-
-      return true;
-    });
 
     if (user && userData) {
       setIsLoading(false);
@@ -89,9 +66,6 @@ const livesession = ({ currentLiveSession }) => {
         let lsdoc = await getDoc(lsref);
 
         const data = { ...lsdoc.data() };
-        console.log("-----------");
-        console.log(data);
-        console.log("-----------");
         setLiveSessionDocument(data);
       } catch (e) {
         console.error("Could not fetch the document");
@@ -103,12 +77,11 @@ const livesession = ({ currentLiveSession }) => {
   const handleLeaveRoom = async () => {
     router.push(`/`);
   };
-
   return (
     <SignedLiveSessionLayout>
-      {!user && !userData ? (
+      {!user && !userData && !currentLiveSession ? (
         <Loading />
-      ) : (
+      ) : currentLiveSession.liveSessionData.isOngoing ? (
         <div className="w-full my-8">
           <div className="flex lg:flex-row sm:flex-col md:flex-col h-full">
             <div className="w-8/12 m-3">
@@ -160,6 +133,31 @@ const livesession = ({ currentLiveSession }) => {
               <LiveSessionChatWindow
                 liveSessionRoomID={givenLiveSessionID}
               ></LiveSessionChatWindow>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="main-content w-full px-10 py-5">
+          <div className="main-content-header flex flex-col gap-x-10">
+            <h1 className="text-3xl font-bold pb-5">Sorry</h1>
+          </div>
+          <div className="grid grid-rows-3 grid-flow-col gap-4">
+            <h1>The room is now closed. Be sure to check out the Recordings page or use the search bar to find similar lives</h1>
+            <div>
+              <Link href="/" passHref={true}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: "#86a819",
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "#a9de09",
+                    },
+                  }}
+                >
+                  Return to home
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
