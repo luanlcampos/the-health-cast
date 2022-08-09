@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase/clientApp";
 import Alert from "@mui/material/Alert";
-
+import Link from "next/link";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,7 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
-
+import { AiOutlineLink } from "react-icons/ai";
 
 import EditLiveSessionModal from "./EditLiveSessionModal";
 import DeleteRecordingModal from "./DeleteRecordingModal";
@@ -73,6 +73,7 @@ const ViewRecordings = () => {
                     </TableCell>
                     <TableCell align="left">Date</TableCell>
                     <TableCell align="left">Tags</TableCell>
+                    <TableCell align="left">Link</TableCell>
                     <TableCell align="left">Edit</TableCell>
                     <TableCell align="left">Delete</TableCell>
                   </TableRow>
@@ -122,7 +123,20 @@ const ViewRecordings = () => {
                         ))}
                       </TableCell>
                       <TableCell align="left">
-                        <EditLiveSessionModal givenLiveSessionID={row.id}
+                        <Link
+                          className="hover:cursor-pointer"
+                          href={{
+                            pathname: `/recording/${row.id}`,
+                            query: { liveSessionId: row.id },
+                          }}
+                          as={`/recording/${row.id}`}
+                        >
+                          <AiOutlineLink></AiOutlineLink>
+                        </Link>
+                      </TableCell>
+                      <TableCell align="left">
+                        <EditLiveSessionModal
+                          givenLiveSessionID={row.id}
                           setAlertMessage={setAlertMessage}
                         ></EditLiveSessionModal>
                       </TableCell>
