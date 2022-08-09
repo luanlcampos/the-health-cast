@@ -129,7 +129,8 @@ const LiveSessions = ({ userData }) => {
     filterLiveSessions();
 
     console.log(
-      `state (searchedLiveSessions): ${!searchedLiveSessions ? 0 : searchedLiveSessions.length
+      `state (searchedLiveSessions): ${
+        !searchedLiveSessions ? 0 : searchedLiveSessions.length
       }`
     );
   }, [searchLSField]);
@@ -168,7 +169,9 @@ const LiveSessions = ({ userData }) => {
                   (givenLiveSession) =>
                     userData.following.includes(
                       givenLiveSession.createdByHcpId
-                    ) && givenLiveSession.isOngoing
+                    ) &&
+                    givenLiveSession.isOngoing &&
+                    givenLiveSession.createdByHcpId != user.uid
                 )
                 .map((givenLiveSession) => {
                   return (
@@ -184,7 +187,9 @@ const LiveSessions = ({ userData }) => {
                 (givenLiveSession) =>
                   userData.following.includes(
                     givenLiveSession.createdByHcpId
-                  ) && givenLiveSession.isOngoing
+                  ) &&
+                  givenLiveSession.isOngoing &&
+                  givenLiveSession.createdByHcpId != user.uid
               ).map((givenLiveSession) => {
                 if (!givenLiveSession.isARecording) {
                   return (
@@ -211,11 +216,13 @@ const LiveSessions = ({ userData }) => {
                 .filter((givenLiveSession) =>
                   adminData
                     ? !adminData.following.includes(
-                      givenLiveSession.createdByHcpId
-                    )
+                        givenLiveSession.createdByHcpId
+                      )
                     : !userData.following.includes(
-                      givenLiveSession.createdByHcpId
-                    ) && givenLiveSession.isOngoing
+                        givenLiveSession.createdByHcpId
+                      ) &&
+                      givenLiveSession.isOngoing &&
+                      givenLiveSession.createdByHcpId != user.uid
                 )
                 .map((givenLiveSession) => {
                   if (!givenLiveSession.isARecording) {
@@ -231,11 +238,13 @@ const LiveSessions = ({ userData }) => {
               LiveSessions.filter((givenLiveSession) =>
                 adminData
                   ? !adminData.following.includes(
-                    givenLiveSession.createdByHcpId
-                  )
+                      givenLiveSession.createdByHcpId
+                    )
                   : !userData.following.includes(
-                    givenLiveSession.createdByHcpId
-                  ) && givenLiveSession.isOngoing
+                      givenLiveSession.createdByHcpId
+                    ) &&
+                    givenLiveSession.isOngoing &&
+                    givenLiveSession.createdByHcpId != user.uid
               ).map((givenLiveSession) => {
                 if (!givenLiveSession.isARecording) {
                   return (

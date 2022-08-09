@@ -17,6 +17,7 @@ import {
 import "../../styles/Admin.module.scss";
 import { db } from "../../firebase/clientApp";
 import emailjs from "@emailjs/browser";
+import Link from "next/link";
 
 export default function Requests({ user }) {
   // requests array
