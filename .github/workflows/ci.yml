@@ -47,4 +47,4 @@ jobs:
         echo FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }} >> .env.local
         echo FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }} >> .env.local
         echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env.local
-        npm build
+        npm run build
